@@ -1,0 +1,70 @@
+<div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+  <a *ngIf="mostrarMenu" routerLink="/menu" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <img src="/iconos/plato.png" alt="" width="18" height="18" class="h-5 w-5 object-contain" />
+    </span>
+    Menú
+  </a>
+  <a
+    *ngIf="!carritoModoPanel"
+    routerLink="/menu"
+    [ngClass]="claseEnlace()"
+    class="relative"
+  >
+    <span class="rb-logo-chip !p-1">
+      <img src="/iconos/carrito-compras.png" alt="" width="18" height="18" class="h-5 w-5 object-contain" />
+    </span>
+    Carrito
+    @if (cart.totalUnidades() > 0) {
+      <span
+        class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-none text-white shadow-sm"
+        aria-live="polite"
+      >
+        {{ cart.totalUnidades() }}
+      </span>
+    }
+  </a>
+  <button
+    *ngIf="carritoModoPanel"
+    type="button"
+    (click)="onCarritoClick()"
+    [ngClass]="claseEnlace()"
+    class="relative"
+    aria-label="Abrir carrito de compras"
+  >
+    <span class="rb-logo-chip !p-1">
+      <img src="/iconos/carrito-compras.png" alt="" width="18" height="18" class="h-5 w-5 object-contain" />
+    </span>
+    Carrito
+    @if (cart.totalUnidades() > 0) {
+      <span
+        class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-none text-white shadow-sm"
+        aria-live="polite"
+      >
+        {{ cart.totalUnidades() }}
+      </span>
+    }
+  </button>
+  <a routerLink="/seguimiento-pedido" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <img src="/iconos/consulta-informacion-azul.png" alt="" width="18" height="18" class="h-5 w-5 object-contain" />
+    </span>
+    Mis pedidos
+  </a>
+  <a *ngIf="mostrarMiPerfil" routerLink="/mi-perfil" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <img src="/iconos/usuarios.png" alt="" width="18" height="18" class="h-5 w-5 object-contain" />
+    </span>
+    Mi perfil
+  </a>
+  <a
+    *ngIf="mostrarPanelTrabajo && rutaPanelTrabajo"
+    [routerLink]="rutaPanelTrabajo"
+    [ngClass]="claseEnlace()"
+  >
+    <span class="rb-logo-chip !p-1">
+      <img src="/iconos/engranajes.png" alt="" width="18" height="18" class="h-5 w-5 object-contain" />
+    </span>
+    Panel de trabajo
+  </a>
+</div>

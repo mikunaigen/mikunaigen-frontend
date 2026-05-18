@@ -1,0 +1,23 @@
+<div class="rb-page-center">
+  <div class="rb-shell-sm rb-card p-6 text-center sm:p-10">
+    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-warning/15">
+      <img src="/iconos/advertencia-amarillo.png" alt="Advertencia" class="h-10 w-10 object-contain" />
+    </div>
+    <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl lg:text-4xl">Acceso retenido temporalmente</h1>
+    <p class="mt-2 text-sm text-neutral-strong lg:text-base">
+      Tu IP ha sido bloqueada por múltiples intentos fallidos de inicio de sesión.
+    </p>
+
+    <div *ngIf="cargando" class="mt-6 flex justify-center">
+      <div class="h-8 w-8 animate-spin rounded-full border-2 border-warning border-t-transparent"></div>
+    </div>
+
+    <div *ngIf="!cargando" class="mt-6 space-y-3 rounded-xl border border-warning/30 bg-warning/10 p-4 text-left">
+      <p class="text-sm"><span class="font-semibold">IP:</span> {{ ipAddress }}</p>
+      <p class="text-sm">
+        <span class="font-semibold">Tiempo restante de desbloqueo:</span> {{ tiempoRestante() }}
+      </p>
+    </div>
+  </div>
+</div>
+

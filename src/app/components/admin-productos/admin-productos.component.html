@@ -1,0 +1,1509 @@
+<div class="rb-page">
+  <div class="rb-container">
+    <div class="rb-card overflow-hidden">
+      <div
+        class="border-b border-white/10 bg-secondary px-4 py-6 text-white dark:bg-slate-800 sm:px-6 sm:py-7 lg:px-8"
+      >
+        <div
+          class="mb-6 flex flex-col items-stretch justify-between gap-4 sm:items-start md:flex-row md:items-center"
+        >
+          <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
+            Administrar Ingredientes y Productos
+          </h2>
+          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <a
+              routerLink="/gestion-administrador"
+              class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
+              >Volver al Panel</a
+            >
+            <app-logout-button variant="on-dark" />
+          </div>
+      </div>
+      
+        <div
+          class="-mx-1 flex gap-1 overflow-x-auto border-b border-white/20 pb-0 px-1 text-sm sm:mx-0 sm:px-0"
+        >
+          <button
+            type="button"
+            (click)="cambiarPestana('ingredientes')"
+            [ngClass]="
+              pestanaActiva === 'ingredientes'
+                ? 'border-b-2 border-white font-semibold text-white'
+                : 'text-white/75 hover:text-white'
+            "
+            class="min-h-11 shrink-0 whitespace-nowrap px-4 pb-3 pt-1 transition"
+          >
+          1. Ingredientes (Insumos)
+        </button>
+          <button
+            type="button"
+            (click)="cambiarPestana('productos')"
+            [ngClass]="
+              pestanaActiva === 'productos'
+                ? 'border-b-2 border-white font-semibold text-white'
+                : 'text-white/75 hover:text-white'
+            "
+            class="min-h-11 shrink-0 whitespace-nowrap px-4 pb-3 pt-1 transition"
+          >
+            2. Productos (Recetas)
+        </button>
+      </div>
+    </div>
+
+      <div
+        *ngIf="pestanaActiva === 'ingredientes'"
+        class="grid grid-cols-1 gap-4 p-4 sm:gap-6 sm:p-6 lg:grid-cols-2 lg:gap-8 lg:p-8"
+      >
+        <div class="rb-section-muted h-fit !shadow-none">
+          <h3 class="rb-heading-accent mb-4 text-base">Registrar Nuevo Insumo</h3>
+          <form (ngSubmit)="guardarIngrediente()" class="space-y-4">
+            <div>
+              <label class="rb-label !normal-case">Nombre del insumo</label>
+              <input
+                type="text"
+                [(ngModel)]="nuevoIngrediente.name"
+                name="in"
+                class="rb-input rb-focus-secondary"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="rb-label !normal-case">Categoría</label>
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
+                <button
+                  type="button"
+                  *ngFor="let c of categoriasIngrediente"
+                  (click)="seleccionarCategoriaIngrediente(c.value)"
+                  [ngClass]="
+                    nuevoIngrediente.category === c.value
+                      ? 'border-secondary bg-secondary text-white ring-2 ring-secondary/25 dark:ring-blue-400/40'
+                      : 'border-gray-200 bg-gray-50 text-neutral-strong hover:bg-gray-100 dark:border-dark-border dark:bg-slate-900/70 dark:text-dark-text-muted dark:hover:bg-slate-800'
+                  "
+                  class="flex min-h-11 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-semibold transition sm:text-sm"
+                >
+                  <span class="rb-logo-chip !p-1.5">
+                    <img
+                      [src]="c.img"
+                      alt=""
+                      width="32"
+                      height="32"
+                      class="h-8 w-8 object-contain"
+                    />
+                  </span>
+                  <span>{{ c.label }}</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="rb-label !normal-case">Unidad de medida</label>
+              <select
+                [(ngModel)]="nuevoIngrediente.unit"
+                (ngModelChange)="onCambioUnidadIngrediente()"
+                name="iu"
+                class="rb-input rb-focus-secondary text-neutral-strong dark:text-slate-200"
+              >
+              <option value="UNIDADES">Unidades (U)</option>
+              <option value="GR">Gramos (gr)</option>
+              <option value="ML">Mililitros (ml)</option>
+            </select>
+          </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+              <div>
+                <label class="rb-label !normal-case">Stock inicial</label>
+                <input
+                  type="text"
+                  inputmode="decimal"
+                  name="is"
+                  [value]="ingredienteStockText"
+                  (input)="
+                    ingredienteStockText = filtrarDecimalPositivo(
+                      $event,
+                      nuevoIngrediente.unit === 'UNIDADES' ? 0 : 2
+                    )
+                  "
+                  (keydown)="bloquearNoEuler($event, nuevoIngrediente.unit !== 'UNIDADES')"
+                  class="rb-input rb-focus-secondary"
+                  autocomplete="off"
+                />
+              </div>
+              <div>
+                <label class="rb-label !normal-case">Costo unitario</label>
+                <input
+                  type="text"
+                  inputmode="decimal"
+                  name="ip"
+                  [value]="ingredienteCostoText"
+                  (input)="ingredienteCostoText = filtrarDecimalPositivo($event, 3)"
+                  (keydown)="bloquearNoEuler($event, true)"
+                  class="rb-input rb-focus-secondary"
+                  autocomplete="off"
+                />
+              </div>
+          </div>
+
+          <div>
+              <label class="rb-label">Foto del insumo (obligatoria, 1 foto)</label>
+              <input
+                type="file"
+                (change)="onSingleFileSelected($event)"
+                accept="image/jpeg,image/jpg,image/png"
+                class="rb-input mt-1 py-2 text-sm"
+              />
+              <div
+                *ngIf="nuevoIngrediente.imageBase64"
+                class="mt-2 aspect-square w-20 max-w-full rounded-lg border border-gray-200 bg-gray-100 sm:w-24 dark:border-dark-border"
+              >
+                <img
+                  [src]="nuevoIngrediente.imageBase64"
+                  alt=""
+                  class="h-full w-full rounded-lg object-cover"
+                />
+              </div>
+          </div>
+
+            <button type="submit" [disabled]="cargando" class="rb-btn-secondary w-full sm:w-max">
+              <span
+                *ngIf="cargando"
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+              ></span>
+            Guardar Ingrediente
+          </button>
+        </form>
+      </div>
+
+      <div>
+          <h3
+            class="mb-4 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong"
+          >
+            Insumos Registrados en Almacén
+          </h3>
+
+          <label class="rb-label !normal-case !mb-1">Filtrar por categoría de insumo</label>
+          <div class="-mx-1 mb-3 flex flex-wrap gap-2 px-1">
+            <button
+              type="button"
+              (click)="filtroCategoriaAlmacen = 'ALL'"
+              [ngClass]="
+                filtroCategoriaAlmacen === 'ALL'
+                  ? 'border-secondary bg-secondary text-white dark:ring-2 dark:ring-blue-400/35'
+                  : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+              "
+              class="min-h-9 rounded-lg border px-3 py-1.5 text-xs font-semibold transition sm:text-sm"
+            >
+              Todos
+            </button>
+            <button
+              type="button"
+              *ngFor="let c of categoriasIngrediente"
+              (click)="filtroCategoriaAlmacen = c.value"
+              [ngClass]="
+                filtroCategoriaAlmacen === c.value
+                  ? 'border-secondary bg-secondary text-white dark:ring-2 dark:ring-blue-400/35'
+                  : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+              "
+              class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
+            >
+              <span class="rb-logo-chip !p-1">
+                <img [src]="c.img" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+              </span>
+              <span>{{ c.label }}</span>
+            </button>
+          </div>
+
+          <label class="rb-label !normal-case !mb-1" for="busq-almacen">Buscar insumo</label>
+          <div class="relative mb-3">
+            <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
+              <span class="rb-logo-chip !p-1">
+                <img
+                  src="/iconos/lupa.png"
+                  alt=""
+                  width="20"
+                  height="20"
+                  class="h-5 w-5 object-contain"
+                />
+              </span>
+            </span>
+            <input
+              id="busq-almacen"
+              type="search"
+              name="busqAlmacen"
+              [(ngModel)]="busquedaAlmacen"
+              class="rb-input rb-focus-secondary w-full pl-12"
+              placeholder="Escribe para filtrar por nombre…"
+              autocomplete="off"
+            />
+          </div>
+
+          <div
+            *ngIf="ingredienteSeleccionadoAlmacenId"
+            class="mb-3 flex flex-col gap-3 rounded-xl border border-secondary/25 bg-secondary/5 p-3 dark:border-blue-400/30 dark:bg-slate-800/60 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
+              Seleccionado:
+              <strong class="text-gray-900 dark:text-dark-text-strong">{{
+                nombreInsumoSeleccionadoAlmacen
+              }}</strong>
+            </p>
+            <button
+              type="button"
+              (click)="abrirModalAbastecer()"
+              class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
+            >
+              <span class="rb-logo-chip !p-1">
+                <img
+                  src="/iconos/camion-abastecer-ingrediente.png"
+                  alt=""
+                  width="22"
+                  height="22"
+                  class="h-6 w-6 object-contain"
+                />
+              </span>
+              Abastecer stock
+            </button>
+          </div>
+
+          <div
+            class="grid max-h-[500px] grid-cols-1 gap-3 overflow-y-auto pr-1 sm:gap-4 md:grid-cols-2"
+          >
+            <p
+              *ngIf="insumosFiltradosAlmacen.length === 0"
+              class="col-span-full rounded-xl border border-dashed border-gray-200 p-6 text-center text-sm text-neutral-muted dark:border-dark-border dark:text-dark-text-muted"
+            >
+              No hay insumos con ese criterio.
+            </p>
+            <div
+              *ngFor="let ing of insumosFiltradosAlmacen"
+              class="group relative rounded-xl border border-gray-200 bg-white pt-10 shadow-sm transition hover:border-secondary/35 dark:border-dark-border dark:bg-slate-900/60 dark:shadow-none"
+              [ngClass]="
+                ingredienteSeleccionadoAlmacenId === ing.id
+                  ? 'ring-2 ring-secondary dark:ring-blue-400/45'
+                  : ''
+              "
+            >
+              <button
+                type="button"
+                (click)="abrirEditarIngrediente(ing, $event)"
+                class="absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-secondary shadow-sm transition hover:bg-gray-50 dark:border-dark-border dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                aria-label="Editar insumo"
+              >
+                <img
+                  src="/iconos/editar-lapiz.png"
+                  alt=""
+                  width="16"
+                  height="16"
+                  class="h-4 w-4 object-contain"
+                />
+              </button>
+              <button
+                type="button"
+                (click)="solicitarEliminarIngrediente(ing.id, $event)"
+                class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-danger text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
+                aria-label="Eliminar insumo"
+              >
+                <img
+                  src="/iconos/tacho.png"
+                  alt=""
+                  width="16"
+                  height="16"
+                  class="h-4 w-4 object-contain"
+                />
+              </button>
+              <button
+                type="button"
+                (click)="seleccionarInsumoAlmacen(ing.id)"
+                class="flex w-full cursor-pointer items-center gap-4 p-4 text-left"
+              >
+                <div
+                  class="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:h-14 sm:w-14"
+                >
+                  <img
+                    [src]="ing.imageBase64 || 'assets/no-image.png'"
+                    alt=""
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p
+                    class="text-sm font-semibold leading-tight text-gray-900 lg:text-base dark:text-dark-text-strong"
+                  >
+                    {{ ing.name }}
+                  </p>
+                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5">
+                    <span class="rb-logo-chip !p-0.5">
+                      <img
+                        [src]="imgIconoIngrediente(ing.category)"
+                        alt=""
+                        width="18"
+                        height="18"
+                        class="h-4 w-4 object-contain sm:h-[18px] sm:w-[18px]"
+                      />
+                    </span>
+                    <p class="text-xs text-neutral-muted sm:text-sm dark:text-dark-text-muted">
+                      {{ ing.category }} • {{ ing.stockQuantity }} {{ ing.unit }}
+                    </p>
+                  </div>
+                  <p class="text-sm font-semibold text-success dark:text-emerald-400">
+                    S/{{ ing.price }}
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="pestanaActiva === 'productos'" class="p-4 sm:p-6 lg:p-8">
+        <div class="mb-8 grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2 lg:gap-8">
+          <div>
+            <h3 class="mb-4 text-lg font-semibold text-primary sm:text-xl dark:text-orange-300">
+              1. Datos para el Cliente (Catálogo)
+            </h3>
+            <form class="space-y-4">
+              <div>
+                <label class="rb-label !normal-case">Nombre del plato o bebida</label>
+                <input
+                  type="text"
+                  [(ngModel)]="nuevoProducto.name"
+                  name="pn"
+                  class="rb-input rb-focus-primary"
+                />
+              </div>
+
+              <div>
+                <label class="rb-label !normal-case">Categoría en menú</label>
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                  <button
+                    type="button"
+                    *ngFor="let c of categoriasProducto"
+                    (click)="seleccionarCategoriaProducto(c.value)"
+                    [ngClass]="
+                      nuevoProducto.category === c.value
+                        ? 'border-primary bg-primary text-white ring-2 ring-primary/30'
+                        : 'border-gray-200 bg-gray-50 text-neutral-strong hover:bg-gray-100 dark:border-dark-border dark:bg-slate-900/70 dark:text-dark-text-muted dark:hover:bg-slate-800'
+                    "
+                    class="flex min-h-11 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-semibold transition sm:text-sm"
+                  >
+                    <span class="rb-logo-chip !p-1.5">
+                      <img
+                        [src]="c.img"
+                        alt=""
+                        width="32"
+                        height="32"
+                        class="h-8 w-8 object-contain"
+                      />
+                    </span>
+                    <span>{{ c.label }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="rb-label !normal-case">Precio de venta (mín. 0.10)</label>
+                <input
+                  type="text"
+                  inputmode="decimal"
+                  name="pp"
+                  [value]="productoPrecioText"
+                  (input)="productoPrecioText = filtrarDecimalPositivo($event, 2)"
+                  (keydown)="bloquearNoEuler($event, true)"
+                  class="rb-input rb-focus-primary"
+                  autocomplete="off"
+                />
+    </div>
+
+              <div>
+                <label class="rb-label !normal-case">Descripción</label>
+                <textarea
+                  [(ngModel)]="nuevoProducto.description"
+                  name="pd"
+                  class="rb-input rb-focus-primary h-20 resize-none"
+                ></textarea>
+              </div>
+
+        <div>
+                <label class="rb-label">Fotos del Plato (Puedes seleccionar varias)</label>
+                <input
+                  type="file"
+                  multiple
+                  (change)="onMultipleFilesSelected($event)"
+                  accept="image/jpeg,image/jpg,image/png"
+                  class="rb-input mt-1 py-2 text-sm"
+                />
+
+                <div class="mt-3 flex flex-wrap gap-2 sm:gap-3">
+                  <div
+                    *ngFor="let img of nuevoProducto.imagesBase64; let i = index"
+                    class="group relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 sm:w-20 dark:border-dark-border dark:bg-slate-900"
+                  >
+                    <img [src]="img" alt="" class="h-full w-full object-cover" />
+                    <button
+                      (click)="eliminarImagenProducto(i)"
+                      type="button"
+                      class="absolute -right-1 -top-1 flex h-6 w-6 min-h-6 min-w-6 items-center justify-center rounded-full bg-danger text-xs text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
+                      aria-label="Eliminar imagen"
+                    >
+                      <img
+                        src="/iconos/tacho.png"
+                        alt=""
+                        width="12"
+                        height="12"
+                        class="h-3 w-3 object-contain"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div
+            class="flex flex-col rounded-2xl border border-primary/15 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10 sm:p-6"
+          >
+            <h3
+              class="mb-2 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong"
+            >
+              2. Receta Interna
+            </h3>
+            <p class="mb-4 text-sm text-neutral-strong lg:text-base dark:text-dark-text-muted">
+              Busca y selecciona insumos; se descontarán de cocina al vender este producto.
+            </p>
+
+            <label class="rb-label !normal-case !mb-1">Filtrar por categoría de insumo</label>
+            <div class="-mx-1 mb-3 flex flex-wrap gap-2 px-1">
+              <button
+                type="button"
+                (click)="filtroCategoriaReceta = 'ALL'"
+                [ngClass]="
+                  filtroCategoriaReceta === 'ALL'
+                    ? 'border-secondary bg-secondary text-white dark:ring-2 dark:ring-blue-400/35'
+                    : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+                "
+                class="min-h-9 rounded-lg border px-3 py-1.5 text-xs font-semibold transition sm:text-sm"
+              >
+                Todos
+              </button>
+              <button
+                type="button"
+                *ngFor="let c of categoriasIngrediente"
+                (click)="filtroCategoriaReceta = c.value"
+                [ngClass]="
+                  filtroCategoriaReceta === c.value
+                    ? 'border-secondary bg-secondary text-white dark:ring-2 dark:ring-blue-400/35'
+                    : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+                "
+                class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
+              >
+                <span class="rb-logo-chip !p-1">
+                  <img [src]="c.img" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+                </span>
+                <span>{{ c.label }}</span>
+              </button>
+            </div>
+
+            <label class="rb-label !normal-case !mb-1" for="busq-insumo">Buscar insumo</label>
+            <div class="relative mb-3">
+              <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
+                <span class="rb-logo-chip !p-1">
+                  <img
+                    src="/iconos/lupa.png"
+                    alt=""
+                    width="20"
+                    height="20"
+                    class="h-5 w-5 object-contain"
+                  />
+                </span>
+              </span>
+              <input
+                id="busq-insumo"
+                type="search"
+                name="busqReceta"
+                [(ngModel)]="busquedaReceta"
+                class="rb-input rb-focus-primary w-full pl-12"
+                placeholder="Escribe para filtrar por nombre…"
+                autocomplete="off"
+              />
+            </div>
+
+            <p
+              class="mb-1 text-xs font-medium uppercase tracking-wide text-neutral-strong dark:text-slate-300"
+            >
+              Resultados
+            </p>
+            <div
+              class="mb-4 max-h-44 overflow-y-auto rounded-xl border border-primary/20 bg-white dark:border-primary/30 dark:bg-slate-900"
+            >
+              <p
+                *ngIf="insumosFiltradosReceta.length === 0"
+                class="p-4 text-center text-sm text-neutral-muted dark:text-dark-text-muted"
+              >
+                No hay insumos con ese criterio.
+              </p>
+              <button
+                type="button"
+                *ngFor="let i of insumosFiltradosReceta"
+                (click)="seleccionarInsumoParaReceta(i.id)"
+                [ngClass]="
+                  ingredienteSeleccionadoId === i.id
+                    ? 'border-l-4 border-l-primary bg-primary/10 dark:border-l-orange-400 dark:bg-orange-950/30'
+                    : 'border-l-4 border-l-transparent hover:bg-gray-50 dark:hover:bg-slate-800/80'
+                "
+                class="flex w-full items-start justify-between gap-2 border-b border-gray-100 px-3 py-2.5 text-left text-sm last:border-0 dark:border-dark-border"
+              >
+                <span class="font-medium text-gray-900 dark:text-dark-text-strong">{{
+                  i.name
+                }}</span>
+                <span class="shrink-0 text-xs text-neutral-muted dark:text-dark-text-muted">
+                  Stock: {{ i.stockQuantity }} {{ i.unit }}
+                </span>
+              </button>
+            </div>
+
+            <div
+              class="mb-4 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end"
+            >
+              <div class="min-w-0 flex-1">
+                <label class="rb-label !normal-case !mb-1">Cantidad a descontar</label>
+                <input
+                  type="text"
+                  inputmode="decimal"
+                  [value]="cantidadRecetaText"
+                  (input)="cantidadRecetaText = filtrarDecimalPositivo($event, unidadInsumoSeleccionado === 'UNIDADES' ? 0 : 2)"
+                  (keydown)="bloquearNoEuler($event, unidadInsumoSeleccionado !== 'UNIDADES')"
+                  class="rb-input rb-focus-primary w-full text-center sm:text-left"
+                  autocomplete="off"
+                />
+                <p
+                  *ngIf="ingredienteSeleccionadoId"
+                  class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted"
+                >
+                  Unidad del insumo:
+                  <strong class="text-gray-800 dark:text-slate-200">{{
+                    unidadInsumoSeleccionado
+                  }}</strong>
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="agregarInsumoAReceta()"
+                class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
+                aria-label="Añadir insumo a la receta"
+              >
+                <span class="rb-logo-chip !p-1">
+                  <img
+                    src="/iconos/agregar.png"
+                    alt=""
+                    width="18"
+                    height="18"
+                    class="h-5 w-5 object-contain"
+                  />
+                </span>
+              </button>
+            </div>
+
+            <div
+              class="mb-4 min-h-[150px] flex-1 overflow-y-auto rounded-xl border border-primary/20 bg-white p-4 dark:border-primary/30 dark:bg-slate-900"
+            >
+              <p
+                *ngIf="recetaActual.length === 0"
+                class="mt-8 text-center text-sm text-neutral-muted dark:text-dark-text-muted"
+              >
+                Aún no hay ingredientes en la receta.
+              </p>
+              <div
+                *ngFor="let item of recetaActual; let idx = index"
+                class="mb-2 flex items-center justify-between border-b border-gray-100 pb-2 text-sm last:border-0 dark:border-dark-border"
+              >
+                <span class="font-medium text-gray-900 dark:text-dark-text-strong">{{
+                  item.name
+                }}</span>
+                <div class="flex items-center gap-3">
+                  <span
+                    class="rounded border border-primary/20 bg-primary/10 px-2 py-0.5 font-mono text-xs font-semibold text-gray-900 dark:text-dark-text-strong"
+                    >{{ item.quantity }} {{ item.unit }}</span
+                  >
+                  <button
+                    type="button"
+                    (click)="quitarInsumo(idx)"
+                    class="rounded p-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/40"
+                    aria-label="Quitar insumo"
+                  >
+                    <img
+                      src="/iconos/tacho.png"
+                      alt=""
+                      width="16"
+                      height="16"
+                      class="h-4 w-4 object-contain"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="guardarProducto()"
+              [disabled]="cargando"
+              class="rb-btn-primary mt-auto w-full sm:w-max"
+            >
+              <span
+                *ngIf="cargando"
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+              ></span>
+              {{ cargando ? 'Creando...' : 'Guardar Producto en Catálogo' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="rb-divider pt-8">
+          <h3
+            class="mb-4 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong"
+          >
+            Productos en el Catálogo
+          </h3>
+
+          <label class="rb-label !normal-case !mb-1">Filtrar por categoría en menú</label>
+          <div class="-mx-1 mb-3 flex flex-wrap gap-2 px-1">
+            <button
+              type="button"
+              (click)="filtroCategoriaCatalogo = 'ALL'"
+              [ngClass]="
+                filtroCategoriaCatalogo === 'ALL'
+                  ? 'border-primary bg-primary text-white dark:ring-2 dark:ring-orange-400/35'
+                  : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+              "
+              class="min-h-9 rounded-lg border px-3 py-1.5 text-xs font-semibold transition sm:text-sm"
+            >
+              Todos
+            </button>
+            <button
+              type="button"
+              *ngFor="let c of categoriasProducto"
+              (click)="filtroCategoriaCatalogo = c.value"
+              [ngClass]="
+                filtroCategoriaCatalogo === c.value
+                  ? 'border-primary bg-primary text-white dark:ring-2 dark:ring-orange-400/35'
+                  : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+              "
+              class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
+            >
+              <span class="rb-logo-chip !p-1">
+                <img [src]="c.img" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+              </span>
+              <span>{{ c.label }}</span>
+            </button>
+          </div>
+
+          <label class="rb-label !normal-case !mb-1" for="busq-catalogo">Buscar producto</label>
+          <div class="relative mb-4">
+            <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
+              <span class="rb-logo-chip !p-1">
+                <img
+                  src="/iconos/lupa.png"
+                  alt=""
+                  width="20"
+                  height="20"
+                  class="h-5 w-5 object-contain"
+                />
+              </span>
+            </span>
+            <input
+              id="busq-catalogo"
+              type="search"
+              name="busqCatalogo"
+              [(ngModel)]="busquedaCatalogo"
+              class="rb-input rb-focus-primary w-full pl-12"
+              placeholder="Escribe para filtrar por nombre…"
+              autocomplete="off"
+            />
+          </div>
+
+          <div
+            class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          >
+            <p
+              *ngIf="productosFiltradosCatalogo.length === 0"
+              class="col-span-full rounded-xl border border-dashed border-gray-200 p-8 text-center text-sm text-neutral-muted dark:border-dark-border dark:text-dark-text-muted"
+            >
+              No hay productos con ese criterio.
+            </p>
+            <div
+              *ngFor="let prod of productosFiltradosCatalogo"
+              class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-dark-border dark:bg-dark-surface dark:shadow-none"
+            >
+              <button
+                type="button"
+                (click)="abrirEditarProducto(prod, $event)"
+                class="absolute left-2 top-2 z-10 flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-primary shadow-sm transition hover:bg-gray-50 dark:border-dark-border dark:bg-slate-800 dark:text-orange-300 dark:hover:bg-slate-700 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                aria-label="Editar producto"
+              >
+                <img
+                  src="/iconos/editar-lapiz.png"
+                  alt=""
+                  width="16"
+                  height="16"
+                  class="h-4 w-4 object-contain"
+                />
+              </button>
+              <button
+                type="button"
+                (click)="solicitarEliminarProducto(prod.id)"
+                class="absolute right-2 top-2 z-10 flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-lg bg-danger text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
+                aria-label="Eliminar producto"
+              >
+                <img
+                  src="/iconos/tacho.png"
+                  alt=""
+                  width="16"
+                  height="16"
+                  class="h-4 w-4 object-contain"
+                />
+              </button>
+              <div
+                class="mb-3 mt-11 aspect-square w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-slate-900"
+              >
+                <img
+                  [src]="prod.imagesBase64[0] || 'assets/no-image.png'"
+                  alt=""
+                  class="h-full w-full object-cover"
+                />
+              </div>
+              <h4
+                class="mb-1 text-sm font-semibold leading-tight text-gray-900 lg:text-base dark:text-dark-text-strong"
+              >
+                {{ prod.name }}
+              </h4>
+              <span
+                class="inline-flex items-center gap-1 rounded-full bg-gray-100 py-0.5 pl-1 pr-2 text-[10px] text-neutral-strong dark:bg-slate-900 dark:text-dark-text-muted"
+              >
+                <span class="rb-logo-chip !p-0.5">
+                  <img
+                    [src]="imgIconoProducto(prod.category)"
+                    alt=""
+                    width="14"
+                    height="14"
+                    class="h-3.5 w-3.5 object-contain"
+                  />
+                </span>
+                {{ prod.category }}
+              </span>
+              <p class="mt-2 text-sm font-semibold text-primary dark:text-orange-300">
+                S/{{ prod.price | number: '1.2-2' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="modalOrdenBloqueo.visible" class="rb-modal-backdrop z-[70]">
+    <div class="rb-modal max-w-md">
+      <div class="rb-modal-icon !mb-6 !text-3xl">
+        <img
+          src="/iconos/error-rojo.png"
+          alt=""
+          width="48"
+          height="48"
+          class="h-12 w-12 object-contain"
+        />
+      </div>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        No se puede eliminar
+      </h3>
+      <p class="mb-8 text-sm font-medium text-danger dark:text-red-200 lg:text-base">
+        {{ modalOrdenBloqueo.mensaje }}
+      </p>
+      <div class="flex justify-center">
+        <button
+          type="button"
+          (click)="cerrarModalOrdenBloqueo()"
+          class="rb-btn-danger w-full sm:w-max"
+        >
+          De acuerdo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="modalConfirmarProducto.visible" class="rb-modal-backdrop z-[65]">
+    <div class="rb-modal max-w-md">
+      <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Confirmar eliminación
+      </h3>
+      <p class="mb-6 text-sm text-neutral-strong dark:text-dark-text-muted lg:text-base">
+        ¿Estás seguro de eliminar este producto? Esta acción lo quitará del menú del cliente y de la
+        gestión de cocina.
+      </p>
+      <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="cerrarModalConfirmarProducto()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="ejecutarEliminarProducto()"
+          [disabled]="cargando"
+          class="rb-btn-danger order-1 w-full sm:order-2 sm:w-auto"
+        >
+          Eliminar producto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="modalAdvertenciaIngrediente.visible" class="rb-modal-backdrop z-[65]">
+    <div class="rb-modal max-w-lg">
+      <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Recetas vinculadas
+      </h3>
+      <p class="mb-3 text-sm text-neutral-strong dark:text-dark-text-muted">
+        Este insumo es parte de las siguientes recetas:
+      </p>
+      <ul
+        class="mb-4 max-h-40 list-inside list-disc overflow-y-auto rounded-lg border border-amber-200/80 bg-amber-50/90 px-3 py-2 text-sm text-gray-900 dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100"
+        *ngIf="modalAdvertenciaIngrediente.productos.length > 0"
+      >
+        <li *ngFor="let nombre of modalAdvertenciaIngrediente.productos">- {{ nombre }}</li>
+      </ul>
+      <p class="mb-6 text-sm text-neutral-strong dark:text-dark-text-muted">
+        Si lo eliminas, los productos asociados también serán eliminados del catálogo. ¿Deseas
+        continuar?
+      </p>
+      <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="cerrarModalAdvertenciaIngrediente()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="ejecutarEliminarTrasAdvertenciaIngrediente()"
+          [disabled]="cargando"
+          class="rb-btn-danger order-1 w-full sm:order-2 sm:w-auto"
+        >
+          Sí, eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="modalConfirmarIngrediente.visible" class="rb-modal-backdrop z-[65]">
+    <div class="rb-modal max-w-md">
+      <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Eliminar insumo
+      </h3>
+      <p class="mb-6 text-sm text-neutral-strong dark:text-dark-text-muted lg:text-base">
+        ¿Estás seguro de eliminar este insumo del almacén? Ya no aparecerá en búsquedas ni en
+        recetas nuevas.
+      </p>
+      <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="cerrarModalConfirmarIngrediente()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="ejecutarEliminarIngredienteSimple()"
+          [disabled]="cargando"
+          class="rb-btn-danger order-1 w-full sm:order-2 sm:w-auto"
+        >
+          Eliminar insumo
+        </button>
+              </div>
+            </div>
+          </div>
+
+  <div *ngIf="modalEditarIngrediente.visible" class="rb-modal-backdrop z-[62]">
+    <div
+      class="rb-modal max-h-[90vh] w-full max-w-lg overflow-y-auto !p-5 text-left sm:!p-8"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Editar insumo
+      </h3>
+      <form class="space-y-4" (ngSubmit)="guardarEdicionIngrediente(false)">
+        <div>
+          <label class="rb-label !normal-case" for="edit-in-nombre">Nombre</label>
+          <input
+            id="edit-in-nombre"
+            type="text"
+            name="editInNombre"
+            [(ngModel)]="editIngrediente.name"
+            class="rb-input rb-focus-secondary w-full"
+          />
+        </div>
+        <div>
+          <label class="rb-label !normal-case">Categoría</label>
+          <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              *ngFor="let c of categoriasIngrediente"
+              (click)="editIngrediente.category = c.value"
+              [ngClass]="
+                editIngrediente.category === c.value
+                  ? 'border-secondary bg-secondary text-white ring-2 ring-secondary/25 dark:ring-blue-400/35'
+                  : 'border-gray-200 bg-gray-50 text-neutral-strong hover:bg-gray-100 dark:border-dark-border dark:bg-slate-900/70 dark:text-dark-text-muted dark:hover:bg-slate-800'
+              "
+              class="flex min-h-11 items-center gap-2 rounded-xl border p-2 text-left text-xs font-semibold transition"
+            >
+              <span class="rb-logo-chip !p-1">
+                <img [src]="c.img" alt="" class="h-5 w-5 object-contain" />
+              </span>
+              {{ c.label }}
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="rb-label !normal-case" for="edit-in-unit">Unidad</label>
+          <select
+            id="edit-in-unit"
+            name="editInUnit"
+            [(ngModel)]="editIngrediente.unit"
+            (ngModelChange)="onCambioUnidadEditIngrediente()"
+            class="rb-input rb-focus-secondary w-full text-neutral-strong dark:text-slate-200"
+          >
+            <option value="UNIDADES">Unidades (U)</option>
+            <option value="GR">Gramos (gr)</option>
+            <option value="ML">Mililitros (ml)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="rb-label !normal-case" for="edit-in-stock">Stock</label>
+            <input
+              id="edit-in-stock"
+              type="text"
+              name="editInStock"
+              [value]="editIngredienteStockText"
+              (input)="
+                editIngredienteStockText = filtrarDecimalPositivo(
+                  $event,
+                  editIngrediente.unit === 'UNIDADES' ? 0 : 2
+                )
+              "
+              (keydown)="bloquearNoEuler($event, editIngrediente.unit !== 'UNIDADES')"
+              class="rb-input rb-focus-secondary w-full"
+              autocomplete="off"
+            />
+          </div>
+          <div>
+            <label class="rb-label !normal-case" for="edit-in-costo">Costo unitario</label>
+            <input
+              id="edit-in-costo"
+              type="text"
+              name="editInCosto"
+              [value]="editIngredienteCostoText"
+              (input)="editIngredienteCostoText = filtrarDecimalPositivo($event, 3)"
+              (keydown)="bloquearNoEuler($event, true)"
+              class="rb-input rb-focus-secondary w-full"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="rb-label">Foto (obligatoria)</label>
+          <input
+            type="file"
+            (change)="onEditSingleFileSelected($event)"
+            accept="image/jpeg,image/jpg,image/png"
+            class="rb-input mt-1 py-2 text-sm"
+          />
+          <div
+            *ngIf="editIngrediente.imageBase64"
+            class="mt-2 aspect-square w-20 max-w-full rounded-lg border border-gray-200 bg-gray-100 sm:w-24 dark:border-dark-border"
+          >
+            <img
+              [src]="editIngrediente.imageBase64"
+              alt=""
+              class="h-full w-full rounded-lg object-cover"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            (click)="cerrarModalEditarIngrediente()"
+            class="rb-btn-secondary w-full sm:w-auto"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="cargando"
+            class="rb-btn-secondary w-full border-0 bg-secondary text-white dark:bg-blue-600 sm:w-auto"
+          >
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="modalCambioUnidadIngrediente.visible" class="rb-modal-backdrop z-[63]">
+    <div class="rb-modal max-w-lg !p-5 text-left sm:!p-8" (click)="$event.stopPropagation()">
+      <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Cambio de unidad de medida
+      </h3>
+      <p class="mb-3 text-sm text-neutral-strong dark:text-dark-text-muted">
+        Este insumo se usa en las siguientes recetas:
+      </p>
+      <ul
+        class="mb-4 max-h-36 list-inside list-disc overflow-y-auto rounded-lg border border-amber-200 bg-amber-50/90 px-3 py-2 text-sm dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100"
+      >
+        <li *ngFor="let nombre of modalCambioUnidadIngrediente.productos">- {{ nombre }}</li>
+      </ul>
+      <p class="mb-6 text-sm text-neutral-strong dark:text-dark-text-muted">
+        Al cambiar la unidad, deberás revisar las cantidades a usar de dichas recetas para evitar
+        errores en el descuento de stock.
+      </p>
+      <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="cerrarModalCambioUnidadIngrediente()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="confirmarGuardarTrasCambioUnidad()"
+          [disabled]="cargando"
+          class="rb-btn-secondary order-1 w-full border-0 bg-secondary text-white dark:bg-blue-600 sm:order-2 sm:w-auto"
+        >
+          Continuar y guardar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="modalEditarProducto.visible" class="rb-modal-backdrop z-[64]">
+    <div
+      class="rb-modal max-h-[92vh] w-full max-w-4xl overflow-y-auto !p-4 text-left sm:!p-7 lg:!p-8"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
+        Editar producto
+      </h3>
+      <p
+        *ngIf="edicionProductoRestringida"
+        class="mb-4 rounded-xl border border-amber-200/90 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-500/40 dark:bg-amber-950/35 dark:text-amber-100"
+      >
+        Hay pedidos en curso: solo puedes editar la descripción y las imágenes. El precio, el
+        nombre, la categoría y la receta están bloqueados para mantener coherencia en cocina y caja.
+      </p>
+
+      <div class="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="min-w-0 space-y-4">
+          <div [attr.title]="edicionProductoRestringida ? msgTooltipEdicionBloqueada : null">
+            <label class="rb-label !normal-case" for="edit-p-nombre">Nombre</label>
+            <input
+              id="edit-p-nombre"
+              type="text"
+              name="editPNombre"
+              [(ngModel)]="editProducto.name"
+              [disabled]="edicionProductoRestringida"
+              class="rb-input rb-focus-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
+            />
+          </div>
+          <div [attr.title]="edicionProductoRestringida ? msgTooltipEdicionBloqueada : null">
+            <label class="rb-label !normal-case">Categoría</label>
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <button
+                type="button"
+                *ngFor="let c of categoriasProducto"
+                (click)="!edicionProductoRestringida && (editProducto.category = c.value)"
+                [disabled]="edicionProductoRestringida"
+                [ngClass]="
+                  editProducto.category === c.value
+                    ? 'border-primary bg-primary text-white ring-2 ring-primary/25 dark:ring-orange-400/30'
+                    : 'border-gray-200 bg-gray-50 text-neutral-strong hover:bg-gray-100 dark:border-dark-border dark:bg-slate-900/70 dark:text-dark-text-muted dark:hover:bg-slate-800'
+                "
+                class="flex min-h-11 items-center gap-2 rounded-xl border p-2 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <span class="rb-logo-chip !p-1">
+                  <img [src]="c.img" alt="" class="h-5 w-5 object-contain" />
+                </span>
+                {{ c.label }}
+              </button>
+            </div>
+          </div>
+          <div [attr.title]="edicionProductoRestringida ? msgTooltipEdicionBloqueada : null">
+            <label class="rb-label !normal-case" for="edit-p-precio">Precio de venta</label>
+            <input
+              id="edit-p-precio"
+              type="text"
+              name="editPPrecio"
+              [value]="editProductoPrecioText"
+              (input)="editProductoPrecioText = filtrarDecimalPositivo($event, 2)"
+              (keydown)="bloquearNoEuler($event, true)"
+              [disabled]="edicionProductoRestringida"
+              class="rb-input rb-focus-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
+              autocomplete="off"
+            />
+          </div>
+          <div>
+            <label class="rb-label !normal-case" for="edit-p-desc">Descripción</label>
+            <textarea
+              id="edit-p-desc"
+              name="editPDesc"
+              [(ngModel)]="editProducto.description"
+              class="rb-input rb-focus-primary h-24 w-full resize-none"
+            ></textarea>
+          </div>
+          <div>
+            <label class="rb-label">Imágenes</label>
+            <input
+              type="file"
+              multiple
+              (change)="onEditMultipleFilesProducto($event)"
+              accept="image/jpeg,image/jpg,image/png"
+              class="rb-input mt-1 py-2 text-sm"
+            />
+            <div class="mt-3 flex flex-wrap gap-2">
+              <div
+                *ngFor="let img of editProducto.imagesBase64; let i = index"
+                class="group relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 dark:border-dark-border dark:bg-slate-900"
+              >
+                <img [src]="img" alt="" class="h-full w-full object-cover" />
+                <button
+                  type="button"
+                  (click)="eliminarImagenProductoEdit(i)"
+                  class="absolute -right-1 -top-1 flex h-6 w-6 min-h-6 min-w-6 items-center justify-center rounded-full bg-danger text-xs text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
+                  aria-label="Quitar imagen"
+                >
+                  <img src="/iconos/tacho.png" alt="" class="h-3 w-3 object-contain" />
+                </button>
+              </div>
+            </div>
+        </div>
+      </div>
+
+        <div
+          class="min-w-0 rounded-2xl border border-primary/15 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10 sm:p-5"
+          [attr.title]="edicionProductoRestringida ? msgTooltipEdicionBloqueada : null"
+        >
+          <h4 class="mb-2 text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+            Receta
+          </h4>
+          <div *ngIf="edicionProductoRestringida" class="space-y-2">
+            <p class="text-xs text-neutral-muted dark:text-dark-text-muted">
+              Solo lectura mientras haya pedidos en curso.
+            </p>
+            <ul class="space-y-1 text-sm">
+              <li
+                *ngFor="let line of editRecetaActual"
+                class="flex flex-wrap justify-between gap-x-2 gap-y-1 border-b border-gray-100 pb-2 last:border-0 dark:border-dark-border"
+              >
+                <span class="min-w-0 font-medium text-gray-900 dark:text-dark-text-strong">{{
+                  line.name
+                }}</span>
+                <span
+                  class="shrink-0 font-mono text-xs text-neutral-muted dark:text-dark-text-muted"
+                  >{{ line.quantity }} {{ line.unit }}</span
+                >
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="!edicionProductoRestringida">
+            <label class="rb-label !normal-case !mb-1">Filtrar por categoría</label>
+            <div class="mb-2 flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                (click)="editFiltroCategoriaReceta = 'ALL'"
+                [ngClass]="
+                  editFiltroCategoriaReceta === 'ALL'
+                    ? 'border-secondary bg-secondary text-white dark:ring-2 dark:ring-blue-400/35'
+                    : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+                "
+                class="min-h-9 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition"
+              >
+                Todos
+              </button>
+              <button
+                type="button"
+                *ngFor="let c of categoriasIngrediente"
+                (click)="editFiltroCategoriaReceta = c.value"
+                [ngClass]="
+                  editFiltroCategoriaReceta === c.value
+                    ? 'border-secondary bg-secondary text-white dark:ring-2 dark:ring-blue-400/35'
+                    : 'border-gray-200 bg-white text-neutral-strong hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-slate-800'
+                "
+                class="min-h-9 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition"
+              >
+                {{ c.label }}
+              </button>
+            </div>
+            <label class="rb-label !normal-case !mb-1" for="edit-busq-rec">Buscar</label>
+            <div class="relative mb-2">
+              <span class="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
+                <span class="rb-logo-chip !p-0.5">
+                  <img src="/iconos/lupa.png" alt="" class="h-4 w-4 object-contain" />
+                </span>
+              </span>
+              <input
+                id="edit-busq-rec"
+                type="search"
+                name="editBusqRec"
+                [(ngModel)]="editBusquedaReceta"
+                class="rb-input rb-focus-primary w-full pl-10 text-sm"
+              />
+            </div>
+            <div
+              class="mb-2 max-h-32 overflow-y-auto rounded-lg border border-primary/20 bg-white dark:border-primary/30 dark:bg-slate-900"
+            >
+              <button
+                type="button"
+                *ngFor="let i of insumosFiltradosRecetaEdit"
+                (click)="seleccionarInsumoParaRecetaEdit(i.id)"
+                [ngClass]="
+                  editIngredienteSeleccionadoId === i.id
+                    ? 'border-l-4 border-l-primary bg-primary/10 dark:bg-orange-950/30'
+                    : 'border-l-transparent hover:bg-gray-50 dark:hover:bg-slate-800'
+                "
+                class="flex w-full min-w-0 flex-wrap items-baseline justify-between gap-x-2 border-b border-gray-100 px-2 py-2 text-left text-xs last:border-0 dark:border-dark-border"
+              >
+                <span class="min-w-0 font-medium text-gray-900 dark:text-dark-text-strong">{{
+                  i.name
+                }}</span>
+                <span class="shrink-0 text-neutral-muted dark:text-dark-text-muted"
+                  >{{ i.stockQuantity }} {{ i.unit }}</span
+                >
+              </button>
+            </div>
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
+              <div class="min-w-0 flex-1">
+                <label class="rb-label !normal-case !mb-1">Cantidad</label>
+                <input
+                  type="text"
+                  [value]="editCantidadRecetaText"
+                  (input)="editCantidadRecetaText = filtrarDecimalPositivo($event, unidadInsumoSeleccionadoEdit === 'UNIDADES' ? 0 : 2)"
+                  (keydown)="bloquearNoEuler($event, unidadInsumoSeleccionadoEdit !== 'UNIDADES')"
+                  class="rb-input rb-focus-primary w-full text-sm"
+                  name="editCantRec"
+                />
+              </div>
+              <button
+                type="button"
+                (click)="agregarInsumoARecetaEdit()"
+                class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
+              >
+                <span class="rb-logo-chip !p-1">
+                  <img src="/iconos/agregar.png" alt="" class="h-5 w-5 object-contain" />
+                </span>
+              </button>
+            </div>
+            <div
+              class="mt-3 max-h-36 overflow-y-auto rounded-lg border border-primary/20 bg-white p-2 dark:border-primary/30 dark:bg-slate-900"
+            >
+              <div
+                *ngFor="let item of editRecetaActual; let idx = index"
+                class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 text-xs last:border-0 dark:border-dark-border"
+              >
+                <span class="min-w-0 font-medium text-gray-900 dark:text-dark-text-strong">{{
+                  item.name
+                }}</span>
+                <div class="flex shrink-0 items-center gap-2">
+                  <span class="font-mono text-neutral-strong dark:text-dark-text-muted"
+                    >{{ item.quantity }} {{ item.unit }}</span
+                  >
+                  <button
+                    type="button"
+                    (click)="quitarInsumoEdit(idx)"
+                    class="min-h-8 min-w-8 rounded p-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/40"
+                  >
+                    <img src="/iconos/tacho.png" alt="" class="h-4 w-4 object-contain" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div
+        class="mt-6 flex flex-col gap-2 border-t border-gray-200 pt-4 dark:border-dark-border sm:flex-row sm:justify-end"
+      >
+        <button
+          type="button"
+          (click)="cerrarModalEditarProducto()"
+          class="rb-btn-neutral order-2 w-full sm:order-1 sm:w-auto"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="guardarEdicionProducto()"
+          [disabled]="cargando"
+          class="rb-btn-primary order-1 w-full sm:order-2 sm:w-auto"
+        >
+          <span
+            *ngIf="cargando"
+            class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+          ></span>
+          Guardar producto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="modalAbastecer.visible" class="rb-modal-backdrop z-[60]">
+    <div class="rb-modal max-w-md !p-5 text-left sm:!p-8" (click)="$event.stopPropagation()">
+      <div class="mb-4 flex items-start gap-3">
+        <span class="rb-logo-chip !p-1.5 shrink-0">
+          <img
+            src="/iconos/camion-abastecer-ingrediente.png"
+            alt=""
+            width="28"
+            height="28"
+            class="h-7 w-7 object-contain"
+          />
+        </span>
+        <div class="min-w-0">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+            Abastecer insumo
+          </h3>
+          <p class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted">
+            {{ modalAbastecer.insumo?.name }}
+          </p>
+          <p class="mt-1 text-xs text-neutral-muted dark:text-slate-400">
+            Stock actual:
+            <strong class="text-gray-800 dark:text-slate-200"
+              >{{ modalAbastecer.insumo?.stockQuantity }} {{ modalAbastecer.insumo?.unit }}</strong
+            >
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="rb-label !normal-case !mb-1" for="abast-qty">Cantidad a agregar</label>
+          <input
+            id="abast-qty"
+            type="text"
+            name="abastQty"
+            inputmode="decimal"
+            [value]="abastecerCantidadText"
+            (input)="
+              abastecerCantidadText = filtrarDecimalPositivo(
+                $event,
+                unidadAbastecerModal === 'UNIDADES' ? 0 : 2
+              )
+            "
+            (keydown)="bloquearNoEuler($event, unidadAbastecerModal !== 'UNIDADES')"
+            class="rb-input rb-focus-secondary w-full"
+            autocomplete="off"
+          />
+          <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
+            Unidad:
+            <strong class="text-gray-800 dark:text-slate-200">{{ unidadAbastecerModal }}</strong>
+            — GR/ML máx. 2 decimales; Unidades sin decimales.
+          </p>
+        </div>
+        <div>
+          <label class="rb-label !normal-case !mb-1" for="abast-cost"
+            >Costo unitario de compra (opcional)</label
+          >
+          <input
+            id="abast-cost"
+            type="text"
+            name="abastCost"
+            inputmode="decimal"
+            [value]="abastecerCostoText"
+            (input)="abastecerCostoText = filtrarDecimalPositivo($event, 3)"
+            (keydown)="bloquearNoEuler($event, true)"
+            class="rb-input rb-focus-secondary w-full"
+            placeholder="Ej. 2.50"
+            autocomplete="off"
+          />
+        </div>
+        <div>
+          <label class="rb-label !normal-case !mb-1" for="abast-reason"
+            >Motivo o nota (opcional)</label
+          >
+          <input
+            id="abast-reason"
+            type="text"
+            name="abastReason"
+            [(ngModel)]="abastecerRazonText"
+            maxlength="255"
+            class="rb-input rb-focus-secondary w-full"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="cerrarModalAbastecer()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="confirmarAbastecer()"
+          [disabled]="cargando"
+          class="rb-btn-secondary order-1 w-full border-0 bg-secondary text-white hover:opacity-95 dark:bg-blue-600 sm:order-2 sm:w-auto"
+        >
+          <span
+            *ngIf="cargando"
+            class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+          ></span>
+          Confirmar abastecimiento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="modal.visible" class="rb-modal-backdrop z-[80]">
+    <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
+      <div class="rb-modal-icon !mb-6 !text-3xl">
+        <img
+          [src]="
+            modal.tipo === 'error' ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'
+          "
+          [attr.alt]="modal.tipo === 'error' ? 'Error' : 'Éxito'"
+          width="48"
+          height="48"
+          class="h-12 w-12 object-contain"
+        />
+      </div>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        {{ modal.titulo }}
+      </h3>
+      <p
+        class="mb-8 text-sm lg:text-base"
+        [ngClass]="
+          modal.tipo === 'error'
+            ? 'font-medium text-danger dark:text-red-200'
+            : 'text-neutral-strong dark:text-dark-text-muted'
+        "
+      >
+        {{ modal.mensaje }}
+      </p>
+      <div class="flex justify-center">
+        <button
+          type="button"
+          (click)="cerrarModal()"
+          class="w-full sm:w-max"
+          [ngClass]="modal.tipo === 'error' ? 'rb-btn-danger' : 'rb-btn-secondary'"
+        >
+        Entendido
+      </button>
+      </div>
+    </div>
+  </div>
+</div>

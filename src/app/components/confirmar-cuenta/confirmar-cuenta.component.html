@@ -1,0 +1,212 @@
+<div class="rb-page-center relative items-start">
+  <div class="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+    <app-logout-button />
+  </div>
+  <div class="rb-shell-sm rb-card rb-card-pad">
+    <div class="mb-8 text-center">
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center">
+        <span class="rb-logo-chip !rounded-full !p-2">
+          <img
+            src="/iconos/candado.png"
+            alt=""
+            width="40"
+            height="40"
+            class="h-10 w-10 object-contain"
+          />
+        </span>
+      </div>
+      <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl lg:text-4xl dark:text-dark-text-strong">
+        Activa tu cuenta
+      </h1>
+      <p class="rb-kicker mt-2">Configura tu contraseña segura.</p>
+    </div>
+
+    <form (ngSubmit)="enviarCodigo()" *ngIf="paso === 1" class="space-y-5">
+      <div
+        class="rounded-xl border border-secondary/15 bg-secondary/5 p-4 text-center text-sm font-medium text-secondary lg:text-base dark:border-dark-border dark:bg-slate-900/60 dark:text-dark-text-muted"
+      >
+        Verificaremos tu correo
+        <strong class="font-semibold text-secondary dark:text-dark-text-strong">{{ email }}</strong>
+        antes de continuar.
+      </div>
+
+      <button type="submit" [disabled]="cargando" class="rb-btn-primary">
+        <span
+          *ngIf="cargando"
+          class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+        ></span>
+        {{ cargando ? 'Enviando...' : 'Enviar código de seguridad' }}
+      </button>
+    </form>
+
+    <form (ngSubmit)="confirmarYCrearClave()" *ngIf="paso === 2" class="space-y-4">
+      <div
+        class="mb-2 rounded-2xl border border-secondary/15 bg-secondary/5 p-4 dark:border-dark-border dark:bg-slate-900/60"
+      >
+        <label
+          class="rb-label !mb-1 !text-center !text-secondary dark:!text-blue-400"
+          >Código de 6 dígitos</label
+        >
+        <input
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          (keydown)="bloquearNoNumerico($event)"
+          (input)="codigoVerificacion = soloNumeros($event, 6)"
+          [value]="codigoVerificacion"
+          class="rb-input rb-focus-secondary text-center font-mono text-2xl tracking-[0.45em] sm:text-3xl"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="rb-label ml-0.5">Nueva contraseña</label>
+        <div class="relative">
+        <input
+          [type]="mostrarPassword ? 'text' : 'password'"
+          [(ngModel)]="nuevaPassword"
+          name="npw"
+          class="rb-input rb-focus-primary pr-14"
+          required
+        />
+        <button
+          type="button"
+          (click)="mostrarPassword = !mostrarPassword"
+          class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80 dark:text-slate-400"
+          [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        >
+          <img
+            [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
+            alt=""
+            width="20"
+            height="20"
+            class="h-5 w-5 object-contain"
+          />
+        </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="rb-label ml-0.5">Confirmar contraseña</label>
+        <div class="relative">
+        <input
+          [type]="mostrarPassword ? 'text' : 'password'"
+          [(ngModel)]="confirmarPassword"
+          name="cpw"
+          class="rb-input rb-focus-primary pr-14"
+          required
+        />
+        <button
+          type="button"
+          (click)="mostrarPassword = !mostrarPassword"
+          class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80 dark:text-slate-400"
+          [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        >
+          <img
+            [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
+            alt=""
+            width="20"
+            height="20"
+            class="h-5 w-5 object-contain"
+          />
+        </button>
+        </div>
+      </div>
+
+      <div
+        class="grid grid-cols-2 gap-1 px-0.5 text-xs text-neutral-muted dark:text-dark-text-muted"
+      >
+        <span [class.text-success]="nuevaPassword.length >= 8">● 8+ Caracteres</span>
+        <span [class.text-success]="/[A-Z]/.test(nuevaPassword)">● Mayúscula</span>
+        <span [class.text-success]="/[a-z]/.test(nuevaPassword)">● Minúscula</span>
+        <span [class.text-success]="/[@!¡¿?#$%/&]/.test(nuevaPassword)">● Especial</span>
+      </div>
+
+      <div class="flex items-center space-x-2 py-2">
+        <input
+          type="checkbox"
+          [checked]="aceptoTerminos"
+          (click)="mostrarTerminos(); $event.preventDefault()"
+          class="h-4 w-4 accent-primary"
+        />
+        <label
+          class="cursor-pointer text-sm text-neutral-strong dark:text-slate-200"
+          (click)="mostrarTerminos()"
+        >
+          Acepto los
+          <span class="font-semibold text-secondary underline dark:text-sky-300">términos de uso</span>.
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="cargando || !aceptoTerminos"
+        class="rb-btn-primary disabled:!bg-neutral-muted"
+      >
+        <span
+          *ngIf="cargando"
+          class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+        ></span>
+        {{ cargando ? 'Activando...' : 'Activar Cuenta' }}
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="modal.visible" class="rb-modal-backdrop">
+    <div class="rb-modal max-w-md">
+      <div *ngIf="modal.tipo === 'error' || modal.tipo === 'exito'" class="rb-modal-icon">
+        <img
+          [src]="modal.esExpirado ? '/iconos/advertencia-amarillo.png' : modal.tipo === 'error' ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'"
+          [attr.alt]="modal.esExpirado ? 'Advertencia' : modal.tipo === 'error' ? 'Error' : 'Éxito'"
+          width="52"
+          height="52"
+          class="h-12 w-12 object-contain"
+        />
+      </div>
+      <div *ngIf="modal.tipo === 'terminos'" class="rb-modal-icon flex items-center justify-center !p-2">
+        <span class="rb-logo-chip !rounded-full !p-2">
+          <img src="/iconos/documento.png" alt="" width="40" height="40" class="h-10 w-10 object-contain" />
+        </span>
+      </div>
+
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ modal.titulo }}</h3>
+
+      <div
+        class="mb-6 max-h-40 overflow-y-auto px-1 text-sm text-neutral-strong dark:text-slate-200"
+        [ngClass]="modal.tipo === 'terminos' ? 'text-left leading-relaxed' : 'text-center'"
+      >
+        {{ modal.mensaje }}
+      </div>
+
+      <div *ngIf="modal.tipo === 'terminos'" class="flex flex-col gap-2 sm:flex-row sm:gap-3">
+        <button
+          type="button"
+          (click)="rechazarTerminos()"
+          class="rb-btn-neutral !shadow-none sm:flex-1"
+        >
+          No Acepto
+        </button>
+        <button type="button" (click)="aceptarTerminos()" class="rb-btn-success sm:flex-1">
+          Acepto
+        </button>
+      </div>
+
+      <div *ngIf="modal.tipo !== 'terminos'" class="flex justify-center">
+        <button
+          type="button"
+          (click)="cerrarModal()"
+          class="w-full sm:w-max"
+          [ngClass]="
+            modal.esExpirado
+              ? 'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-warning px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95'
+              : modal.tipo === 'error'
+                ? 'rb-btn-danger'
+                : 'rb-btn-secondary'
+          "
+        >
+          {{ modal.esExpirado ? 'Reenviar Código' : 'Entendido' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

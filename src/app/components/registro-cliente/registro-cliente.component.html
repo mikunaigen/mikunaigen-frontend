@@ -1,0 +1,246 @@
+<div class="rb-page-center relative">
+  <div class="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+    <app-logout-button />
+  </div>
+  <div class="rb-shell-sm rb-card overflow-hidden">
+    <div class="bg-primary px-4 py-6 text-center text-white sm:px-8 sm:py-7">
+      <h2 class="text-xl font-semibold tracking-tight sm:text-2xl">Mikunaigen</h2>
+      <p class="mt-1 text-sm text-white/90 lg:text-base">Únete y disfruta del mejor sabor</p>
+    </div>
+
+    <form class="space-y-4 p-4 sm:p-6 md:p-9" (ngSubmit)="enviarCodigo()" *ngIf="paso === 1">
+      <h3 class="text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
+        Crear mi cuenta
+      </h3>
+
+      <div>
+        <label class="rb-label !normal-case">Nombre completo</label>
+        <input
+          type="text"
+          (input)="usuario.fullName = soloLetras($event, 120)"
+          [value]="usuario.fullName"
+          name="fn"
+          class="rb-input rb-focus-primary"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+        <div>
+          <label class="rb-label !normal-case !text-[10px]">DNI</label>
+          <input
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            (keydown)="bloquearNoNumerico($event)"
+            (input)="usuario.dni = soloNumeros($event, 8)"
+            [value]="usuario.dni"
+            name="dni"
+            class="rb-input rb-focus-primary"
+          />
+        </div>
+        <div>
+          <label class="rb-label !normal-case !text-[10px]">Celular</label>
+          <input
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            (keydown)="bloquearNoNumerico($event)"
+            (input)="usuario.phone = soloNumeros($event, 9)"
+            [value]="usuario.phone"
+            name="tel"
+            class="rb-input rb-focus-primary"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="rb-label !normal-case">Correo electrónico</label>
+        <input
+          type="email"
+          [(ngModel)]="usuario.email"
+          name="em"
+          class="rb-input rb-focus-primary"
+        />
+      </div>
+      <div>
+        <label class="rb-label !normal-case">Dirección de entrega</label>
+        <input
+          type="text"
+          [(ngModel)]="usuario.address"
+          name="dir"
+          class="rb-input rb-focus-primary"
+        />
+      </div>
+
+      <div>
+        <label class="rb-label !normal-case">Contraseña</label>
+        <div class="relative">
+          <input
+            [type]="mostrarPassword ? 'text' : 'password'"
+            [(ngModel)]="usuario.password"
+            name="pw"
+            class="rb-input rb-focus-primary pr-24"
+          />
+          <button
+            type="button"
+            (click)="mostrarPassword = !mostrarPassword"
+            class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
+            [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            <img
+              [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
+              alt=""
+              width="20"
+              height="20"
+              class="h-5 w-5 object-contain"
+            />
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="rb-label !normal-case">Confirmar contraseña</label>
+        <div class="relative">
+          <input
+            [type]="mostrarPassword ? 'text' : 'password'"
+            [(ngModel)]="confirmarPassword"
+            name="cpw"
+            class="rb-input rb-focus-primary pr-24"
+          />
+          <button
+            type="button"
+            (click)="mostrarPassword = !mostrarPassword"
+            class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
+            [attr.aria-label]="
+              mostrarPassword
+                ? 'Ocultar confirmación de contraseña'
+                : 'Mostrar confirmación de contraseña'
+            "
+          >
+            <img
+              [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
+              alt=""
+              width="20"
+              height="20"
+              class="h-5 w-5 object-contain"
+            />
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 py-1">
+        <input
+          type="checkbox"
+          [(ngModel)]="aceptoTerminos"
+          name="t"
+          id="t"
+          class="mt-1 h-4 w-4 shrink-0 border-gray-300 accent-primary"
+        />
+        <label for="t" class="cursor-pointer text-sm text-neutral-strong lg:text-base"
+          >Acepto los términos y condiciones de uso.</label
+        >
+      </div>
+
+      <button type="submit" [disabled]="cargando" class="rb-btn-primary disabled:!bg-neutral-muted">
+        <span
+          *ngIf="cargando"
+          class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+        ></span>
+        {{ cargando ? 'Procesando...' : 'Registrarme ahora' }}
+      </button>
+
+      <p class="mt-4 text-center text-xs text-neutral-muted">
+        ¿Ya eres parte?
+        <a routerLink="/login" class="font-semibold text-primary hover:underline">Inicia sesión</a>
+      </p>
+    </form>
+
+    <div class="space-y-6 p-4 text-center sm:p-6 md:p-9" *ngIf="paso === 2">
+      <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+        <img
+          src="/iconos/correo.png"
+          alt=""
+          width="48"
+          height="48"
+          class="h-12 w-12 object-contain"
+        />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900">Casi listo...</h3>
+      <p class="px-2 text-sm text-neutral-strong">
+        Ingresa el código enviado a<br /><span class="font-semibold text-gray-900">{{
+          usuario.email
+        }}</span>
+      </p>
+
+      <label class="rb-label !mb-1 !text-center !normal-case">Código de verificación</label>
+      <input
+        type="text"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        (keydown)="bloquearNoNumerico($event)"
+        (input)="codigoVerificacion = soloNumeros($event, 6)"
+        [value]="codigoVerificacion"
+        class="w-full border-0 border-b-2 border-primary bg-transparent py-3 text-center font-mono text-3xl tracking-[0.35em] text-gray-900 outline-none sm:text-4xl"
+      />
+
+      <button
+        type="button"
+        (click)="registrarFinal()"
+        [disabled]="cargando"
+        class="rb-btn-success disabled:opacity-60"
+      >
+        {{ cargando ? 'Validando...' : 'Finalizar Registro' }}
+      </button>
+      <button
+        type="button"
+        (click)="paso = 1"
+        class="text-xs text-neutral-muted underline hover:text-primary"
+      >
+        Volver a mis datos
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="modal.visible" class="rb-modal-backdrop">
+    <div class="rb-modal max-w-sm">
+      <div class="rb-modal-icon !mb-6 !h-16 !w-16 !text-3xl">
+        <img
+          [src]="
+            modal.esExpirado
+              ? '/iconos/advertencia-amarillo.png'
+              : modal.esError
+                ? '/iconos/error-rojo.png'
+                : '/iconos/correcto-check-verde.png'
+          "
+          [attr.alt]="modal.esExpirado ? 'Advertencia' : modal.esError ? 'Error' : 'Éxito'"
+          width="52"
+          height="52"
+          class="h-12 w-12 object-contain"
+        />
+      </div>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ modal.titulo }}</h3>
+      <p
+        [ngClass]="modal.esError ? 'text-danger' : 'text-neutral-strong'"
+        class="mb-8 text-sm font-medium leading-relaxed"
+      >
+        {{ modal.mensaje }}
+      </p>
+      <div class="flex justify-center">
+        <button
+          type="button"
+          (click)="cerrarModal()"
+          class="w-full sm:w-max"
+          [ngClass]="
+            modal.esExpirado
+              ? 'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-warning px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95'
+              : modal.esError
+                ? 'rb-btn-danger'
+                : 'rb-btn-secondary'
+          "
+        >
+          {{ modal.esExpirado ? 'Reenviar Código' : 'Entendido' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

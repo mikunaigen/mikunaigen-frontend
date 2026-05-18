@@ -1,0 +1,41 @@
+<div class="rb-page">
+  <nav
+    class="rb-nav flex flex-col items-stretch gap-3 bg-primary text-white shadow-sm dark:shadow-none sm:flex-row sm:items-center sm:justify-between"
+  >
+    <h1 class="rb-nav-title text-white">Mikunaigen</h1>
+    <app-logout-button variant="on-dark" />
+  </nav>
+
+  <div class="rb-container max-w-lg text-center">
+    <div class="mx-auto mb-6 flex justify-center">
+      <span class="rb-logo-chip !bg-white !p-3 dark:!bg-white">
+        <img
+          src="/iconos/like-pulgar.png"
+          alt=""
+          width="56"
+          height="56"
+          class="h-14 w-14 object-contain"
+        />
+      </span>
+    </div>
+    <h2 class="mb-3 text-2xl font-semibold text-gray-900 dark:text-dark-text-strong">
+      ¡Pedido recibido!
+    </h2>
+    <p
+      class="mb-6 text-sm leading-relaxed text-neutral-strong dark:text-dark-text-muted sm:text-base"
+    >
+      Estamos validando el pago. Te enviaremos un correo electrónico cuando tu orden sea procesada.
+      Asimismo, puedes realizar el seguimiento de tu pedido
+      <a
+        routerLink="/seguimiento-pedido"
+        class="font-semibold text-secondary underline underline-offset-2 dark:text-blue-400"
+        >haciendo clic aquí</a
+      >
+    </p>
+    <a
+      routerLink="/menu"
+      class="rb-btn-primary inline-flex min-h-11 w-full max-w-xs justify-center sm:w-auto"
+      >Volver al Menú</a
+    >
+  </div>
+</div>

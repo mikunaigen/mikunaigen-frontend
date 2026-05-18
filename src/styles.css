@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #ff7a00;
+  --color-secondary: #1e3a8a;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-neutral-muted: #9ca3af;
+  --color-neutral-strong: #4b5563;
+
+  --color-dark-bg: #0f172a;
+  --color-dark-surface: #1e293b;
+  --color-dark-border: #334155;
+  --color-dark-text-strong: #f8fafc;
+  --color-dark-text-muted: #94a3b8;
+}
+
+body {
+  @apply bg-white text-gray-900 antialiased dark:bg-dark-bg dark:text-dark-text-strong;
+}
+
+@layer components {
+  .rb-page {
+    @apply min-h-screen bg-white text-gray-900 antialiased dark:bg-dark-bg dark:text-dark-text-strong;
+  }
+
+  .rb-page-center {
+    @apply flex min-h-screen items-center justify-center bg-white px-4 py-8 sm:px-6 sm:py-12 lg:px-8 dark:bg-dark-bg dark:text-dark-text-strong;
+  }
+
+  .rb-container {
+    @apply mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8;
+  }
+
+  .rb-container-tight {
+    @apply mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8;
+  }
+
+  .rb-shell-sm {
+    @apply mx-auto w-full max-w-md;
+  }
+  .rb-shell-md {
+    @apply w-full max-w-2xl;
+  }
+  .rb-shell-lg {
+    @apply w-full max-w-4xl;
+  }
+
+  .rb-card {
+    @apply rounded-2xl border border-gray-200/90 bg-white shadow-sm dark:border-dark-border dark:bg-dark-surface dark:shadow-none;
+  }
+
+  .rb-card-pad {
+    @apply p-8 sm:p-9;
+  }
+
+  .rb-section {
+    @apply rounded-2xl border border-gray-200/90 bg-white p-6 shadow-sm sm:p-8 dark:border-dark-border dark:bg-dark-surface dark:shadow-none;
+  }
+
+  .rb-section-muted {
+    @apply rounded-2xl border border-gray-200 bg-gray-50/80 p-6 sm:p-8 dark:border-dark-border dark:bg-slate-900/60;
+  }
+
+  .rb-heading {
+    @apply text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl dark:text-dark-text-strong;
+  }
+
+  .rb-heading-accent {
+    @apply text-lg font-semibold tracking-tight text-secondary sm:text-xl lg:text-2xl dark:text-blue-400;
+  }
+
+  .rb-kicker {
+    @apply text-sm text-neutral-strong lg:text-base dark:text-dark-text-muted;
+  }
+
+  .rb-label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-strong dark:text-slate-200;
+  }
+
+  .rb-setup-section-title {
+    @apply text-sm font-semibold text-secondary dark:text-blue-300;
+  }
+
+  .rb-input {
+    @apply min-h-11 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition lg:text-base dark:border-dark-border dark:bg-slate-900 dark:text-white;
+  }
+
+  .rb-focus-primary {
+    @apply focus:border-primary/40 focus:ring-2 focus:ring-primary/10 dark:focus:border-primary/50 dark:focus:ring-primary/20;
+  }
+
+  .rb-focus-secondary {
+    @apply focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 dark:focus:border-blue-400/50 dark:focus:ring-blue-400/15;
+  }
+
+  .rb-btn-primary {
+    @apply inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:pointer-events-none disabled:opacity-45 sm:w-max sm:min-w-[8rem] dark:shadow-none;
+  }
+
+  .rb-btn-secondary {
+    @apply inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:pointer-events-none disabled:opacity-45 sm:w-max sm:min-w-[8rem] dark:bg-blue-700 dark:shadow-none dark:hover:opacity-95;
+  }
+
+  .rb-btn-success {
+    @apply inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-success px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:pointer-events-none disabled:opacity-45 sm:w-max sm:min-w-[8rem] dark:shadow-none;
+  }
+
+  .rb-btn-danger {
+    @apply inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-danger px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:pointer-events-none disabled:opacity-45 sm:w-max sm:min-w-[8rem] dark:shadow-none;
+  }
+
+  .rb-btn-neutral {
+    @apply inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm font-semibold text-neutral-strong shadow-sm transition hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-45 sm:w-max sm:min-w-[8rem] dark:border-dark-border dark:bg-dark-surface dark:text-gray-300 dark:shadow-none dark:hover:bg-slate-800;
+  }
+
+  .rb-btn-sm {
+    @apply rounded-lg px-3 py-2.5 text-sm font-semibold;
+  }
+
+  .rb-nav {
+    @apply sticky top-0 z-50 flex items-center justify-between border-b border-black/5 px-4 py-3.5 sm:px-6 lg:px-8 dark:border-dark-border dark:shadow-none;
+  }
+
+  .rb-nav-title {
+    @apply text-base font-semibold tracking-tight;
+  }
+
+  .rb-nav-link {
+    @apply text-sm text-white/90 underline-offset-4 transition hover:text-white hover:underline;
+  }
+
+  .rb-modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-[2px] dark:bg-black/60;
+  }
+
+  .rb-modal {
+    @apply w-full max-w-md rounded-2xl border border-gray-200/90 bg-white p-8 text-center shadow-sm sm:p-9 dark:border-dark-border dark:bg-dark-surface dark:shadow-none;
+  }
+
+  .rb-modal-icon {
+    @apply mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-50 text-2xl font-semibold ring-1 ring-gray-200/80 dark:bg-white dark:ring-dark-border;
+  }
+
+  .rb-divider {
+    @apply border-t border-gray-200 dark:border-dark-border;
+  }
+
+  .rb-logo-chip {
+    @apply inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm ring-1 ring-black/5 dark:ring-white/10;
+  }
+
+  .rb-table-header-row {
+    @apply border-b border-gray-200 bg-gray-50/80 text-xs font-medium uppercase tracking-wide text-neutral-strong dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-muted;
+  }
+}
