@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { ConfigService } from '../../services/config.service';
+import { AuthService } from '../../services/auth.service';
 import { environment } from '@env/environment';
 import { NgIconComponent } from '@ng-icons/core';
 import {
@@ -52,6 +53,7 @@ export class RegistroComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private config: ConfigService,
+    private auth: AuthService,
   ) {}
 
   ngOnInit() {
@@ -68,8 +70,10 @@ export class RegistroComponent implements OnInit {
         }
       });
 
-    this.http.get(environment.apiUrl + '/auth/check-admin').subscribe({
-      next: (res: any) => (this.isAdminMode = !res.hasAdmin),
+    this.auth.obtenerEstadoUsuarios().subscribe({
+      next: (res) => {
+        this.isAdminMode = res.sinUsuarios;
+      },
       error: () =>
         this.abrirModal('error', 'Error de Conexión', 'No se pudo contactar al servidor.'),
     });

@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '@env/environment';
 
 const AUTH_KEY = 'rb_auth';
 
@@ -16,8 +19,15 @@ export type AuthSession = {
 const ROLES_USUARIO = ['estudiante', 'emprendedor', 'nutricionista', 'CLIENTE'];
 const ROL_ADMIN = 'administrador';
 
+export type EstadoUsuariosDto = {
+  hayUsuarios: boolean;
+  sinUsuarios: boolean;
+  hasAdmin?: boolean;
+};
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly http = inject(HttpClient);
   setSession(user: AuthSession): void {
     sessionStorage.setItem(AUTH_KEY, JSON.stringify(user));
   }
@@ -96,6 +106,10 @@ export class AuthService {
 
   puedeComprar(): boolean {
     return this.isLoggedIn() && this.esUsuarioFormulacion();
+  }
+
+  obtenerEstadoUsuarios(): Observable<EstadoUsuariosDto> {
+    return this.http.get<EstadoUsuariosDto>(`${environment.apiUrl}/auth/estado-usuarios`);
   }
 
   private isTokenExpired(token: string): boolean {

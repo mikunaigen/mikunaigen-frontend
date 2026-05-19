@@ -25,12 +25,17 @@ import { configRequiredGuard } from './guards/config-required.guard';
 import { setupFlowGuard } from './guards/setup-flow.guard';
 import { ipBlockGuard } from './guards/ip-block.guard';
 import { clienteGuard } from './guards/cliente.guard';
+import { loginAccesoGuard } from './guards/login-acceso.guard';
 
 export const routes: Routes = [
   { path: 'mantenimiento', component: MantenimientoComponent },
   { path: 'retenido', component: RetenidoComponent },
   { path: 'presentacion', component: PresentacionComponent, canActivate: [ipBlockGuard, configRequiredGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [ipBlockGuard, configRequiredGuard, guestGuard] },
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, guestGuard, loginAccesoGuard],
+  },
   { path: 'registro', component: RegistroComponent, canActivate: [ipBlockGuard, configRequiredGuard, guestGuard] },
   { path: 'recuperar', component: RecuperarPasswordComponent, canActivate: [ipBlockGuard, configRequiredGuard] },
   { path: 'mi-perfil', component: MiPerfilComponent, canActivate: [ipBlockGuard, configRequiredGuard, authGuard] },

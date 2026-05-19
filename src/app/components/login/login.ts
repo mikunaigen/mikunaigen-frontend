@@ -52,10 +52,7 @@ export class LoginComponent implements OnInit {
     private theme: ThemeService,
   ) {}
 
-  esLoginAdmin = false;
-
   ngOnInit() {
-    this.esLoginAdmin = this.route.snapshot.queryParamMap.get('admin') === '1';
     this.configService
       .obtenerConfiguracion()
       .pipe(catchError(() => of(null)))
@@ -89,7 +86,6 @@ export class LoginComponent implements OnInit {
       .post(environment.apiUrl + '/auth/login', {
         email: this.email,
         password: this.password,
-        soloAdministrador: this.esLoginAdmin ? 'true' : 'false',
       })
       .subscribe({
         next: (user: any) => {
