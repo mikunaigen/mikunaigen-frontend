@@ -7,13 +7,9 @@ import { GestionAdministradorComponent } from './components/gestion-administrado
 import { CrearPersonalComponent } from './components/crear-personal/crear-personal';
 import { ConfirmarCuentaComponent } from './components/confirmar-cuenta/confirmar-cuenta';
 import { MenuClienteComponent } from './components/menu-cliente/menu-cliente';
-import { PanelCajaComponent } from './components/panel-caja/panel-caja';
-import { PanelCocinaComponent } from './components/panel-cocina/panel-cocina';
-import { PanelRepartidorComponent } from './components/panel-repartidor/panel-repartidor';
 import { AdminProductosComponent } from './components/admin-productos/admin-productos';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 import { AdminRespaldosComponent } from './components/admin-respaldos/admin-respaldos';
-import { AdminModelosIaComponent } from './components/admin-modelos-ia/admin-modelos-ia';
 import { CheckoutComponent } from './components/checkout/checkout';
 import { PedidoEnviadoComponent } from './components/pedido-enviado/pedido-enviado';
 import { SeguimientoPedidoComponent } from './components/seguimiento-pedido/seguimiento-pedido';
@@ -29,9 +25,6 @@ import { configRequiredGuard } from './guards/config-required.guard';
 import { setupFlowGuard } from './guards/setup-flow.guard';
 import { ipBlockGuard } from './guards/ip-block.guard';
 import { clienteGuard } from './guards/cliente.guard';
-import { cajaGuard } from './guards/caja.guard';
-import { cocinaGuard } from './guards/cocina.guard';
-import { repartidorGuard } from './guards/repartidor.guard';
 
 export const routes: Routes = [
   { path: 'mantenimiento', component: MantenimientoComponent },
@@ -88,14 +81,10 @@ export const routes: Routes = [
     component: AdminProductosComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
-  {
-    path: 'admin-modelos-ia',
-    component: AdminModelosIaComponent,
-    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
-  },
-  { path: 'caja', component: PanelCajaComponent, canActivate: [ipBlockGuard, configRequiredGuard, cajaGuard] },
-  { path: 'cocina', component: PanelCocinaComponent, canActivate: [ipBlockGuard, configRequiredGuard, cocinaGuard] },
-  { path: 'entregas', component: PanelRepartidorComponent, canActivate: [ipBlockGuard, configRequiredGuard, repartidorGuard] },
+  { path: 'admin-modelos-ia', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'caja', redirectTo: 'gestion-administrador', pathMatch: 'full' },
+  { path: 'cocina', redirectTo: 'gestion-administrador', pathMatch: 'full' },
+  { path: 'entregas', redirectTo: 'gestion-administrador', pathMatch: 'full' },
   { path: '', component: InicioRedirectComponent, canActivate: [ipBlockGuard], pathMatch: 'full' },
   { path: '**', redirectTo: '' },
 ];

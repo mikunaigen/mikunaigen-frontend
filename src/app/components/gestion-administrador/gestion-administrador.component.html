@@ -1,4 +1,4 @@
-<div class="rb-page">
+﻿<div class="rb-page">
   <div class="rb-container">
     <header
       class="mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-center sm:justify-between"
@@ -13,23 +13,15 @@
       </div>
     </header>
 
-    <div
-      class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
-    >
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
       <a
         routerLink="/dashboard"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 hover:shadow-md dark:hover:border-blue-400/40 dark:hover:shadow-none"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
       >
         <div
-          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 transition group-hover:scale-[1.02] sm:mb-5 sm:h-14 sm:w-14"
+          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 dark:bg-white sm:mb-5 sm:h-14 sm:w-14"
         >
-          <img
-            src="/iconos/dashboard.png"
-            alt=""
-            width="36"
-            height="36"
-            class="h-9 w-9 object-contain"
-          />
+          <ng-icon name="heroChartPie" size="32" class="text-secondary dark:text-blue-400" />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
           Dashboard y KPIs
@@ -42,18 +34,12 @@
       <a
         [routerLink]="['/setup']"
         [queryParams]="{ editar: '1', seccion: 'plataforma' }"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 hover:shadow-md dark:hover:border-blue-400/40 dark:hover:shadow-none"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
       >
         <div
-          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 transition group-hover:scale-[1.02] sm:mb-5 sm:h-14 sm:w-14"
+          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 dark:bg-white sm:mb-5 sm:h-14 sm:w-14"
         >
-          <img
-            src="/iconos/usuarios.png"
-            alt=""
-            width="36"
-            height="36"
-            class="h-9 w-9 object-contain"
-          />
+          <ng-icon name="heroCog6Tooth" size="32" class="text-secondary dark:text-blue-400" />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
           Configuración de la Plataforma
@@ -65,18 +51,12 @@
 
       <a
         routerLink="/admin-productos"
-        class="rb-card rb-card-pad group transition hover:border-primary/35 hover:shadow-md"
+        class="rb-card rb-card-pad group transition hover:border-primary/35 dark:hover:border-primary/50 dark:hover:shadow-none"
       >
         <div
-          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 transition group-hover:scale-[1.02] sm:mb-5 sm:h-14 sm:w-14"
+          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 dark:bg-white sm:mb-5 sm:h-14 sm:w-14"
         >
-          <img
-            src="/iconos/plato.png"
-            alt=""
-            width="36"
-            height="36"
-            class="h-9 w-9 object-contain"
-          />
+          <ng-icon name="heroBeaker" size="32" class="text-primary" />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
           Dataset de Alimentos MINSA
@@ -89,68 +69,33 @@
       <a
         [routerLink]="['/setup']"
         [queryParams]="{ editar: '1' }"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 hover:shadow-md dark:hover:border-blue-400/40 dark:hover:shadow-none"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
       >
         <div
-          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 transition group-hover:scale-[1.02] sm:mb-5 sm:h-14 sm:w-14"
+          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 dark:bg-white sm:mb-5 sm:h-14 sm:w-14"
         >
-          <img
-            src="/iconos/engranajes.png"
-            alt=""
-            width="36"
-            height="36"
-            class="h-9 w-9 object-contain"
-          />
+          <ng-icon name="heroEnvelope" size="32" class="text-secondary dark:text-blue-400" />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Información del Negocio
+          Configuración SMTP
         </h2>
-        <p class="rb-kicker mt-2">Actualiza el logo, términos, teléfono o datos de correo SMTP.</p>
-      </a>
-
-      <a
-        routerLink="/admin-modelos-ia"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 hover:shadow-md dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div
-          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 transition group-hover:scale-[1.02] sm:mb-5 sm:h-14 sm:w-14"
-        >
-          <img
-            src="/iconos/destellos-recomendaciones.png"
-            alt=""
-            width="36"
-            height="36"
-            class="h-9 w-9 object-contain"
-          />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Configuración de Modelos de IA
-        </h2>
-        <p class="rb-kicker mt-2">
-          Gestiona slots, versiones y activación de recomendaciones inteligentes.
-        </p>
+        <p class="rb-kicker mt-2">Configura el correo Gmail y valida el envío con código de verificación.</p>
       </a>
 
       <a
         routerLink="/admin-respaldos"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 hover:shadow-md dark:hover:border-blue-400/40 dark:hover:shadow-none"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
       >
         <div
-          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 transition group-hover:scale-[1.02] sm:mb-5 sm:h-14 sm:w-14"
+          class="mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 dark:bg-white sm:mb-5 sm:h-14 sm:w-14"
         >
-          <img
-            src="/iconos/documento.png"
-            alt=""
-            width="36"
-            height="36"
-            class="h-9 w-9 object-contain"
-          />
+          <ng-icon name="heroCircleStack" size="32" class="text-secondary dark:text-blue-400" />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Respaldos de Bases de Datos
+          Respaldos de Base de Datos
         </h2>
         <p class="rb-kicker mt-2">
-          Genera, restaura y elimina respaldos de PostgreSQL y MongoDB en Backblaze.
+          Genera, restaura y elimina respaldos cifrados de PostgreSQL en almacenamiento en la nube.
         </p>
       </a>
     </div>

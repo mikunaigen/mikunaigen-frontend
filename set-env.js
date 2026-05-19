@@ -6,7 +6,7 @@ const isProduction = !!process.env.BACKEND_URL;
 const envConfigFile = `export const environment = {
   production: ${isProduction},
   apiUrl: '${backendUrl}/api',
-  wsUrl: '${backendUrl}/ws-restaiurante' 
+  wsUrl: '${backendUrl}/ws-mikunaigen'
 };
 `;
 
@@ -26,4 +26,4 @@ paths.forEach(p => {
 
 console.log(`MODO: ${isProduction ? 'PRODUCCIÓN' : 'LOCAL'}`);
 console.log(`API: ${backendUrl}/api`);
-console.log(`WS: ${backendUrl}/ws-restaiurante`);
+console.log(`WS: ${backendUrl}/ws-mikunaigen`);
