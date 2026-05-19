@@ -15,7 +15,7 @@
             <app-logout-button variant="on-dark" />
           </div>
         </div>
-        <p class="text-sm text-white/90">Actualiza tu información personal y de contacto.</p>
+        <p class="text-sm text-white/90">Actualiza tus datos personales.</p>
       </div>
 
       <div class="p-4 sm:p-6 lg:p-8">
@@ -24,50 +24,53 @@
         <form *ngIf="!cargando()" (ngSubmit)="guardarCambios()" class="space-y-4">
           <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div>
-              <label class="rb-label !normal-case">Nombres y Apellidos</label>
-              <input [(ngModel)]="form.fullName" name="fullName" class="rb-input rb-focus-secondary" required />
-            </div>
-            <div>
-              <label class="rb-label !normal-case">Teléfono</label>
+              <label class="rb-label !normal-case">Nombres</label>
               <input
-                [value]="form.phone"
-                name="phone"
-                inputmode="numeric"
-                maxlength="9"
+                [value]="form.nombres"
+                name="nombres"
                 class="rb-input rb-focus-secondary"
-                (keydown)="bloquearNoNumerico($event)"
-                (input)="soloNumeros($event, 9)"
+                autocomplete="given-name"
+                (input)="soloLetras($event, 'nombres', 100)"
                 required
               />
             </div>
-          </div>
-
-          <div>
-            <label class="rb-label !normal-case">Dirección</label>
-            <input
-              [(ngModel)]="form.address"
-              name="address"
-              class="rb-input rb-focus-secondary disabled:cursor-not-allowed disabled:opacity-60"
-              [disabled]="!canEditAddress()"
-              required
-            />
-            <p *ngIf="!canEditAddress()" class="mt-1 text-xs text-warning dark:text-amber-300">
-              No puedes editar la dirección mientras tengas pedidos en curso.
-            </p>
+            <div>
+              <label class="rb-label !normal-case">Apellidos</label>
+              <input
+                [value]="form.apellidos"
+                name="apellidos"
+                class="rb-input rb-focus-secondary"
+                autocomplete="family-name"
+                (input)="soloLetras($event, 'apellidos', 100)"
+                required
+              />
+            </div>
           </div>
 
           <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div>
               <label class="rb-label !normal-case">DNI</label>
               <input
-                [value]="form.dni"
+                [value]="form.dni || '—'"
                 class="rb-input cursor-not-allowed opacity-60"
                 readonly
                 aria-readonly="true"
               />
             </div>
             <div>
-              <label class="rb-label !normal-case">Correo Electrónico</label>
+              <label class="rb-label !normal-case">Teléfono</label>
+              <input
+                [value]="form.phone || '—'"
+                class="rb-input cursor-not-allowed opacity-60"
+                readonly
+                aria-readonly="true"
+              />
+              <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
+                Verificado con Telegram.
+              </p>
+            </div>
+            <div>
+              <label class="rb-label !normal-case">Correo electrónico</label>
               <input
                 [value]="form.email"
                 class="rb-input cursor-not-allowed opacity-60"
@@ -75,19 +78,24 @@
                 aria-readonly="true"
               />
             </div>
-            <div *ngIf="roleVisible()">
-              <label class="rb-label !normal-case">Rol</label>
-              <input
-                [value]="form.role"
-                class="rb-input cursor-not-allowed opacity-60"
-                readonly
-                aria-readonly="true"
-              />
-            </div>
+          </div>
+
+          <div>
+            <label class="rb-label !normal-case">Plan actual</label>
+            <input
+              [value]="etiquetaRol()"
+              class="rb-input max-w-md cursor-not-allowed opacity-60"
+              readonly
+              aria-readonly="true"
+            />
           </div>
 
           <div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
-            <button type="submit" [disabled]="guardando()" class="rb-btn-secondary min-h-11 border-0 bg-secondary text-white disabled:opacity-45">
+            <button
+              type="submit"
+              [disabled]="guardando()"
+              class="rb-btn-secondary min-h-11 border-0 bg-secondary text-white disabled:opacity-45"
+            >
               {{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}
             </button>
             <button
@@ -107,10 +115,17 @@
   <div *ngIf="modal() as m" class="rb-modal-backdrop">
     <div class="rb-modal max-w-sm text-center shadow-lg dark:shadow-none">
       <div class="rb-modal-icon !mb-4">
-        <ng-icon [name]="m.tipo === 'ok' ? 'heroCheckCircle' : 'heroExclamationTriangle'" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon
+          [name]="m.tipo === 'ok' ? 'heroCheckCircle' : 'heroExclamationTriangle'"
+          size="48"
+          class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ m.titulo }}</h3>
-      <p class="mb-6 text-sm font-medium" [ngClass]="m.tipo === 'ok' ? 'text-success dark:text-emerald-300' : 'text-warning dark:text-amber-300'">
+      <p
+        class="mb-6 text-sm font-medium"
+        [ngClass]="m.tipo === 'ok' ? 'text-success dark:text-emerald-300' : 'text-warning dark:text-amber-300'"
+      >
         {{ m.mensaje }}
       </p>
       <button

@@ -6,18 +6,22 @@ import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 import { AuthService } from '../../services/auth.service';
-import { bloquearTeclasNoNumericas, errorTelefono9, filtrarSoloDigitos } from '../../utils/form-validators';
-import { environment } from '@env/environment'; 
+import {
+  errorNombreApellidoHistoria,
+  filtrarSoloLetrasYEspacios,
+} from '../../utils/form-validators';
+import { environment } from '@env/environment';
 
 type PerfilResponse = {
-  userId: string;
-  fullName: string;
-  phone: string;
-  address: string;
-  dni: string;
-  email: string;
-  role: string;
-  canEditAddress: boolean;
+  userId?: string;
+  nombres?: string;
+  apellidos?: string;
+  fullName?: string;
+  phone?: string;
+  dni?: string;
+  email?: string;
+  role?: string;
+  message?: string;
 };
 
 @Component({
@@ -35,13 +39,11 @@ export class MiPerfilComponent implements OnInit {
   cargando = signal(true);
   guardando = signal(false);
   enviandoCodigo = signal(false);
-  canEditAddress = signal(true);
-  roleVisible = signal(false);
 
   form = {
-    fullName: '',
+    nombres: '',
+    apellidos: '',
     phone: '',
-    address: '',
     dni: '',
     email: '',
     role: '',
@@ -50,64 +52,76 @@ export class MiPerfilComponent implements OnInit {
   modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
 
   ngOnInit(): void {
+    if (!this.auth.isLoggedIn()) {
+      void this.router.navigate(['/login']);
+      return;
+    }
     this.cargarPerfil();
   }
 
   volver(): void {
     const path = this.auth.getPostLoginPath();
     const queryParams = this.auth.getPostLoginQueryParams();
-    
-    this.router.navigate([path], { queryParams });
+    void this.router.navigate([path], { queryParams });
   }
 
-  soloNumeros(event: Event, max: number): void {
-    this.form.phone = filtrarSoloDigitos(event, max);
+  soloLetras(event: Event, campo: 'nombres' | 'apellidos', max?: number): void {
+    this.form[campo] = filtrarSoloLetrasYEspacios(event, max);
   }
 
-  bloquearNoNumerico(event: KeyboardEvent): void {
-    bloquearTeclasNoNumericas(event);
+  etiquetaRol(): string {
+    const r = (this.form.role || '').toLowerCase();
+    const map: Record<string, string> = {
+      estudiante: 'Estudiante',
+      emprendedor: 'Emprendedor',
+      nutricionista: 'Nutricionista',
+      administrador: 'Administrador',
+      admin: 'Administrador',
+      cliente: 'Estudiante',
+    };
+    return map[r] || this.form.role || '—';
   }
 
   guardarCambios(): void {
-    const fullName = this.form.fullName.trim();
-    const address = this.form.address.trim();
-    const phone = (this.form.phone || '').replace(/\D/g, '');
-    if (!fullName) {
-      this.modal.set({ tipo: 'error', titulo: 'Mi Perfil', mensaje: 'Nombres y apellidos es obligatorio.' });
+    const nombres = this.form.nombres.trim();
+    const apellidos = this.form.apellidos.trim();
+
+    const errNombres = errorNombreApellidoHistoria(nombres, 'nombres');
+    if (errNombres) {
+      this.modal.set({ tipo: 'error', titulo: 'Validación', mensaje: errNombres });
       return;
     }
-    if (!address) {
-      this.modal.set({ tipo: 'error', titulo: 'Mi Perfil', mensaje: 'La dirección es obligatoria.' });
+
+    const errApellidos = errorNombreApellidoHistoria(apellidos, 'apellidos');
+    if (errApellidos) {
+      this.modal.set({ tipo: 'error', titulo: 'Validación', mensaje: errApellidos });
       return;
     }
-    const phoneErr = errorTelefono9(phone);
-    if (phoneErr) {
-      this.modal.set({ tipo: 'error', titulo: 'Mi Perfil', mensaje: phoneErr });
-      return;
-    }
+
     this.guardando.set(true);
     this.http
       .put<PerfilResponse>(`${this.apiPerfil}/me`, {
-        fullName,
-        phone,
-        address,
+        nombres,
+        apellidos,
       })
       .subscribe({
         next: (resp) => {
           this.guardando.set(false);
           this.aplicarRespuesta(resp);
           this.auth.patchSession({
-            fullName: resp.fullName,
-            phone: resp.phone,
-            address: resp.address,
+            fullName: `${nombres} ${apellidos}`.trim(),
           });
-          this.modal.set({ tipo: 'ok', titulo: 'Mi Perfil', mensaje: 'Tus datos han sido actualizados correctamente' });
+          this.modal.set({
+            tipo: 'ok',
+            titulo: 'Perfil actualizado',
+            mensaje: resp.message || 'Datos Actualizados Correctamente',
+          });
         },
         error: (err) => {
           this.guardando.set(false);
           this.modal.set({
             tipo: 'error',
-            titulo: 'Mi Perfil',
+            titulo: 'Error',
             mensaje: err?.error?.message || 'No se pudo actualizar tu perfil.',
           });
         },
@@ -147,9 +161,13 @@ export class MiPerfilComponent implements OnInit {
       },
       error: (err) => {
         this.cargando.set(false);
+        if (err?.status === 401) {
+          void this.router.navigate(['/login']);
+          return;
+        }
         this.modal.set({
           tipo: 'error',
-          titulo: 'Mi Perfil',
+          titulo: 'Error',
           mensaje: err?.error?.message || 'No se pudo cargar tu información.',
         });
       },
@@ -157,13 +175,16 @@ export class MiPerfilComponent implements OnInit {
   }
 
   private aplicarRespuesta(resp: PerfilResponse): void {
-    this.form.fullName = String(resp?.fullName || '');
+    this.form.nombres = String(resp?.nombres ?? '').trim();
+    this.form.apellidos = String(resp?.apellidos ?? '').trim();
+    if (!this.form.nombres && resp?.fullName) {
+      const partes = String(resp.fullName).trim().split(/\s+/);
+      this.form.nombres = partes[0] ?? '';
+      this.form.apellidos = partes.slice(1).join(' ');
+    }
     this.form.phone = String(resp?.phone || '');
-    this.form.address = String(resp?.address || '');
     this.form.dni = String(resp?.dni || '');
     this.form.email = String(resp?.email || '');
     this.form.role = String(resp?.role || '');
-    this.canEditAddress.set(!!resp?.canEditAddress);
-    this.roleVisible.set(this.form.role !== 'CLIENTE');
   }
 }

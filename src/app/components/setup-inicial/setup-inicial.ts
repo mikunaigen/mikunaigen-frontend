@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConfigService, TransferenciaBancariaDto } from '../../services/config.service';
 import { AuthService } from '../../services/auth.service';
 import {
@@ -35,6 +35,7 @@ export class SetupInicialComponent implements OnInit {
   emailInicial = '';
   configuracionYaCompleta = false;
   smtpPasswordConfigured = false;
+  modoEdicion = false;
 
   modal = {
     visible: false,
@@ -64,10 +65,12 @@ export class SetupInicialComponent implements OnInit {
   constructor(
     private configService: ConfigService,
     private router: Router,
+    private route: ActivatedRoute,
     private auth: AuthService,
   ) {}
 
   ngOnInit(): void {
+    this.modoEdicion = this.route.snapshot.queryParamMap.get('editar') === '1';
     this.sesionActiva = this.auth.isLoggedIn();
     this.configService.obtenerConfiguracion().subscribe({
       next: (d) => {

@@ -176,7 +176,7 @@ export class LoginComponent implements OnInit {
             this.redirectAlCerrarModal = true;
             this.abrirModal(
               'Acceso restringido',
-              `${mensaje} Serás redirigido a la vista de retención.`,
+              `${mensaje} Serás redirigido a la pestaña de retención.`,
               true,
             );
             return;
@@ -184,8 +184,8 @@ export class LoginComponent implements OnInit {
 
           if (status === 401 && intentos > 0) {
             this.abrirModal(
-              'Intento fallido',
-              `Contraseña incorrecta. Intento ${intentos}/3. Te quedan ${restantes} intento(s).`,
+              'Error',
+              `Contraseña incorrecta. Intento ${intentos}/3.`,
               true,
             );
             return;
@@ -254,12 +254,8 @@ export class LoginComponent implements OnInit {
   }
 
   private navegarTrasLogin(role: string) {
-    if (this.auth.esAdministrador(role)) {
-      void this.router.navigate(['/dashboard']);
-      return;
-    }
-    if (this.auth.esUsuarioFormulacion(role)) {
-      void this.router.navigate(['/menu']);
-    }
+    const path = this.auth.getPostLoginPath();
+    const queryParams = this.auth.getPostLoginQueryParams();
+    void this.router.navigate([path], { queryParams });
   }
 }

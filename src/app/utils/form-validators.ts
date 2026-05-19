@@ -65,6 +65,23 @@ export function errorEmailSoloGmail(email: string): string | null {
   return null;
 }
 
+const REGEX_SOLO_LETRAS_ES = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/;
+
+export function errorNombreApellidoHistoria(valor: string, etiqueta: 'nombres' | 'apellidos'): string | null {
+  const t = valor.trim();
+  const campo = etiqueta === 'nombres' ? 'nombres' : 'apellidos';
+  if (!t) {
+    return `Los ${campo} no pueden estar en blanco.`;
+  }
+  if (/\d/.test(t)) {
+    return `Los ${campo} no pueden contener números.`;
+  }
+  if (!REGEX_SOLO_LETRAS_ES.test(t)) {
+    return `Los ${campo} solo pueden contener letras del abecedario español y tildes.`;
+  }
+  return null;
+}
+
 export function errorTelefono9(digits: string): string | null {
   if (!digits?.length) return 'El teléfono no puede estar en blanco.';
   if (digits.length !== 9) return 'El teléfono debe tener exactamente 9 dígitos numéricos.';
