@@ -35,12 +35,13 @@
           Dashboard y KPIs
         </h2>
         <p class="rb-kicker mt-2">
-          Visualiza métricas, gráficas de ventas y proyecciones de inteligencia artificial.
+          Visualiza KPIs del sistema, precisión del modelo y satisfacción de usuarios.
         </p>
       </a>
 
       <a
-        routerLink="/crear-personal"
+        [routerLink]="['/setup']"
+        [queryParams]="{ editar: '1', seccion: 'plataforma' }"
         class="rb-card rb-card-pad group transition hover:border-secondary/30 hover:shadow-md dark:hover:border-blue-400/40 dark:hover:shadow-none"
       >
         <div
@@ -55,10 +56,10 @@
           />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Crear Cuenta para Personal
+          Configuración de la Plataforma
         </h2>
         <p class="rb-kicker mt-2">
-          Da de alta a nuevos cajeros, cocineros y repartidores en el sistema.
+          Nombre, logo, teléfono de contacto y medios de pago para cambios de plan.
         </p>
       </a>
 
@@ -78,10 +79,10 @@
           />
         </div>
         <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Ingredientes y Productos
+          Dataset de Alimentos MINSA
         </h2>
         <p class="rb-kicker mt-2">
-          Añade insumos al inventario y define recetas para los platos del catálogo.
+          Administra el dataset de alimentos, valores nutricionales y disponibilidad estacional.
         </p>
       </a>
 

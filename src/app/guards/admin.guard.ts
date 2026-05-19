@@ -5,6 +5,6 @@ import { AuthService } from '../services/auth.service';
 export const adminGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  if (auth.getSession()?.role === 'ADMIN') return true;
+  if (auth.esAdministrador()) return true;
   return router.createUrlTree([auth.getPostLoginPath()]);
 };

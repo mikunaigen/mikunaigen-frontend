@@ -1,4 +1,4 @@
-<div class="rb-page">
+﻿<div class="rb-page">
   <div class="rb-container">
     <section class="rb-card overflow-hidden">
       <div
@@ -12,28 +12,34 @@
               Mikunaigen
             </h1>
             <p
-              class="mt-3 max-w-lg text-sm leading-relaxed text-white/90 sm:text-base lg:mt-4 lg:max-w-xl lg:text-base"
+              class="mt-3 max-w-lg text-sm leading-relaxed text-white/90 sm:text-base lg:mt-4 lg:max-w-xl"
             >
-              Plataforma web para gestionar un Restaurante Virtual con login por roles, menú, pagos,
-              cocina y delivery.
+              Aplicación de formulación de recetas de superalimentos con optimización nutricional,
+              validación normativa y apoyo de inteligencia artificial.
             </p>
             <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4 lg:mt-8">
               <a routerLink="/login" class="rb-btn-primary !bg-white !px-5 !text-secondary"
                 >Iniciar sesión</a
               >
               <a
+                routerLink="/login"
+                [queryParams]="{ admin: '1' }"
+                class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
+                >Acceso administrador</a
+              >
+              <a
                 routerLink="/registro"
                 class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
-                >Crear cuenta</a
+                >Registrarme</a
               >
             </div>
           </div>
-          <div class="hidden shrink-0 items-center justify-center md:flex">
-            <div class="aspect-square w-36 rounded-2xl bg-gray-100 dark:bg-white lg:w-44 xl:w-52">
+          <div class="flex shrink-0 items-center justify-center md:justify-end">
+            <div class="aspect-square w-28 rounded-2xl bg-white p-2 sm:w-36 lg:w-44 xl:w-52">
               <img
-                src="/iconos/primer-logo-base.png"
-                alt=""
-                class="h-full w-full object-contain p-2 sm:p-3"
+                src="/mikunaigenlogo-borde.png"
+                alt="Mikunaigen"
+                class="h-full w-full object-contain"
               />
             </div>
           </div>
@@ -45,135 +51,40 @@
       class="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
     >
       <article class="rb-card p-5">
-        <div class="mb-3 flex items-center gap-3">
-          <span class="rb-logo-chip !p-1">
-            <img
-              src="/iconos/candado.png"
-              alt=""
-              width="28"
-              height="28"
-              class="h-7 w-7 object-contain"
-            />
-          </span>
-          <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-            Accesos por rol
-          </h2>
-        </div>
-        <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
-          Login para cliente, administrador, cajero, cocinero y repartidor con validaciones de
-          seguridad y recuperación de clave.
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+          Roles de usuario
+        </h2>
+        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+          Estudiantes, emprendedores y nutricionistas acceden al módulo de formulación; el
+          administrador gestiona el sistema.
         </p>
       </article>
       <article class="rb-card p-5">
-        <div class="mb-3 flex items-center gap-3">
-          <span class="rb-logo-chip !p-1">
-            <img
-              src="/iconos/correo.png"
-              alt=""
-              width="28"
-              height="28"
-              class="h-7 w-7 object-contain"
-            />
-          </span>
-          <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-            Flujos con correo
-          </h2>
-        </div>
-        <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
-          Confirmación por código en registro, activación de personal y recuperación de contraseña
-          usando SMTP configurado.
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+          Seguridad y acceso
+        </h2>
+        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+          Login con validación de correo, bloqueo por intentos fallidos y recuperación de contraseña
+          por código.
         </p>
       </article>
       <article class="rb-card p-5">
-        <div class="mb-3 flex items-center gap-3">
-          <span class="rb-logo-chip !p-1">
-            <img
-              src="/iconos/carrito-compras.png"
-              alt=""
-              width="28"
-              height="28"
-              class="h-7 w-7 object-contain"
-            />
-          </span>
-          <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-            Venta y operación
-          </h2>
-        </div>
-        <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
-          Menú para clientes, validación de pagos en caja, avance de órdenes en cocina y seguimiento
-          para entrega.
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+          Formulación e IA
+        </h2>
+        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+          Parametrización nutricional, inferencias de recetas, calificación de resultados y KPIs del
+          modelo.
         </p>
       </article>
       <article class="rb-card p-5">
-        <div class="mb-3 flex items-center gap-3">
-          <span class="rb-logo-chip !p-1">
-            <img
-              src="/iconos/documento.png"
-              alt=""
-              width="28"
-              height="28"
-              class="h-7 w-7 object-contain"
-            />
-          </span>
-          <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-            Gestión del negocio
-          </h2>
-        </div>
-        <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
-          Setup inicial con nombre, logo, términos y medios de pago; además de administración de
-          ingredientes y productos.
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+          Administración
+        </h2>
+        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+          Dataset MINSA, configuración de plataforma, SMTP, respaldos y modo mantenimiento.
         </p>
       </article>
-    </section>
-
-    <section class="mt-6 rb-card p-5 sm:mt-8 sm:p-8 lg:p-10">
-      <h3 class="rb-heading-accent">Cobertura de Historias de Usuario</h3>
-      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6 xl:grid-cols-4">
-        <div
-          class="rounded-xl border border-gray-200 p-4 dark:border-dark-border dark:bg-slate-900/50"
-        >
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
-            Login y cuentas
-          </h4>
-          <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-            Inicio de sesión robusto, registro con validaciones completas, términos y confirmación
-            por código para cada tipo de usuario.
-          </p>
-        </div>
-        <div
-          class="rounded-xl border border-gray-200 p-4 dark:border-dark-border dark:bg-slate-900/50"
-        >
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
-            Setup y administración
-          </h4>
-          <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-            Configuración SMTP, información del negocio, medios de pago, y creación de
-            ingredientes/productos para el catálogo.
-          </p>
-        </div>
-        <div
-          class="rounded-xl border border-gray-200 p-4 dark:border-dark-border dark:bg-slate-900/50"
-        >
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
-            Experiencia cliente
-          </h4>
-          <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-            Navegación de menú, recomendaciones por modelo de IA, carrito, checkout, trazabilidad,
-            calificación de servicio y edición de datos.
-          </p>
-        </div>
-        <div
-          class="rounded-xl border border-gray-200 p-4 dark:border-dark-border dark:bg-slate-900/50"
-        >
-          <h4 class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
-            Operación interna
-          </h4>
-          <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-            Validación de pagos, gestión de cocina y delivery, dashboard y proyecciones con IA para
-            decisiones de abastecimiento.
-          </p>
-        </div>
-      </div>
     </section>
   </div>
 </div>

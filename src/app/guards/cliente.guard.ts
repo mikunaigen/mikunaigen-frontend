@@ -6,7 +6,7 @@ export const clienteGuard: CanActivateFn = (_route, state) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   if (!auth.isLoggedIn()) {
-    const returnUrl = state.url || '/checkout';
+    const returnUrl = state.url || '/menu';
     return router.createUrlTree(['/login'], { queryParams: { returnUrl } });
   }
   const s = auth.getSession();
@@ -14,6 +14,9 @@ export const clienteGuard: CanActivateFn = (_route, state) => {
     return router.createUrlTree(['/confirmar-cuenta'], {
       queryParams: auth.getPostLoginQueryParams(),
     });
+  }
+  if (!auth.esUsuarioFormulacion(s?.role) && !auth.esAdministrador(s?.role)) {
+    return router.createUrlTree([auth.getPostLoginPath()]);
   }
   return true;
 };

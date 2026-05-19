@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   mostrarPassword = false;
   cargando = false;
 
-  logoSrc = '/iconos/candado.png';
+  logoSrc = '/mikunaigenlogo-borde.png';
   logoEsDelNegocio = false;
 
   tituloMarca = 'Mikunaigen';
@@ -51,7 +51,10 @@ export class LoginComponent implements OnInit {
     private theme: ThemeService,
   ) {}
 
+  esLoginAdmin = false;
+
   ngOnInit() {
+    this.esLoginAdmin = this.route.snapshot.queryParamMap.get('admin') === '1';
     this.configService
       .obtenerConfiguracion()
       .pipe(catchError(() => of(null)))
@@ -85,6 +88,7 @@ export class LoginComponent implements OnInit {
       .post(environment.apiUrl + '/auth/login', {
         email: this.email,
         password: this.password,
+        soloAdministrador: this.esLoginAdmin ? 'true' : 'false',
       })
       .subscribe({
         next: (user: any) => {
@@ -253,24 +257,12 @@ export class LoginComponent implements OnInit {
   }
 
   private navegarTrasLogin(role: string) {
-    switch (role) {
-      case 'ADMIN':
-        void this.router.navigate(['/gestion-administrador']);
-        break;
-      case 'CLIENTE':
-        void this.router.navigate(['/menu']);
-        break;
-      case 'CAJERO':
-        void this.router.navigate(['/caja']);
-        break;
-      case 'COCINERO':
-        void this.router.navigate(['/cocina']);
-        break;
-      case 'REPARTIDOR':
-        void this.router.navigate(['/entregas']);
-        break;
-      default:
-        break;
+    if (this.auth.esAdministrador(role)) {
+      void this.router.navigate(['/dashboard']);
+      return;
+    }
+    if (this.auth.esUsuarioFormulacion(role)) {
+      void this.router.navigate(['/menu']);
     }
   }
 }

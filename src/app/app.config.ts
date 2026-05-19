@@ -1,4 +1,9 @@
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, provideZoneChangeDetection } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  ErrorHandler,
+  provideZoneChangeDetection,
+} from '@angular/core';
 
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
@@ -9,6 +14,24 @@ import { backendAwakeInterceptor } from './interceptors/backend-awake.intercepto
 import { frontendErrorInterceptor } from './interceptors/frontend-error.interceptor';
 import { maintenanceInterceptor } from './interceptors/maintenance.interceptor';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
+import { provideIcons } from '@ng-icons/core';
+import {
+  heroCheckCircle,
+  heroXCircle,
+  heroExclamationTriangle,
+  heroEye,
+  heroEyeSlash,
+  heroCog6Tooth,
+  heroEnvelope,
+  heroUsers,
+  heroChartPie,
+  heroShoppingCart,
+  heroDocumentText,
+  heroMagnifyingGlass,
+  heroTrash,
+  heroPencilSquare,
+  heroPlus,
+} from '@ng-icons/heroicons/outline';
 
 function initThemeFactory(theme: ThemeService) {
   return () => {
@@ -20,7 +43,14 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([maintenanceInterceptor, backendAwakeInterceptor, frontendErrorInterceptor, authInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        maintenanceInterceptor,
+        backendAwakeInterceptor,
+        frontendErrorInterceptor,
+        authInterceptor,
+      ]),
+    ),
     { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
     {
       provide: APP_INITIALIZER,
@@ -28,5 +58,22 @@ export const appConfig: ApplicationConfig = {
       deps: [ThemeService],
       multi: true,
     },
+    provideIcons({
+      heroCheckCircle,
+      heroXCircle,
+      heroExclamationTriangle,
+      heroEye,
+      heroEyeSlash,
+      heroCog6Tooth,
+      heroEnvelope,
+      heroUsers,
+      heroChartPie,
+      heroShoppingCart,
+      heroDocumentText,
+      heroMagnifyingGlass,
+      heroTrash,
+      heroPencilSquare,
+      heroPlus,
+    }),
   ],
 };

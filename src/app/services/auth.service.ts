@@ -13,6 +13,9 @@ export type AuthSession = {
   [key: string]: unknown;
 };
 
+const ROLES_USUARIO = ['estudiante', 'emprendedor', 'nutricionista', 'CLIENTE'];
+const ROL_ADMIN = 'administrador';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   setSession(user: AuthSession): void {
@@ -59,24 +62,23 @@ export class AuthService {
     return s.token;
   }
 
+  esAdministrador(role?: string): boolean {
+    const r = role ?? this.getSession()?.role;
+    return r === ROL_ADMIN || r === 'ADMIN';
+  }
+
+  esUsuarioFormulacion(role?: string): boolean {
+    const r = role ?? this.getSession()?.role;
+    return !!r && (ROLES_USUARIO.includes(r) || r === 'CLIENTE');
+  }
+
   getPostLoginPath(): string {
     const s = this.getSession();
     if (!s) return '/login';
     if (s.firstLogin === true) return '/confirmar-cuenta';
-    switch (s.role) {
-      case 'ADMIN':
-        return '/gestion-administrador';
-      case 'CLIENTE':
-        return '/menu';
-      case 'CAJERO':
-        return '/caja';
-      case 'COCINERO':
-        return '/cocina';
-      case 'REPARTIDOR':
-        return '/entregas';
-      default:
-        return '/login';
-    }
+    if (this.esAdministrador(s.role)) return '/gestion-administrador';
+    if (this.esUsuarioFormulacion(s.role)) return '/menu';
+    return '/login';
   }
 
   getPostLoginQueryParams(): Record<string, string> | undefined {
@@ -88,25 +90,12 @@ export class AuthService {
   }
 
   getWorkPanelPath(): string | null {
-    const role = this.getSession()?.role;
-    switch (role) {
-      case 'ADMIN':
-        return '/gestion-administrador';
-      case 'CAJERO':
-        return '/caja';
-      case 'COCINERO':
-        return '/cocina';
-      case 'REPARTIDOR':
-        return '/entregas';
-      case 'CLIENTE':
-        return null;
-      default:
-        return null;
-    }
+    if (this.esAdministrador()) return '/gestion-administrador';
+    return null;
   }
 
   puedeComprar(): boolean {
-    return this.isLoggedIn();
+    return this.isLoggedIn() && this.esUsuarioFormulacion();
   }
 
   private isTokenExpired(token: string): boolean {

@@ -4,6 +4,7 @@ export const DOMINIOS_EMAIL_PERMITIDOS = [
   'hotmail.com',
   'yahoo.com',
   'icloud.com',
+  'edu.pe',
 ] as const;
 
 export function filtrarSoloDigitos(event: Event, maxLen: number): string {
@@ -49,8 +50,8 @@ export function errorEmailHistoriaUsuario(email: string): string | null {
   if (!e.includes('@')) return 'El correo debe incluir el símbolo @.';
   const dom = e.split('@')[1]?.toLowerCase().trim();
   const permitidos: string[] = [...DOMINIOS_EMAIL_PERMITIDOS];
-  if (!dom || !permitidos.includes(dom)) {
-    return 'Solo se permiten dominios: gmail.com, outlook.com, hotmail.com, yahoo.com o icloud.com.';
+  if (!dom || (!permitidos.includes(dom) && !dom.endsWith('.edu.pe'))) {
+    return 'Solo se permiten dominios: gmail.com, outlook.com, hotmail.com, yahoo.com, icloud.com o edu.pe.';
   }
   return null;
 }
