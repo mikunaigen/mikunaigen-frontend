@@ -43,7 +43,7 @@ import { MaintenanceService } from './services/maintenance.service';
           </span>
           <span class="inline-flex items-center gap-2 text-xs font-semibold text-gray-600 sm:text-sm dark:text-slate-400">
             <ng-icon name="heroSparkles" size="18" class="shrink-0 opacity-90 text-secondary dark:text-blue-400" />
-            Estamos conectando automáticamente.
+            Por favor espere.
           </span>
         </p>
       </div>

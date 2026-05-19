@@ -88,20 +88,49 @@ export function errorCodigo6(digits: string): string | null {
 export const PASSWORD_HU_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@!¡¿?#$%/&])[A-Za-z\d@!¡¿?#$%/&]{8,}$/;
 
+export type CriteriosPassword = {
+  longitud: boolean;
+  mayuscula: boolean;
+  minuscula: boolean;
+  numero: boolean;
+  especial: boolean;
+};
+
+export function evaluarCriteriosPassword(password: string): CriteriosPassword {
+  return {
+    longitud: password.length >= 8,
+    mayuscula: /[A-Z]/.test(password),
+    minuscula: /[a-z]/.test(password),
+    numero: /\d/.test(password),
+    especial: /[@!¡¿?#$%/&]/.test(password),
+  };
+}
+
+export function cumpleCriteriosPassword(criterios: CriteriosPassword): boolean {
+  return (
+    criterios.longitud &&
+    criterios.mayuscula &&
+    criterios.minuscula &&
+    criterios.numero &&
+    criterios.especial
+  );
+}
+
 export function errorPasswordHistoria(
   password: string,
   confirmacion: string,
   nombreMinusculas: string,
   apellidoMinusculas: string,
 ): string | null {
-  if (!PASSWORD_HU_REGEX.test(password)) {
-    return 'La clave requiere: 8+ caracteres, mayúscula, minúscula, número y símbolo (@ ! ¡ ¿ ? # $ % & /).';
+  const criterios = evaluarCriteriosPassword(password);
+  if (!cumpleCriteriosPassword(criterios)) {
+    return 'La contraseña requiere: 8+ caracteres, mayúscula, minúscula, número y símbolo (@ ! ¡ ¿ ? # $ % & /).';
   }
   if (nombreMinusculas && password.toLowerCase().includes(nombreMinusculas)) {
-    return 'La clave no puede contener tu nombre.';
+    return 'La contraseña no puede contener tu nombre.';
   }
   if (apellidoMinusculas && password.toLowerCase().includes(apellidoMinusculas)) {
-    return 'La clave no puede contener tu apellido.';
+    return 'La contraseña no puede contener tu apellido.';
   }
   if (password !== confirmacion) return 'Las contraseñas no coinciden.';
   return null;
@@ -121,5 +150,19 @@ export function extraerNombreApellidoDeFullName(fullName: string): {
 export function errorPasswordSmtpApp(p: string): string | null {
   if (!p?.trim()) return 'La contraseña de aplicación no puede estar vacía.';
   if (p.length < 16) return 'La contraseña de aplicación debe tener al menos 16 caracteres.';
+  return null;
+}
+
+export const TEXTO_DESCARGO_RESPONSABILIDAD =
+  'Las recetas generadas son de naturaleza teórico-simulada y no reemplazan la validación en laboratorio ni constituyen asesoramiento médico ni nutricional certificado. Favor de verificar la información. Los marcos de referencia incluyen el Codex Alimentarius, la Ley N° 30021 y el Centro Nacional de Alimentación, Nutrición y Vida Saludable (CENAN).';
+
+export const TERMINOS_CONDICIONES_MAX = 5000;
+
+export function errorTerminosCondiciones(value: string | null | undefined): string | null {
+  const t = value?.trim() ?? '';
+  if (!t) return 'Los términos y condiciones son obligatorios.';
+  if (t.length > TERMINOS_CONDICIONES_MAX) {
+    return `Los términos y condiciones no pueden superar los ${TERMINOS_CONDICIONES_MAX} caracteres.`;
+  }
   return null;
 }

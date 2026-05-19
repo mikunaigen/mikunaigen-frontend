@@ -119,10 +119,11 @@
       </div>
 
       <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium uppercase text-neutral-muted">
-        <span [class.text-success]="usuario.password.length >= 8">● 8+ Caracteres</span>
-        <span [class.text-success]="/[A-Z]/.test(usuario.password)">● Mayúscula</span>
-        <span [class.text-success]="/[a-z]/.test(usuario.password)">● Minúscula</span>
-        <span [class.text-success]="/[@!¡¿?#$%/&]/.test(usuario.password)">● Especial</span>
+        <span [class.text-success]="pwdCriterios.longitud">● 8+ Caracteres</span>
+        <span [class.text-success]="pwdCriterios.mayuscula">● Mayúscula</span>
+        <span [class.text-success]="pwdCriterios.minuscula">● Minúscula</span>
+        <span [class.text-success]="pwdCriterios.numero">● Número</span>
+        <span [class.text-success]="pwdCriterios.especial">● Especial (@!¡¿?#$%/&)</span>
       </div>
 
       <div class="flex items-center space-x-2 border-t border-gray-100 py-3">

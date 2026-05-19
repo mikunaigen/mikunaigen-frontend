@@ -10,8 +10,7 @@
     <div class="w-full bg-secondary px-4 py-8 text-center text-white sm:px-8 sm:py-10 sm:text-left xl:w-1/3">
       <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">Bienvenido</h2>
       <p class="mt-3 text-sm leading-relaxed text-white/90 lg:text-base">
-        Estás configurando el acceso del <strong>Administrador Principal</strong>. Esta cuenta
-        tendrá control total sobre el sistema.
+        Estás configurando el acceso del <strong>Administrador Principal</strong> para tener control total sobre la plataforma.
       </p>
     </div>
     <ng-container *ngTemplateOutlet="formularioTemplate"></ng-container>
@@ -32,7 +31,7 @@
         />
       </div>
       <h2 class="text-xl font-semibold tracking-tight sm:text-2xl">{{ tituloMarca }}</h2>
-      <p class="mt-1 text-sm text-white/90 lg:text-base">Únete y disfruta del mejor sabor</p>
+      <p class="mt-1 text-sm text-white/90 lg:text-base">Únete para formular superalimentos</p>
     </div>
     <ng-container *ngTemplateOutlet="formularioTemplate"></ng-container>
   </div>
@@ -40,7 +39,7 @@
 
 <ng-template #formularioTemplate>
   <div class="w-full min-h-0 p-4 sm:p-6 md:p-9" [ngClass]="{ 'xl:w-2/3 xl:min-h-0 xl:overflow-y-auto': isAdminMode }">
-    <form (ngSubmit)="enviarCodigo()" *ngIf="paso === 1" class="space-y-4">
+    <form (ngSubmit)="enviarRegistro()" *ngIf="paso === 1" class="space-y-4">
       <h3 class="rb-heading-accent border-b border-gray-100 pb-3 dark:border-dark-border" *ngIf="isAdminMode">
         Registro de Administrador
       </h3>
@@ -92,7 +91,7 @@
             />
           </div>
           <div>
-            <label class="rb-label !normal-case !text-[10px]">Teléfono</label>
+            <label class="rb-label !normal-case !text-[10px]">Teléfono de Telegram</label>
             <input
               type="text"
               inputmode="numeric"
@@ -118,22 +117,6 @@
             [ngClass]="isAdminMode ? 'rb-focus-secondary' : 'rb-focus-primary'"
           />
         </div>
-        <div
-          [ngClass]="{ 'md:col-span-2': isAdminMode }"
-        >
-          <label class="rb-label !normal-case">Dirección</label>
-          <input
-            type="text"
-            [(ngModel)]="usuario.address"
-            name="dir"
-            class="rb-input"
-            [ngClass]="{
-              'rb-focus-secondary': isAdminMode,
-              'rb-focus-primary': !isAdminMode,
-            }"
-          />
-        </div>
-
         <div class="md:col-span-1">
           <label class="rb-label !normal-case">Contraseña</label>
           <div class="relative">
@@ -177,36 +160,56 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-1 px-0.5 py-1 text-xs text-neutral-muted">
-        <span [class.text-success]="usuario.password.length >= 8">● 8+ Caracteres</span>
-        <span [class.text-success]="/[A-Z]/.test(usuario.password)">● Mayúscula</span>
-        <span [class.text-success]="/[a-z]/.test(usuario.password)">● Minúscula</span>
-        <span [class.text-success]="/[@!¡¿?#$%/&]/.test(usuario.password)"
+      <div class="grid grid-cols-2 gap-1 px-0.5 py-1 text-xs text-neutral-muted sm:grid-cols-3">
+        <span [class.text-success]="pwdCriterios.longitud">● 8+ Caracteres</span>
+        <span [class.text-success]="pwdCriterios.mayuscula">● Mayúscula</span>
+        <span [class.text-success]="pwdCriterios.minuscula">● Minúscula</span>
+        <span [class.text-success]="pwdCriterios.numero">● Número</span>
+        <span [class.text-success]="pwdCriterios.especial" class="col-span-2 sm:col-span-1"
           >● Especial (@!¡¿?#$%/&)</span
         >
       </div>
 
-      <div class="flex items-center space-x-2 py-2">
-        <input
-          type="checkbox"
-          [checked]="aceptoTerminos"
-          (click)="abrirTerminos($event)"
-          class="h-4 w-4 cursor-pointer border-gray-300"
-          [ngClass]="isAdminMode ? 'accent-secondary' : 'accent-primary'"
-        />
-        <label class="cursor-pointer text-xs text-neutral-strong" (click)="abrirTerminos($event)">
-          Acepto los
-          <span
-            class="font-semibold underline"
-            [ngClass]="isAdminMode ? 'text-secondary' : 'text-primary'"
-            >términos y condiciones de uso</span
-          >.
-        </label>
+      <div class="space-y-2 py-2">
+        <div class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            [checked]="aceptoTerminos"
+            (click)="abrirTerminos($event)"
+            class="h-4 w-4 cursor-pointer border-gray-300"
+            [ngClass]="isAdminMode ? 'accent-secondary' : 'accent-primary'"
+          />
+          <label class="cursor-pointer text-xs text-neutral-strong" (click)="abrirTerminos($event)">
+            Acepto los
+            <span
+              class="font-semibold underline"
+              [ngClass]="isAdminMode ? 'text-secondary' : 'text-primary'"
+              >términos y condiciones de uso</span
+            >.
+          </label>
+        </div>
+        <div class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            [checked]="aceptoDescargo"
+            (click)="abrirDescargo($event)"
+            class="h-4 w-4 cursor-pointer border-gray-300"
+            [ngClass]="isAdminMode ? 'accent-secondary' : 'accent-primary'"
+          />
+          <label class="cursor-pointer text-xs text-neutral-strong" (click)="abrirDescargo($event)">
+            Acepto el
+            <span
+              class="font-semibold underline"
+              [ngClass]="isAdminMode ? 'text-secondary' : 'text-primary'"
+              >descargo de responsabilidad</span
+            >.
+          </label>
+        </div>
       </div>
 
       <button
         type="submit"
-        [disabled]="!aceptoTerminos || cargando"
+        [disabled]="!aceptoTerminos || !aceptoDescargo || cargando"
         class="disabled:!bg-neutral-muted disabled:cursor-not-allowed"
         [ngClass]="isAdminMode ? 'rb-btn-secondary' : 'rb-btn-primary'"
       >
@@ -216,9 +219,9 @@
         ></span>
         {{
           cargando
-            ? 'Validando...'
+            ? 'Registrando...'
             : isAdminMode
-              ? 'Crear Cuenta y Enviar Código'
+              ? 'Crear Administrador'
               : 'Registrarme ahora'
         }}
       </button>
@@ -234,43 +237,63 @@
         class="mx-auto flex h-16 w-16 items-center justify-center rounded-full"
         [ngClass]="isAdminMode ? 'bg-secondary/10' : 'bg-primary/10'"
       >
-        <ng-icon name="heroEnvelope" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon name="heroPaperAirplane" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Verifica tu correo</h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Activa tu cuenta con Telegram</h3>
       <p class="text-sm text-neutral-strong dark:text-slate-300">
-        Ingresa el código enviado a<br /><span class="font-semibold text-gray-900 dark:text-dark-text-strong">{{
-          usuario.email
-        }}</span>
+        Usa este código de activación en el bot oficial. El prefijo no se puede modificar.
       </p>
 
-      <label class="rb-label !mb-1 !text-center !normal-case">Código de verificación</label>
-      <input
-        type="text"
-        inputmode="numeric"
-        autocomplete="one-time-code"
-        (keydown)="bloquearNoNumerico($event)"
-        (input)="codigoVerificacion = soloNumeros($event, 6)"
-        [value]="codigoVerificacion"
-        maxlength="6"
-        class="w-full border-0 border-b-2 bg-transparent py-3 text-center font-mono text-3xl tracking-[0.35em] text-gray-900 outline-none dark:text-dark-text-strong sm:text-4xl"
-        [ngClass]="isAdminMode ? 'border-secondary' : 'border-primary'"
-      />
+      <label class="rb-label !mb-1 !text-center !normal-case">Código de activación</label>
+      <div
+        class="flex items-center justify-center gap-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 font-mono text-2xl tracking-wider text-gray-900 dark:border-dark-border dark:bg-slate-900/50 dark:text-dark-text-strong sm:text-3xl"
+      >
+        <span
+          class="select-none bg-gray-100 px-3 py-3 text-secondary dark:bg-slate-800 dark:text-sky-300 sm:px-4"
+          >{{ prefijoCodigo }}</span
+        >
+        <span class="px-3 py-3 font-semibold sm:px-4">{{ digitosCodigo }}</span>
+      </div>
+
+      <p *ngIf="!codigoExpirado" class="text-xs font-medium text-secondary dark:text-sky-300">
+        Tiempo restante: {{ tiempoRestanteTexto }}
+      </p>
 
       <button
-        (click)="registrarFinal()"
-        [disabled]="cargando"
+        *ngIf="!codigoExpirado"
         type="button"
-        class="rb-btn-success disabled:!bg-neutral-muted"
+        (click)="abrirTelegram()"
+        [disabled]="!telegramBotUsername || !esperandoTelegram"
+        class="rb-btn-success inline-flex w-full items-center justify-center gap-2 disabled:!bg-neutral-muted"
+      >
+        <ng-icon name="heroPaperAirplane" size="20" />
+        Verificar mi cuenta con Telegram
+      </button>
+
+      <button
+        *ngIf="codigoExpirado"
+        type="button"
+        (click)="solicitarNuevoCodigo()"
+        [disabled]="cargando"
+        class="rb-btn-success inline-flex w-full items-center justify-center gap-2 disabled:!bg-neutral-muted"
       >
         <span
           *ngIf="cargando"
           class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
         ></span>
-        {{ cargando ? 'Verificando...' : 'Finalizar Registro' }}
+        Solicitar un nuevo código
       </button>
+
+      <p *ngIf="esperandoTelegram && !codigoExpirado" class="text-xs text-neutral-muted dark:text-slate-400">
+        Esperando confirmación en Telegram... Asegúrate de usar el mismo número con el que te registraste.
+      </p>
+
+      <p *ngIf="codigoExpirado" class="text-xs text-amber-700 dark:text-amber-300">
+        El código expiró. Solicita un nuevo código para continuar.
+      </p>
       <button
         type="button"
-        (click)="paso = 1"
+        (click)="volverPaso1()"
         class="mt-2 inline-flex w-full justify-center text-xs text-neutral-muted underline underline-offset-2 hover:text-neutral-strong dark:text-slate-400 dark:hover:text-slate-200"
       >
         Corregir mis datos
@@ -284,9 +307,16 @@
     <div *ngIf="modal.tipo === 'error' || modal.tipo === 'exito'" class="rb-modal-icon">
       <ng-icon [name]="modal.esExpirado ? 'heroExclamationTriangle' : modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'" size="52" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
     </div>
-    <div *ngIf="modal.tipo === 'terminos'" class="rb-modal-icon flex items-center justify-center !p-2">
+    <div
+      *ngIf="modal.tipo === 'terminos' || modal.tipo === 'descargo'"
+      class="rb-modal-icon flex items-center justify-center !p-2"
+    >
       <span class="rb-logo-chip !rounded-full !p-2">
-        <ng-icon name="heroDocumentText" size="40" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon
+          [name]="modal.tipo === 'descargo' ? 'heroInformationCircle' : 'heroDocumentText'"
+          size="40"
+          class="h-10 w-10 object-contain text-secondary dark:text-blue-400"
+        />
       </span>
     </div>
 
@@ -294,7 +324,7 @@
 
     <div
       class="mb-6 max-h-40 overflow-y-auto px-1 text-sm text-neutral-strong dark:text-slate-200"
-      [ngClass]="modal.tipo === 'terminos' ? 'text-left leading-relaxed' : 'text-center'"
+      [ngClass]="modal.tipo === 'terminos' || modal.tipo === 'descargo' ? 'text-left leading-relaxed' : 'text-center'"
     >
       {{ modal.mensaje }}
     </div>
@@ -306,7 +336,14 @@
       <button type="button" (click)="aceptarTerminos()" class="rb-btn-success sm:flex-1">Acepto</button>
     </div>
 
-    <div *ngIf="modal.tipo !== 'terminos'" class="flex justify-center">
+    <div *ngIf="modal.tipo === 'descargo'" class="flex flex-col gap-2 sm:flex-row sm:gap-3">
+      <button type="button" (click)="rechazarDescargo()" class="rb-btn-neutral !shadow-none sm:flex-1">
+        No Acepto
+      </button>
+      <button type="button" (click)="aceptarDescargo()" class="rb-btn-success sm:flex-1">Acepto</button>
+    </div>
+
+    <div *ngIf="modal.tipo !== 'terminos' && modal.tipo !== 'descargo'" class="flex justify-center">
       <button
         type="button"
         (click)="cerrarModal()"

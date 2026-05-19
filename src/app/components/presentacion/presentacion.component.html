@@ -8,96 +8,146 @@
           class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto] md:items-center md:gap-10 lg:gap-14"
         >
           <div class="min-w-0">
-            <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl">
-              Mikunaigen
+            <div class="flex items-center gap-2 text-white/80">
+              <ng-icon name="heroSparkles" size="20" class="shrink-0" />
+              <span class="text-xs font-medium uppercase tracking-wide sm:text-sm"
+                >Formulación de superalimentos con IA</span
+              >
+            </div>
+            <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl">
+              {{ tituloMarca }}
             </h1>
-            <p
-              class="mt-3 max-w-lg text-sm leading-relaxed text-white/90 sm:text-base lg:mt-4 lg:max-w-xl"
-            >
-              Aplicación de formulación de recetas de superalimentos con optimización nutricional,
-              validación normativa y apoyo de inteligencia artificial.
+            <p class="mt-3 max-w-xl text-sm leading-relaxed text-white/90 sm:text-base lg:mt-4">
+              Plataforma para nutricionistas, estudiantes y emprendedores que buscan generar recetas de superalimentos en base a la composición nutricional.
             </p>
+            <ul class="mt-4 space-y-2 text-sm text-white/85 sm:text-base">
+              <li class="flex items-start gap-2">
+                <ng-icon name="heroCheckCircle" size="18" class="mt-0.5 shrink-0 text-white" />
+                <span>Planes Estudiante, Emprendedor y Nutricionista.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <ng-icon name="heroCheckCircle" size="18" class="mt-0.5 shrink-0 text-white" />
+                <span>Inferencias, historial de recetas y exportación de resultados.</span>
+              </li>
+            </ul>
             <div
               *ngIf="estadoCargado"
               class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4 lg:mt-8"
             >
+              <a routerLink="/login" class="rb-btn-primary !bg-white !px-5 !text-secondary">Iniciar sesión</a>
               <a
-                *ngIf="sinUsuarios"
                 routerLink="/registro"
-                class="rb-btn-primary !bg-white !px-5 !text-secondary"
-                >Iniciar sesión</a
+                class="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
               >
-              <ng-container *ngIf="!sinUsuarios">
-                <a routerLink="/login" class="rb-btn-primary !bg-white !px-5 !text-secondary"
-                  >Iniciar sesión</a
-                >
-                <a
-                  routerLink="/registro"
-                  class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
-                  >Registrarme</a
-                >
-              </ng-container>
+                <ng-icon name="heroUsers" size="18" />
+                {{ sinUsuarios ? 'Registrarme' : 'Registrarme' }}
+              </a>
             </div>
             <div
               *ngIf="!estadoCargado"
               class="mt-6 flex min-h-11 items-center justify-center sm:justify-start lg:mt-8"
             >
-              <span
-                class="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent"
-              ></span>
+              <span class="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
             </div>
           </div>
           <div class="flex shrink-0 items-center justify-center md:justify-end">
             <div class="aspect-square w-28 rounded-2xl bg-white p-2 sm:w-36 lg:w-44 xl:w-52">
-              <img
-                src="/mikunaigenlogo-borde.png"
-                alt="Mikunaigen"
-                class="h-full w-full object-contain"
-              />
+              <img src="/mikunaigenlogo-borde.png" [alt]="tituloMarca" class="h-full w-full object-contain" />
             </div>
           </div>
         </div>
       </div>
     </section>
-
-    <section
-      class="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
-    >
+    <section class="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
       <article class="rb-card p-5">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-          Roles de usuario
-        </h2>
-        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-          Estudiantes, emprendedores y nutricionistas acceden al módulo de formulación. El primer
-          usuario registrado administra la plataforma.
-        </p>
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+            <ng-icon name="heroUsers" size="22" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">Registro</h2>
+            <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+              Acceso a la plataforma con nombres, correo, teléfono de Telegram, contraseña segura y recuperación de contraseña por código.
+            </p>
+          </div>
+        </div>
       </article>
       <article class="rb-card p-5">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-          Seguridad y acceso
-        </h2>
-        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-          Un único inicio de sesión para todos los roles, con validación de correo y recuperación
-          por código.
-        </p>
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+            <ng-icon name="heroBeaker" size="22" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">Parametrización</h2>
+            <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+              Formulario de 21 nutrientes, exclusiones e inclusiones de ingredientes del dataset MINSA y presupuesto por
+              kilogramo. Límites mensuales de inferencias por plan.
+            </p>
+          </div>
+        </div>
       </article>
       <article class="rb-card p-5">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-          Formulación e IA
-        </h2>
-        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-          Parametrización nutricional, inferencias de recetas, calificación de resultados y KPIs del
-          modelo.
-        </p>
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+            <ng-icon name="heroChartPie" size="22" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">Resultados</h2>
+            <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+              Gráficos, comparación de alternativas, calificación y exportación de ficha técnica en Excel o PDF.
+            </p>
+          </div>
+        </div>
       </article>
       <article class="rb-card p-5">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">
-          Administración
-        </h2>
-        <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
-          Dataset MINSA, configuración de plataforma, SMTP, respaldos y modo mantenimiento.
-        </p>
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+            <ng-icon name="heroBanknotes" size="22" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">Planes y suscripción</h2>
+            <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+              Plan Estudiante gratuito con funciones base; ascenso a Emprendedor (S/ 20.00 mensuales) o Nutricionista (S/ 50.00) con
+              comprobante de pago, justificación y revisión.
+            </p>
+          </div>
+        </div>
       </article>
+      <article class="rb-card p-5">
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+            <ng-icon name="heroShieldCheck" size="22" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">Seguridad normativa</h2>
+            <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+              Filtro con Codex Alimentarius y Ley N° 30021 para resultados, semáforo de sodio, grasa
+              saturada y azúcar.
+            </p>
+          </div>
+        </div>
+      </article>
+      <article class="rb-card p-5">
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+            <ng-icon name="heroCog6Tooth" size="22" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">Administración del sistema</h2>
+            <p class="mt-2 text-sm text-neutral-strong dark:text-dark-text-muted">
+              Dashboard de la plataforma, gestión del dataset de alimentos, usuarios y solicitudes de
+              cambio de plan.
+            </p>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section class="rb-card mt-6 flex items-start gap-3 border-l-4 border-secondary p-5 sm:mt-8 dark:border-sky-400">
+      <ng-icon name="heroInformationCircle" size="24" class="mt-0.5 shrink-0 text-secondary dark:text-sky-300" />
+      <p class="text-sm leading-relaxed text-neutral-strong dark:text-dark-text-muted">
+        Las recetas generadas son de naturaleza teórico-simulada, no reemplazan la validación en laboratorio ni constituyen
+        asesoramiento médico ni nutricional certificado.
+      </p>
     </section>
   </div>
 </div>

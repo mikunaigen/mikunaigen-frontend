@@ -13,7 +13,9 @@ import {
   bloquearTeclasNoNumericas,
   errorCodigo6,
   errorPasswordHistoria,
+  evaluarCriteriosPassword,
   filtrarSoloDigitos,
+  type CriteriosPassword,
 } from '../../utils/form-validators';
 
 @Component({
@@ -63,6 +65,10 @@ export class ConfirmarCuentaComponent implements OnInit {
 
   bloquearNoNumerico(event: KeyboardEvent) {
     bloquearTeclasNoNumericas(event);
+  }
+
+  get pwdCriterios(): CriteriosPassword {
+    return evaluarCriteriosPassword(this.nuevaPassword);
   }
 
   validarPassword(): { valido: boolean; error?: string } {

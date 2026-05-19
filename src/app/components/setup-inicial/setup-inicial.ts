@@ -11,7 +11,9 @@ import {
   errorEmailSoloGmail,
   errorPasswordSmtpApp,
   errorTelefono9,
+  errorTerminosCondiciones,
   filtrarSoloDigitos,
+  TERMINOS_CONDICIONES_MAX,
 } from '../../utils/form-validators';
 
 import { LogoutButtonComponent } from '../logout-button/logout-button';
@@ -23,6 +25,8 @@ import { LogoutButtonComponent } from '../logout-button/logout-button';
   templateUrl: './setup-inicial.component.html',
 })
 export class SetupInicialComponent implements OnInit {
+  readonly terminosMax = TERMINOS_CONDICIONES_MAX;
+
   codigoVerificacion = '';
   cargando = false;
   cargandoInicial = true;
@@ -263,8 +267,9 @@ export class SetupInicialComponent implements OnInit {
       return;
     }
 
-    if (!this.config.terminosCondiciones?.trim()) {
-      this.abrirModal('Campos incompletos', 'Los términos y condiciones son obligatorios.', true);
+    const terminosErr = errorTerminosCondiciones(this.config.terminosCondiciones);
+    if (terminosErr) {
+      this.abrirModal('Términos y condiciones', terminosErr, true);
       return;
     }
 

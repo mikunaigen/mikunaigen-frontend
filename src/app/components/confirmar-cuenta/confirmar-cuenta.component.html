@@ -96,12 +96,13 @@
       </div>
 
       <div
-        class="grid grid-cols-2 gap-1 px-0.5 text-xs text-neutral-muted dark:text-dark-text-muted"
+        class="grid grid-cols-2 gap-1 px-0.5 text-xs text-neutral-muted dark:text-dark-text-muted sm:grid-cols-3"
       >
-        <span [class.text-success]="nuevaPassword.length >= 8">● 8+ Caracteres</span>
-        <span [class.text-success]="/[A-Z]/.test(nuevaPassword)">● Mayúscula</span>
-        <span [class.text-success]="/[a-z]/.test(nuevaPassword)">● Minúscula</span>
-        <span [class.text-success]="/[@!¡¿?#$%/&]/.test(nuevaPassword)">● Especial</span>
+        <span [class.text-success]="pwdCriterios.longitud">● 8+ Caracteres</span>
+        <span [class.text-success]="pwdCriterios.mayuscula">● Mayúscula</span>
+        <span [class.text-success]="pwdCriterios.minuscula">● Minúscula</span>
+        <span [class.text-success]="pwdCriterios.numero">● Número</span>
+        <span [class.text-success]="pwdCriterios.especial">● Especial (@!¡¿?#$%/&)</span>
       </div>
 
       <div class="flex items-center space-x-2 py-2">

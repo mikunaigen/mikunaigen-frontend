@@ -14,9 +14,11 @@ import {
   errorEmailHistoriaUsuario,
   errorPasswordHistoria,
   errorTelefono9,
+  evaluarCriteriosPassword,
   extraerNombreApellidoDeFullName,
   filtrarSoloDigitos,
   filtrarSoloLetrasYEspacios,
+  type CriteriosPassword,
 } from '../../utils/form-validators';
 
 @Component({
@@ -60,6 +62,10 @@ export class RegistroAdminComponent {
 
   bloquearNoNumerico(event: KeyboardEvent) {
     bloquearTeclasNoNumericas(event);
+  }
+
+  get pwdCriterios(): CriteriosPassword {
+    return evaluarCriteriosPassword(this.usuario.password);
   }
 
   validarFormulario(): string | null {

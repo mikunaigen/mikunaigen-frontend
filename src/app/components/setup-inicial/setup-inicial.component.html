@@ -142,9 +142,13 @@
             [(ngModel)]="config.terminosCondiciones"
             name="tc"
             rows="5"
+            [attr.maxlength]="terminosMax"
             class="rb-input rb-focus-secondary resize-y"
             required
           ></textarea>
+          <p class="mt-1 text-xs text-gray-500 dark:text-slate-400">
+            {{ config.terminosCondiciones.length }} / {{ terminosMax }} caracteres
+          </p>
         </div>
       </section>
 
