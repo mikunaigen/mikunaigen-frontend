@@ -49,7 +49,7 @@ export class CheckoutComponent implements OnInit {
     }
     this.cart.cargarDesdeServidor(s.userId).subscribe(() => {
       if (this.cart.items().length === 0) {
-        void this.router.navigate(['/menu']);
+        void this.router.navigate(['/usuario-home']);
       }
     });
     this.configService.obtenerConfiguracion().subscribe({

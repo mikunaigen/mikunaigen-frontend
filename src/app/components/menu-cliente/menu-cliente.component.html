@@ -10,26 +10,6 @@
   </nav>
 
   <div class="rb-container">
-    <div
-      class="relative mb-6 overflow-hidden rounded-2xl border border-secondary/20 bg-gray-50/50 p-4 dark:border-dark-border dark:bg-dark-surface sm:mb-8 sm:p-6 lg:p-8"
-    >
-      <div
-        class="absolute left-0 top-0 h-full w-0.5 bg-secondary/35 dark:bg-blue-400/40"
-        aria-hidden="true"
-      ></div>
-      <h2
-        class="mb-1 flex flex-wrap items-center gap-2 text-2xl font-semibold tracking-tight text-secondary sm:text-3xl lg:text-4xl dark:text-blue-400"
-      >
-        <span class="rb-logo-chip !p-1">
-          <ng-icon name="heroSparkles" size="24" class="h-8 w-8 shrink-0 object-contain sm:h-10 sm:w-10 text-secondary dark:text-blue-400" />
-        </span>
-        Nuestro menú
-      </h2>
-      <p class="text-sm text-neutral-strong lg:text-base dark:text-dark-text-muted">
-        Busca, filtra por categoría y precio.
-      </p>
-    </div>
-
     <div class="mb-6 space-y-4 sm:mb-8">
       <section
         *ngIf="!cargando && !errorCarga && tieneRecomendaciones"
@@ -205,13 +185,6 @@
         </div>
       </div>
     </div>
-
-    <p
-      *ngIf="!cargando && errorCarga"
-      class="rounded-xl border border-dashed border-danger/40 bg-red-50/80 p-6 text-center text-sm text-danger dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200"
-    >
-      No pudimos cargar el menú. Intenta de nuevo más tarde.
-    </p>
 
     <div
       *ngIf="!cargando && !errorCarga"

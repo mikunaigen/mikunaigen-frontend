@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +12,8 @@ import {
   filtrarSoloLetrasYEspacios,
 } from '../../utils/form-validators';
 import { environment } from '@env/environment';
+import { parsePlanWsEvento, topicPlanesUsuario } from '../../services/plan-usuario.service';
+import { WebsocketService } from '../../services/websocket.service';
 
 type PerfilResponse = {
   userId?: string;
@@ -21,6 +24,8 @@ type PerfilResponse = {
   dni?: string;
   email?: string;
   role?: string;
+  solicitudPlanEnRevision?: boolean;
+  solicitudPlanRol?: string;
   message?: string;
 };
 
@@ -30,11 +35,14 @@ type PerfilResponse = {
   imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './mi-perfil.component.html',
 })
-export class MiPerfilComponent implements OnInit {
+export class MiPerfilComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly websocket = inject(WebsocketService);
   private readonly apiPerfil = environment.apiUrl + '/perfil';
+
+  private wsSub?: Subscription;
 
   cargando = signal(true);
   guardando = signal(false);
@@ -50,6 +58,8 @@ export class MiPerfilComponent implements OnInit {
   };
 
   modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
+  solicitudPlanEnRevision = signal(false);
+  solicitudRolSolicitado = signal('');
 
   ngOnInit(): void {
     if (!this.auth.isLoggedIn()) {
@@ -57,6 +67,11 @@ export class MiPerfilComponent implements OnInit {
       return;
     }
     this.cargarPerfil();
+    this.iniciarEscuchaPlanes();
+  }
+
+  ngOnDestroy(): void {
+    this.wsSub?.unsubscribe();
   }
 
   volver(): void {
@@ -186,5 +201,48 @@ export class MiPerfilComponent implements OnInit {
     this.form.dni = String(resp?.dni || '');
     this.form.email = String(resp?.email || '');
     this.form.role = String(resp?.role || '');
+    this.solicitudPlanEnRevision.set(!!resp?.solicitudPlanEnRevision);
+    this.solicitudRolSolicitado.set(String(resp?.solicitudPlanRol || ''));
+  }
+
+  private iniciarEscuchaPlanes(): void {
+    const uid = this.auth.getSession()?.userId;
+    if (!uid) {
+      return;
+    }
+    this.wsSub?.unsubscribe();
+    this.wsSub = this.websocket.subscribeToTopic(topicPlanesUsuario(uid)).subscribe((raw) => {
+      const ev = parsePlanWsEvento(raw);
+      if (!ev?.tipo) {
+        return;
+      }
+      switch (ev.tipo) {
+        case 'solicitud_creada':
+          this.solicitudPlanEnRevision.set(true);
+          this.solicitudRolSolicitado.set(ev.rolSolicitado || '');
+          break;
+        case 'solicitud_aprobada':
+          this.solicitudPlanEnRevision.set(false);
+          this.solicitudRolSolicitado.set('');
+          if (ev.rolActual) {
+            this.form.role = ev.rolActual;
+            this.auth.patchSession({ role: ev.rolActual });
+          }
+          break;
+        case 'solicitud_rechazada':
+          this.solicitudPlanEnRevision.set(false);
+          this.solicitudRolSolicitado.set('');
+          break;
+      }
+    });
+  }
+
+  etiquetaRolSolicitud(): string {
+    const r = this.solicitudRolSolicitado().toLowerCase();
+    const map: Record<string, string> = {
+      emprendedor: 'Emprendedor',
+      nutricionista: 'Nutricionista',
+    };
+    return map[r] || this.solicitudRolSolicitado() || '—';
   }
 }

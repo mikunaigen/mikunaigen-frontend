@@ -1,13 +1,13 @@
 <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-  <a *ngIf="mostrarMenu" routerLink="/menu" [ngClass]="claseEnlace()">
+  <a *ngIf="mostrarMenu" routerLink="/usuario-home" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroBeaker" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon name="heroHome" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
     </span>
-    Menú
+    Inicio
   </a>
   <a
     *ngIf="!carritoModoPanel"
-    routerLink="/menu"
+    routerLink="/usuario-home"
     [ngClass]="claseEnlace()"
     class="relative"
   >

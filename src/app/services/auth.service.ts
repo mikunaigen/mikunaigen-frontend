@@ -87,7 +87,7 @@ export class AuthService {
     if (!s) return '/login';
     if (s.firstLogin === true) return '/confirmar-cuenta';
     if (this.esAdministrador(s.role)) return '/gestion-administrador';
-    if (this.esUsuarioFormulacion(s.role)) return '/menu';
+    if (this.esUsuarioFormulacion(s.role)) return '/usuario-home';
     return '/login';
   }
 

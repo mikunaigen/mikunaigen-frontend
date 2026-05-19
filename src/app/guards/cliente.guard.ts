@@ -6,7 +6,7 @@ export const clienteGuard: CanActivateFn = (_route, state) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   if (!auth.isLoggedIn()) {
-    const returnUrl = state.url || '/menu';
+    const returnUrl = state.url || '/usuario-home';
     return router.createUrlTree(['/login'], { queryParams: { returnUrl } });
   }
   const s = auth.getSession();
