@@ -13,14 +13,23 @@ export const setupFlowGuard: CanActivateFn = (route) => {
 
   return config.obtenerEstado().pipe(
     map((res) => {
-      if (!res.configuracionCompleta) return true;
+      if (!res.configuracionCompleta) {
+        return true;
+      }
 
-      const role = auth.getSession()?.role;
-      if (role !== 'ADMIN') return router.createUrlTree([auth.getPostLoginPath()]);
-      if (!forzarEdicion) return router.createUrlTree(['/gestion-administrador']);
-      return true;
+      if (forzarEdicion) {
+        if (!auth.esAdministrador()) {
+          return router.createUrlTree(['/presentacion']);
+        }
+        return true;
+      }
+
+      if (auth.esAdministrador()) {
+        return router.createUrlTree(['/gestion-administrador']);
+      }
+
+      return router.createUrlTree(['/presentacion']);
     }),
     catchError(() => of(true)),
   );
 };
-

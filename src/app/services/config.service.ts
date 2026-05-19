@@ -53,7 +53,10 @@ export class ConfigService {
     return this.http.post<MensajeRespuestaDto>(`${this.apiUrl}/enviar-verificacion`, data);
   }
 
-  validarYGuardar(data: Record<string, unknown>): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/validar-y-guardar`, data);
+  validarYGuardar(data: Record<string, unknown>): Observable<{ message?: string; configuracionCompleta?: boolean }> {
+    return this.http.post<{ message?: string; configuracionCompleta?: boolean }>(
+      `${this.apiUrl}/validar-y-guardar`,
+      data,
+    );
   }
 }

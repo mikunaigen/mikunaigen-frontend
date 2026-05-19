@@ -284,6 +284,19 @@ export class SetupInicialComponent implements OnInit {
       }
     }
 
+    const tieneMedioPago =
+      this.config.mediosPago.yapeActivo ||
+      this.config.mediosPago.plinActivo ||
+      this.config.mediosPago.transferenciaActiva;
+    if (!tieneMedioPago) {
+      this.abrirModal(
+        'Medios de pago',
+        'Debes activar al menos un medio de pago: Yape, Plin o transferencia bancaria.',
+        true,
+      );
+      return;
+    }
+
     if (this.config.mediosPago.transferenciaActiva) {
       const transferenciasValidas = this.config.mediosPago.transferencias
         .map((t) => ({
@@ -342,15 +355,22 @@ export class SetupInicialComponent implements OnInit {
 
     this.cargando = true;
     this.configService.validarYGuardar(payload).subscribe({
-      next: () => {
+      next: (res: { configuracionCompleta?: boolean }) => {
         this.cargando = false;
-        this.configuracionYaCompleta = true;
+        this.configuracionYaCompleta = res?.configuracionCompleta !== false;
         this.emailInicial = this.config.emailSmtp;
         this.config.passwordSmtp = '';
         this.codigoVerificacion = '';
         this.smtpPasswordConfigured = true;
-        this.abrirModal('Éxito', 'Configuración guardada correctamente.', false);
-        setTimeout(() => void this.router.navigate(['/presentacion']), 1800);
+        if (this.configuracionYaCompleta) {
+          void this.router.navigate(['/presentacion']);
+          return;
+        }
+        this.abrirModal(
+          'Configuración incompleta',
+          'Guarda al menos un medio de pago válido, el logo y el SMTP para habilitar la plataforma.',
+          true,
+        );
       },
       error: (err: { error?: { message?: string } }) => {
         this.cargando = false;
