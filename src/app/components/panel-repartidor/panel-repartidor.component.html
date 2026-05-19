@@ -70,7 +70,7 @@
         <article *ngFor="let o of enCamino" class="rb-card p-4 sm:p-5">
           <div class="mb-3 flex items-center justify-between">
             <span class="font-mono text-sm font-semibold">#{{ o.id.slice(0,8) }}</span>
-            <img src="/iconos/camion-abastecer-ingrediente.png" alt="" width="22" height="22" class="h-6 w-6 object-contain" />
+            <ng-icon name="heroTruck" size="22" class="h-6 w-6 object-contain text-secondary dark:text-blue-400" />
           </div>
           <p class="mb-4 text-sm font-semibold text-primary dark:text-orange-300">{{ o.direccionEntrega || 'Dirección no registrada' }}</p>
           <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
@@ -85,7 +85,7 @@
         <article *ngFor="let o of entregados" class="rb-card p-4 sm:p-5">
           <div class="mb-2 flex items-center justify-between">
             <span class="font-mono text-sm font-semibold">#{{ o.id.slice(0,8) }}</span>
-            <img src="/iconos/correcto-check-verde.png" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+            <ng-icon name="heroCheckCircle" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
           </div>
           <p class="text-sm text-neutral-strong dark:text-dark-text-muted">{{ o.direccionEntrega || 'Dirección no registrada' }}</p>
         </article>
@@ -152,7 +152,7 @@
   <div *ngIf="modal() as m" class="rb-modal-backdrop z-[80]">
     <div class="rb-modal max-w-sm text-center shadow-lg dark:shadow-none" (click)="$event.stopPropagation()">
       <div class="rb-modal-icon !mb-4">
-        <img [src]="m.tipo === 'ok' ? '/iconos/like-pulgar.png' : '/iconos/error-rojo.png'" alt="" width="44" height="44" class="h-11 w-11 object-contain" />
+        <ng-icon [name]="m.tipo === 'ok' ? 'heroHandThumbUp' : 'heroXCircle'" size="44" class="h-11 w-11 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ m.titulo }}</h3>
       <p class="mb-6 text-sm" [ngClass]="m.tipo === 'ok' ? 'text-success dark:text-emerald-300 font-medium' : 'text-danger dark:text-red-200 font-medium'">{{ m.mensaje }}</p>

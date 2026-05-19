@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -22,7 +23,7 @@ type PerfilResponse = {
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './mi-perfil.component.html',
 })
 export class MiPerfilComponent implements OnInit {

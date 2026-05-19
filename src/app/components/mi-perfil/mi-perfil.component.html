@@ -107,13 +107,7 @@
   <div *ngIf="modal() as m" class="rb-modal-backdrop">
     <div class="rb-modal max-w-sm text-center shadow-lg dark:shadow-none">
       <div class="rb-modal-icon !mb-4">
-        <img
-          [src]="m.tipo === 'ok' ? '/iconos/correcto-check-verde.png' : '/iconos/advertencia-amarillo.png'"
-          alt=""
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon [name]="m.tipo === 'ok' ? 'heroCheckCircle' : 'heroExclamationTriangle'" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ m.titulo }}</h3>
       <p class="mb-6 text-sm font-medium" [ngClass]="m.tipo === 'ok' ? 'text-success dark:text-emerald-300' : 'text-warning dark:text-amber-300'">

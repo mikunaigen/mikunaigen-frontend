@@ -83,13 +83,7 @@
                   class="flex min-h-11 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-semibold transition sm:text-sm"
                 >
                   <span class="rb-logo-chip !p-1.5">
-                    <img
-                      [src]="c.img"
-                      alt=""
-                      width="32"
-                      height="32"
-                      class="h-8 w-8 object-contain"
-                    />
+                    <ng-icon [name]="c.img" size="32" class="h-8 w-8  text-secondary dark:text-blue-400" />
                   </span>
                   <span>{{ c.label }}</span>
                 </button>
@@ -207,7 +201,7 @@
               class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
             >
               <span class="rb-logo-chip !p-1">
-                <img [src]="c.img" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+                <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
               </span>
               <span>{{ c.label }}</span>
             </button>
@@ -217,13 +211,7 @@
           <div class="relative mb-3">
             <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
               <span class="rb-logo-chip !p-1">
-                <img
-                  src="/iconos/lupa.png"
-                  alt=""
-                  width="20"
-                  height="20"
-                  class="h-5 w-5 object-contain"
-                />
+                <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
               </span>
             </span>
             <input
@@ -253,13 +241,7 @@
               class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
             >
               <span class="rb-logo-chip !p-1">
-                <img
-                  src="/iconos/camion-abastecer-ingrediente.png"
-                  alt=""
-                  width="22"
-                  height="22"
-                  class="h-6 w-6 object-contain"
-                />
+                <ng-icon name="heroTruck" size="22" class="h-6 w-6 object-contain text-secondary dark:text-blue-400" />
               </span>
               Abastecer stock
             </button>
@@ -289,13 +271,7 @@
                 class="absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-secondary shadow-sm transition hover:bg-gray-50 dark:border-dark-border dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Editar insumo"
               >
-                <img
-                  src="/iconos/editar-lapiz.png"
-                  alt=""
-                  width="16"
-                  height="16"
-                  class="h-4 w-4 object-contain"
-                />
+                <ng-icon name="heroPencilSquare" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
               </button>
               <button
                 type="button"
@@ -303,13 +279,7 @@
                 class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-danger text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Eliminar insumo"
               >
-                <img
-                  src="/iconos/tacho.png"
-                  alt=""
-                  width="16"
-                  height="16"
-                  class="h-4 w-4 object-contain"
-                />
+                <ng-icon name="heroTrash" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
               </button>
               <button
                 type="button"
@@ -320,7 +290,7 @@
                   class="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:h-14 sm:w-14"
                 >
                   <img
-                    [src]="ing.imageBase64 || 'assets/no-image.png'"
+                    [src]="ing.imageBase64 || ''"
                     alt=""
                     class="h-full w-full object-cover"
                   />
@@ -387,13 +357,7 @@
                     class="flex min-h-11 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-semibold transition sm:text-sm"
                   >
                     <span class="rb-logo-chip !p-1.5">
-                      <img
-                        [src]="c.img"
-                        alt=""
-                        width="32"
-                        height="32"
-                        class="h-8 w-8 object-contain"
-                      />
+                      <ng-icon [name]="c.img" size="32" class="h-8 w-8  text-secondary dark:text-blue-400" />
                     </span>
                     <span>{{ c.label }}</span>
                   </button>
@@ -445,13 +409,7 @@
                       class="absolute -right-1 -top-1 flex h-6 w-6 min-h-6 min-w-6 items-center justify-center rounded-full bg-danger text-xs text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                       aria-label="Eliminar imagen"
                     >
-                      <img
-                        src="/iconos/tacho.png"
-                        alt=""
-                        width="12"
-                        height="12"
-                        class="h-3 w-3 object-contain"
-                      />
+                      <ng-icon name="heroTrash" size="12" class="h-3 w-3 object-contain text-secondary dark:text-blue-400" />
                     </button>
                   </div>
                 </div>
@@ -497,7 +455,7 @@
                 class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
               >
                 <span class="rb-logo-chip !p-1">
-                  <img [src]="c.img" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+                  <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
                 </span>
                 <span>{{ c.label }}</span>
               </button>
@@ -507,13 +465,7 @@
             <div class="relative mb-3">
               <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
                 <span class="rb-logo-chip !p-1">
-                  <img
-                    src="/iconos/lupa.png"
-                    alt=""
-                    width="20"
-                    height="20"
-                    class="h-5 w-5 object-contain"
-                  />
+                  <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
                 </span>
               </span>
               <input
@@ -592,13 +544,7 @@
                 aria-label="Añadir insumo a la receta"
               >
                 <span class="rb-logo-chip !p-1">
-                  <img
-                    src="/iconos/agregar.png"
-                    alt=""
-                    width="18"
-                    height="18"
-                    class="h-5 w-5 object-contain"
-                  />
+                  <ng-icon name="heroPlus" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
                 </span>
               </button>
             </div>
@@ -630,13 +576,7 @@
                     class="rounded p-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/40"
                     aria-label="Quitar insumo"
                   >
-                    <img
-                      src="/iconos/tacho.png"
-                      alt=""
-                      width="16"
-                      height="16"
-                      class="h-4 w-4 object-contain"
-                    />
+                    <ng-icon name="heroTrash" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
                   </button>
                 </div>
               </div>
@@ -690,7 +630,7 @@
               class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
             >
               <span class="rb-logo-chip !p-1">
-                <img [src]="c.img" alt="" width="20" height="20" class="h-5 w-5 object-contain" />
+                <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
               </span>
               <span>{{ c.label }}</span>
             </button>
@@ -700,13 +640,7 @@
           <div class="relative mb-4">
             <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
               <span class="rb-logo-chip !p-1">
-                <img
-                  src="/iconos/lupa.png"
-                  alt=""
-                  width="20"
-                  height="20"
-                  class="h-5 w-5 object-contain"
-                />
+                <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
               </span>
             </span>
             <input
@@ -739,13 +673,7 @@
                 class="absolute left-2 top-2 z-10 flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-primary shadow-sm transition hover:bg-gray-50 dark:border-dark-border dark:bg-slate-800 dark:text-orange-300 dark:hover:bg-slate-700 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Editar producto"
               >
-                <img
-                  src="/iconos/editar-lapiz.png"
-                  alt=""
-                  width="16"
-                  height="16"
-                  class="h-4 w-4 object-contain"
-                />
+                <ng-icon name="heroPencilSquare" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
               </button>
               <button
                 type="button"
@@ -753,19 +681,13 @@
                 class="absolute right-2 top-2 z-10 flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-lg bg-danger text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Eliminar producto"
               >
-                <img
-                  src="/iconos/tacho.png"
-                  alt=""
-                  width="16"
-                  height="16"
-                  class="h-4 w-4 object-contain"
-                />
+                <ng-icon name="heroTrash" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
               </button>
               <div
                 class="mb-3 mt-11 aspect-square w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-slate-900"
               >
                 <img
-                  [src]="prod.imagesBase64[0] || 'assets/no-image.png'"
+                  [src]="prod.imagesBase64[0] || ''"
                   alt=""
                   class="h-full w-full object-cover"
                 />
@@ -803,13 +725,7 @@
   <div *ngIf="modalOrdenBloqueo.visible" class="rb-modal-backdrop z-[70]">
     <div class="rb-modal max-w-md">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <img
-          src="/iconos/error-rojo.png"
-          alt=""
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon name="heroXCircle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
         No se puede eliminar
@@ -959,7 +875,7 @@
               class="flex min-h-11 items-center gap-2 rounded-xl border p-2 text-left text-xs font-semibold transition"
             >
               <span class="rb-logo-chip !p-1">
-                <img [src]="c.img" alt="" class="h-5 w-5 object-contain" />
+                <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
               </span>
               {{ c.label }}
             </button>
@@ -1133,7 +1049,7 @@
                 class="flex min-h-11 items-center gap-2 rounded-xl border p-2 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span class="rb-logo-chip !p-1">
-                  <img [src]="c.img" alt="" class="h-5 w-5 object-contain" />
+                  <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
                 </span>
                 {{ c.label }}
               </button>
@@ -1183,7 +1099,7 @@
                   class="absolute -right-1 -top-1 flex h-6 w-6 min-h-6 min-w-6 items-center justify-center rounded-full bg-danger text-xs text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                   aria-label="Quitar imagen"
                 >
-                  <img src="/iconos/tacho.png" alt="" class="h-3 w-3 object-contain" />
+                  <ng-icon name="heroTrash" size="20" class="h-3 w-3 object-contain text-secondary dark:text-blue-400" />
                 </button>
               </div>
             </div>
@@ -1249,7 +1165,7 @@
             <div class="relative mb-2">
               <span class="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
                 <span class="rb-logo-chip !p-0.5">
-                  <img src="/iconos/lupa.png" alt="" class="h-4 w-4 object-contain" />
+                  <ng-icon name="heroMagnifyingGlass" size="20" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
                 </span>
               </span>
               <input
@@ -1300,7 +1216,7 @@
                 class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
               >
                 <span class="rb-logo-chip !p-1">
-                  <img src="/iconos/agregar.png" alt="" class="h-5 w-5 object-contain" />
+                  <ng-icon name="heroPlus" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
                 </span>
               </button>
             </div>
@@ -1323,7 +1239,7 @@
                     (click)="quitarInsumoEdit(idx)"
                     class="min-h-8 min-w-8 rounded p-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/40"
                   >
-                    <img src="/iconos/tacho.png" alt="" class="h-4 w-4 object-contain" />
+                    <ng-icon name="heroTrash" size="20" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
                   </button>
                 </div>
               </div>
@@ -1362,13 +1278,7 @@
     <div class="rb-modal max-w-md !p-5 text-left sm:!p-8" (click)="$event.stopPropagation()">
       <div class="mb-4 flex items-start gap-3">
         <span class="rb-logo-chip !p-1.5 shrink-0">
-          <img
-            src="/iconos/camion-abastecer-ingrediente.png"
-            alt=""
-            width="28"
-            height="28"
-            class="h-7 w-7 object-contain"
-          />
+          <ng-icon name="heroTruck" size="28" class="h-7 w-7 object-contain text-secondary dark:text-blue-400" />
         </span>
         <div class="min-w-0">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
@@ -1471,15 +1381,9 @@
   <div *ngIf="modal.visible" class="rb-modal-backdrop z-[80]">
     <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <img
-          [src]="
-            modal.tipo === 'error' ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'
-          "
-          [attr.alt]="modal.tipo === 'error' ? 'Error' : 'Éxito'"
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon [name]="
+            modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'
+          " size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
         {{ modal.titulo }}

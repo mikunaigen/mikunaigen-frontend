@@ -12,13 +12,7 @@
   <div class="rb-container max-w-2xl">
     <div class="mb-8 flex flex-wrap items-center gap-3 sm:mb-10">
       <span class="rb-logo-chip !bg-white !p-2 dark:!bg-white">
-        <img
-          src="/iconos/billetes-soles.png"
-          alt=""
-          width="36"
-          height="36"
-          class="h-9 w-9 object-contain"
-        />
+        <ng-icon name="heroBanknotes" size="36" class="h-9 w-9 object-contain text-secondary dark:text-blue-400" />
       </span>
       <h2
         class="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-dark-text-strong"
@@ -220,15 +214,9 @@
   <div *ngIf="modal.visible" class="rb-modal-backdrop z-[80]">
     <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <img
-          [src]="
-            modal.tipo === 'error' ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'
-          "
-          [attr.alt]="modal.tipo === 'error' ? 'Error' : 'Éxito'"
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon [name]="
+            modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'
+          " size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
         {{ modal.titulo }}

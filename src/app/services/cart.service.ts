@@ -76,7 +76,7 @@ export class CartService {
       quantity: Math.min(MAX_UNIDADES_POR_PRODUCTO, Math.max(0, Number(x.quantity) || 0)),
       name: String(x.name ?? ''),
       unitPrice: Number(x.unitPrice) || 0,
-      thumbSrc: String(x.thumbSrc ?? 'assets/no-image.png'),
+      thumbSrc: String(x.thumbSrc ?? ''),
     }));
     this.lines.set(mapped);
     this.persistPriceSnapshot();

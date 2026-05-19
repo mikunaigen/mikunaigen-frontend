@@ -21,13 +21,7 @@
         class="mb-1 flex flex-wrap items-center gap-2 text-2xl font-semibold tracking-tight text-secondary sm:text-3xl lg:text-4xl dark:text-blue-400"
       >
         <span class="rb-logo-chip !p-1">
-          <img
-            src="/iconos/destellos-recomendaciones.png"
-            alt=""
-            width="24"
-            height="24"
-            class="h-8 w-8 shrink-0 object-contain sm:h-10 sm:w-10"
-          />
+          <ng-icon name="heroSparkles" size="24" class="h-8 w-8 shrink-0 object-contain sm:h-10 sm:w-10 text-secondary dark:text-blue-400" />
         </span>
         Nuestro menú
       </h2>
@@ -45,13 +39,7 @@
           class="mb-3 flex items-center gap-2 text-base font-semibold text-amber-800 dark:text-amber-200 sm:text-lg"
         >
           <span class="rb-logo-chip !p-1">
-            <img
-              src="/iconos/destellos-recomendaciones.png"
-              alt=""
-              width="20"
-              height="20"
-              class="h-5 w-5 object-contain"
-            />
+            <ng-icon name="heroSparkles" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
           </span>
           {{ recomendacionesTitulo() }}
         </h3>
@@ -81,13 +69,7 @@
                 (click)="abrirDetalle(rec)"
                 class="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-secondary/25 bg-white px-3 py-2 text-xs font-semibold text-secondary transition hover:bg-gray-50 dark:border-blue-400/30 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700"
               >
-                <img
-                  src="/iconos/consulta-informacion-azul.png"
-                  alt=""
-                  width="16"
-                  height="16"
-                  class="h-4 w-4 shrink-0 object-contain"
-                />
+                <ng-icon name="heroInformationCircle" size="16" class="h-4 w-4 shrink-0 object-contain text-secondary dark:text-blue-400" />
                 Información
               </button>
               <button
@@ -108,13 +90,7 @@
         <div class="relative">
           <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
             <span class="rb-logo-chip !p-1">
-              <img
-                src="/iconos/lupa.png"
-                alt=""
-                width="20"
-                height="20"
-                class="h-5 w-5 object-contain"
-              />
+              <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
             </span>
           </span>
           <input
@@ -156,13 +132,7 @@
             class="inline-flex min-h-11 items-center gap-1.5 rounded-lg border px-2 py-2 text-sm font-semibold transition sm:gap-2 sm:px-3"
           >
             <span class="rb-logo-chip !p-1">
-              <img
-                [src]="c.img"
-                alt=""
-                width="22"
-                height="22"
-                class="h-5 w-5 object-contain sm:h-6 sm:w-6"
-              />
+              <ng-icon [name]="c.img" size="22" class="h-5 w-5  sm:h-6 sm:w-6 text-secondary dark:text-blue-400" />
             </span>
             <span>{{ c.label }}</span>
           </button>
@@ -263,13 +233,7 @@
           *ngIf="esRecomendado(prod.id)"
           class="absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-amber-100/95 px-2 py-1 text-[10px] font-bold text-amber-800 shadow-sm dark:bg-amber-500/20 dark:text-amber-100"
         >
-          <img
-            src="/iconos/destellos-recomendaciones.png"
-            alt=""
-            width="12"
-            height="12"
-            class="h-3 w-3 object-contain"
-          />
+          <ng-icon name="heroSparkles" size="12" class="h-3 w-3 object-contain text-secondary dark:text-blue-400" />
           Recomendado
         </span>
         <div class="relative aspect-square w-full overflow-hidden bg-gray-100 dark:bg-slate-900">
@@ -304,13 +268,7 @@
               (click)="abrirDetalle(prod)"
               class="inline-flex min-h-11 w-full flex-1 items-center justify-center gap-2 rounded-xl border border-secondary/25 bg-white px-3 py-2.5 text-sm font-semibold text-secondary shadow-sm transition hover:bg-gray-50 dark:border-blue-400/30 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700 sm:w-auto sm:min-w-0"
             >
-              <img
-                src="/iconos/consulta-informacion-azul.png"
-                alt=""
-                width="20"
-                height="20"
-                class="h-5 w-5 shrink-0 object-contain"
-              />
+              <ng-icon name="heroInformationCircle" size="20" class="h-5 w-5 shrink-0 object-contain text-secondary dark:text-blue-400" />
               Información
             </button>
             <button
@@ -504,13 +462,7 @@
                 class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg border border-danger/30 bg-white text-danger hover:bg-red-50 disabled:opacity-45 dark:border-red-900/50 dark:bg-slate-800 dark:hover:bg-red-950/40"
                 aria-label="Quitar del carrito"
               >
-                <img
-                  src="/iconos/tacho.png"
-                  alt=""
-                  width="18"
-                  height="18"
-                  class="h-5 w-5 object-contain"
-                />
+                <ng-icon name="heroTrash" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
               </button>
             </div>
           </div>
@@ -594,13 +546,7 @@
     <div
       class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border"
     >
-      <img
-        src="/iconos/advertencia-amarillo.png"
-        alt=""
-        width="48"
-        height="48"
-        class="h-12 w-12 object-contain"
-      />
+      <ng-icon name="heroExclamationTriangle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
     </div>
     <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
       Actualización de disponibilidad
@@ -664,13 +610,7 @@
     <div
       class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border"
     >
-      <img
-        src="/iconos/advertencia-amarillo.png"
-        alt=""
-        width="48"
-        height="48"
-        class="h-12 w-12 object-contain"
-      />
+      <ng-icon name="heroExclamationTriangle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
     </div>
     <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
       Actualización de disponibilidad

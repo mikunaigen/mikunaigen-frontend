@@ -5,7 +5,7 @@
         <span class="rb-logo-chip max-w-full">
           <img
             [src]="logoSrc"
-            [attr.alt]="logoEsDelNegocio ? 'Logo del negocio' : ''"
+            [attr.alt]="logoEsDelNegocio ? 'Logo del negocio' : 'Mikunaigen'"
             class="h-8 w-auto max-w-[200px] object-contain sm:h-12 sm:max-h-20 sm:max-w-[220px]"
           />
         </span>
@@ -42,13 +42,7 @@
             class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80 dark:text-slate-400"
             [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
           >
-            <img
-              [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-              alt=""
-              width="20"
-              height="20"
-              class="h-5 w-5 object-contain"
-            />
+            <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
           </button>
         </div>
       </div>
@@ -90,13 +84,7 @@
             : 'bg-amber-50 text-amber-700 ring-amber-200/80 dark:bg-amber-950/40 dark:text-amber-200 dark:ring-amber-800/40'
         "
       >
-        <img
-          [src]="modal.esError ? '/iconos/error-rojo.png' : '/iconos/advertencia-amarillo.png'"
-          [attr.alt]="modal.esError ? 'Error' : 'Advertencia'"
-          width="42"
-          height="42"
-          class="h-10 w-10 object-contain"
-        />
+        <ng-icon [name]="modal.esError ? 'heroXCircle' : 'heroExclamationTriangle'" size="42" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ modal.titulo }}</h3>
       <p
@@ -120,13 +108,7 @@
       <div
         class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border"
       >
-        <img
-          src="/iconos/advertencia-amarillo.png"
-          alt=""
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon name="heroExclamationTriangle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Actualización de disponibilidad</h3>
       <p class="mb-3 text-sm text-neutral-strong dark:text-dark-text-muted">

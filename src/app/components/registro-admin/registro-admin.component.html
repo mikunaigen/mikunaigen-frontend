@@ -93,13 +93,7 @@
             class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
             [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
           >
-            <img
-              [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-              alt=""
-              width="20"
-              height="20"
-              class="h-5 w-5 object-contain"
-            />
+            <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
           </button>
           </div>
         </div>
@@ -118,13 +112,7 @@
             class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
             [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
           >
-            <img
-              [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-              alt=""
-              width="20"
-              height="20"
-              class="h-5 w-5 object-contain"
-            />
+            <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
           </button>
           </div>
         </div>
@@ -211,13 +199,7 @@
   <div *ngIf="modal.visible" class="rb-modal-backdrop">
     <div class="rb-modal max-w-sm">
       <div class="rb-modal-icon !mb-6 !h-16 !w-16 !text-3xl">
-        <img
-          [src]="modal.esExpirado ? '/iconos/advertencia-amarillo.png' : modal.esError ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'"
-          [attr.alt]="modal.esExpirado ? 'Advertencia' : modal.esError ? 'Error' : 'Éxito'"
-          width="52"
-          height="52"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon [name]="modal.esExpirado ? 'heroExclamationTriangle' : modal.esError ? 'heroXCircle' : 'heroCheckCircle'" size="52" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ modal.titulo }}</h3>
       <p class="mb-8 text-sm text-neutral-strong dark:text-dark-text-muted lg:text-base">{{ modal.mensaje }}</p>

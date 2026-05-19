@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgIconComponent } from '@ng-icons/core';
 import { HealthService } from './services/health.service';
 import { BackendStatusService } from './services/backend-status.service';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
@@ -12,7 +13,7 @@ import { MaintenanceService } from './services/maintenance.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ThemeToggleComponent],
+  imports: [CommonModule, RouterOutlet, ThemeToggleComponent, NgIconComponent],
   template: `
     <router-outlet></router-outlet>
     <app-theme-toggle *ngIf="!hideThemeFab" />
@@ -26,13 +27,7 @@ import { MaintenanceService } from './services/maintenance.service';
         class="rb-modal mx-auto max-w-md border-gray-200/90 px-6 py-8 sm:px-9 sm:py-9 dark:border-dark-border"
       >
         <div class="rb-modal-icon !mb-5 animate-pulse sm:!mb-6">
-          <img
-            src="/iconos/engranajes.png"
-            alt=""
-            width="48"
-            height="48"
-            class="h-11 w-11 object-contain sm:h-12 sm:w-12"
-          />
+          <ng-icon name="heroCog6Tooth" size="48" class="text-secondary dark:text-blue-400" />
         </div>
         <h3
           class="mb-3 text-base font-semibold text-gray-900 sm:text-lg md:text-xl dark:text-dark-text-strong"
@@ -43,23 +38,11 @@ import { MaintenanceService } from './services/maintenance.service';
           class="mx-auto mb-6 flex max-w-sm flex-col items-center gap-3 text-sm font-medium leading-relaxed text-neutral-strong sm:text-base dark:text-dark-text-muted"
         >
           <span class="inline-flex items-center gap-2">
-            <img
-              src="/iconos/consulta-informacion-azul.png"
-              alt=""
-              width="20"
-              height="20"
-              class="h-5 w-5 shrink-0 object-contain"
-            />
+            <ng-icon name="heroInformationCircle" size="20" class="shrink-0 text-secondary dark:text-blue-400" />
             Conectando...
           </span>
           <span class="inline-flex items-center gap-2 text-xs font-semibold text-gray-600 sm:text-sm dark:text-slate-400">
-            <img
-              src="/iconos/destellos-recomendaciones.png"
-              alt=""
-              width="18"
-              height="18"
-              class="h-4 w-4 shrink-0 object-contain opacity-90"
-            />
+            <ng-icon name="heroSparkles" size="18" class="shrink-0 opacity-90 text-secondary dark:text-blue-400" />
             Estamos conectando automáticamente.
           </span>
         </p>
@@ -68,13 +51,7 @@ import { MaintenanceService } from './services/maintenance.service';
     <div *ngIf="emailEnvioModal" class="rb-modal-backdrop z-[90]">
       <div class="rb-modal max-w-sm border-gray-200 dark:border-dark-border">
         <div class="rb-modal-icon !mb-6">
-          <img
-            src="/iconos/error-rojo.png"
-            alt=""
-            width="48"
-            height="48"
-            class="h-12 w-12 object-contain"
-          />
+          <ng-icon name="heroXCircle" size="48" class="text-danger" />
         </div>
         <h3 class="mb-3 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
           Envío de correo
@@ -90,7 +67,7 @@ import { MaintenanceService } from './services/maintenance.service';
     <div *ngIf="maintenance.active()" class="rb-modal-backdrop z-[110] cursor-wait">
       <div class="rb-modal max-w-md border-gray-200 dark:border-dark-border">
         <div class="rb-modal-icon !mb-6 animate-pulse">
-          <img src="/iconos/engranajes.png" alt="" width="48" height="48" class="h-12 w-12 object-contain" />
+          <ng-icon name="heroCog6Tooth" size="48" class="text-secondary dark:text-blue-400" />
         </div>
         <h3 class="mb-3 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
           {{ maintenance.title() }}
@@ -103,13 +80,7 @@ import { MaintenanceService } from './services/maintenance.service';
     <div *ngIf="entradaInvalidaModal" class="rb-modal-backdrop">
       <div class="rb-modal max-w-sm border-gray-200 dark:border-dark-border">
         <div class="rb-modal-icon !mb-6">
-          <img
-            src="/iconos/advertencia-amarillo.png"
-            alt="Advertencia"
-            width="48"
-            height="48"
-            class="h-12 w-12 object-contain"
-          />
+          <ng-icon name="heroExclamationTriangle" size="48" class="text-warning" />
         </div>
         <h3 class="mb-8 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
           Esta entrada no es válida

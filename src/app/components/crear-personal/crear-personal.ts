@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-crear-personal',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './crear-personal.component.html',
 })
 export class CrearPersonalComponent {

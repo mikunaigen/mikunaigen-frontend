@@ -156,21 +156,13 @@
           'bg-emerald-50 ring-emerald-200/80 dark:bg-emerald-950/35 dark:ring-emerald-900/45': modal.tipo === 'exito',
         }"
       >
-        <img
-          [src]="
+        <ng-icon [name]="
             modal.tipo === 'error'
-              ? '/iconos/error-rojo.png'
+              ? 'heroXCircle'
               : modal.tipo === 'advertencia'
-                ? '/iconos/advertencia-amarillo.png'
-                : '/iconos/correcto-check-verde.png'
-          "
-          [attr.alt]="
-            modal.tipo === 'error' ? 'Error' : modal.tipo === 'advertencia' ? 'Advertencia' : 'Éxito'
-          "
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+                ? 'heroExclamationTriangle'
+                : 'heroCheckCircle'
+          " size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ modal.titulo }}</h3>
       <p

@@ -25,7 +25,7 @@
       <div class="mx-auto mb-3 flex h-12 items-center justify-center sm:h-16">
         <img
           [src]="logoSrc"
-          [attr.alt]="logoEsDelNegocio ? 'Logo del negocio' : ''"
+          [attr.alt]="logoEsDelNegocio ? 'Logo del negocio' : 'Mikunaigen'"
           width="200"
           height="80"
           class="h-8 w-auto max-w-[180px] object-contain sm:h-12 sm:max-w-[240px] lg:max-h-20 lg:max-w-[280px]"
@@ -150,13 +150,7 @@
               class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
               [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
             >
-              <img
-                [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-                alt=""
-                width="20"
-                height="20"
-                class="h-5 w-5 object-contain"
-              />
+              <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
             </button>
           </div>
         </div>
@@ -177,13 +171,7 @@
               class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
               [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
             >
-              <img
-                [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-                alt=""
-                width="20"
-                height="20"
-                class="h-5 w-5 object-contain"
-              />
+              <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
             </button>
           </div>
         </div>
@@ -246,13 +234,7 @@
         class="mx-auto flex h-16 w-16 items-center justify-center rounded-full"
         [ngClass]="isAdminMode ? 'bg-secondary/10' : 'bg-primary/10'"
       >
-        <img
-          src="/iconos/correo.png"
-          alt=""
-          width="48"
-          height="48"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon name="heroEnvelope" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Verifica tu correo</h3>
       <p class="text-sm text-neutral-strong dark:text-slate-300">
@@ -300,17 +282,11 @@
 <div *ngIf="modal.visible" class="rb-modal-backdrop">
   <div class="rb-modal max-w-md border-gray-200">
     <div *ngIf="modal.tipo === 'error' || modal.tipo === 'exito'" class="rb-modal-icon">
-      <img
-        [src]="modal.esExpirado ? '/iconos/advertencia-amarillo.png' : modal.tipo === 'error' ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'"
-        [attr.alt]="modal.esExpirado ? 'Advertencia' : modal.tipo === 'error' ? 'Error' : 'Éxito'"
-        width="52"
-        height="52"
-        class="h-12 w-12 object-contain"
-      />
+      <ng-icon [name]="modal.esExpirado ? 'heroExclamationTriangle' : modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'" size="52" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
     </div>
     <div *ngIf="modal.tipo === 'terminos'" class="rb-modal-icon flex items-center justify-center !p-2">
       <span class="rb-logo-chip !rounded-full !p-2">
-        <img src="/iconos/documento.png" alt="" width="40" height="40" class="h-10 w-10 object-contain" />
+        <ng-icon name="heroDocumentText" size="40" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
       </span>
     </div>
 

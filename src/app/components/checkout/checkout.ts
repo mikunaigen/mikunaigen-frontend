@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -18,7 +19,7 @@ const MIME_OK = ['image/jpeg', 'image/jpg', 'image/png'];
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, CompradorNavComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, CompradorNavComponent, NgIconComponent],
   templateUrl: './checkout.component.html',
 })
 export class CheckoutComponent implements OnInit {

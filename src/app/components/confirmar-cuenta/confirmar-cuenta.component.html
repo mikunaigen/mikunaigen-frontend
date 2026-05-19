@@ -6,13 +6,7 @@
     <div class="mb-8 text-center">
       <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center">
         <span class="rb-logo-chip !rounded-full !p-2">
-          <img
-            src="/iconos/candado.png"
-            alt=""
-            width="40"
-            height="40"
-            class="h-10 w-10 object-contain"
-          />
+          <ng-icon name="heroLockClosed" size="40" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
         </span>
       </div>
       <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl lg:text-4xl dark:text-dark-text-strong">
@@ -75,13 +69,7 @@
           class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80 dark:text-slate-400"
           [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
         >
-          <img
-            [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-            alt=""
-            width="20"
-            height="20"
-            class="h-5 w-5 object-contain"
-          />
+          <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
         </button>
         </div>
       </div>
@@ -102,13 +90,7 @@
           class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80 dark:text-slate-400"
           [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
         >
-          <img
-            [src]="mostrarPassword ? '/iconos/ojo-abierto.png' : '/iconos/ojo-cerrado.png'"
-            alt=""
-            width="20"
-            height="20"
-            class="h-5 w-5 object-contain"
-          />
+          <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
         </button>
         </div>
       </div>
@@ -155,17 +137,11 @@
   <div *ngIf="modal.visible" class="rb-modal-backdrop">
     <div class="rb-modal max-w-md">
       <div *ngIf="modal.tipo === 'error' || modal.tipo === 'exito'" class="rb-modal-icon">
-        <img
-          [src]="modal.esExpirado ? '/iconos/advertencia-amarillo.png' : modal.tipo === 'error' ? '/iconos/error-rojo.png' : '/iconos/correcto-check-verde.png'"
-          [attr.alt]="modal.esExpirado ? 'Advertencia' : modal.tipo === 'error' ? 'Error' : 'Éxito'"
-          width="52"
-          height="52"
-          class="h-12 w-12 object-contain"
-        />
+        <ng-icon [name]="modal.esExpirado ? 'heroExclamationTriangle' : modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'" size="52" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <div *ngIf="modal.tipo === 'terminos'" class="rb-modal-icon flex items-center justify-center !p-2">
         <span class="rb-logo-chip !rounded-full !p-2">
-          <img src="/iconos/documento.png" alt="" width="40" height="40" class="h-10 w-10 object-contain" />
+          <ng-icon name="heroDocumentText" size="40" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
         </span>
       </div>
 

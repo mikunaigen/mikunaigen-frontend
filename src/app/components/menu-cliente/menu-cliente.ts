@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -55,7 +56,7 @@ interface MenuRecomendacionesResponse {
 @Component({
   selector: 'app-menu-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, CompradorNavComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, CompradorNavComponent, NgIconComponent],
   templateUrl: './menu-cliente.component.html',
   styleUrl: './menu-cliente.css',
 })
@@ -71,14 +72,14 @@ export class MenuClienteComponent implements OnInit {
   private readonly apiCatalogo = environment.apiUrl + '/catalogo';
 
   readonly categoriasProducto: CatOpcion[] = [
-    { value: 'Entrada', label: 'Entradas', img: '/iconos/categoria-entrada.png' },
+    { value: 'Entrada', label: 'Entradas', img: 'heroQueueList' },
     {
       value: 'Plato Principal',
       label: 'Platos Principales',
-      img: '/iconos/categoria-plato-principal.png',
+      img: 'heroBeaker',
     },
-    { value: 'Postres', label: 'Postres', img: '/iconos/categoria-postres.png' },
-    { value: 'Bebidas', label: 'Bebidas', img: '/iconos/categoria-bebidas.png' },
+    { value: 'Postres', label: 'Postres', img: 'heroCake' },
+    { value: 'Bebidas', label: 'Bebidas', img: 'heroBeaker' },
   ];
 
   readonly maxPorProducto = MAX_UNIDADES_POR_PRODUCTO;
@@ -386,7 +387,7 @@ export class MenuClienteComponent implements OnInit {
   }
 
   imgIconoProducto(categoria: string): string {
-    return this.categoriasProducto.find((x) => x.value === categoria)?.img ?? '/iconos/lupa.png';
+    return this.categoriasProducto.find((x) => x.value === categoria)?.img ?? 'heroMagnifyingGlass';
   }
 
   formatoMoneda(valor: number): string {
@@ -396,12 +397,12 @@ export class MenuClienteComponent implements OnInit {
   primeraImagen(p: MenuProducto): string {
     const arr = p.imagesBase64;
     if (arr && arr.length > 0 && arr[0]) return arr[0];
-    return 'assets/no-image.png';
+    return '';
   }
 
   imagenesModal(p: MenuProducto): string[] {
     const arr = (p.imagesBase64 || []).filter((x) => !!x && String(x).trim().length > 0);
-    return arr.length > 0 ? arr : ['assets/no-image.png'];
+    return arr.length > 0 ? arr : [''];
   }
 
   seleccionarCategoria(val: string | 'ALL'): void {
@@ -613,7 +614,7 @@ export class MenuClienteComponent implements OnInit {
             productId: String(x.productId ?? ''),
             name: String(x.name ?? ''),
             unitPrice: Number(x.unitPrice) || 0,
-            thumbSrc: String(x.thumbSrc ?? 'assets/no-image.png'),
+            thumbSrc: String(x.thumbSrc ?? ''),
           }))
           .filter((x) => !!x.productId && !!x.name);
         this.sugerenciasCrossSell.set(normalized.slice(0, 3));

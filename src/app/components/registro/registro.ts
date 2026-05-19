@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { ConfigService } from '../../services/config.service';
 import { environment } from '@env/environment';
+import { NgIconComponent } from '@ng-icons/core';
 import {
   bloquearTeclasNoNumericas,
   errorCodigo6,
@@ -20,7 +21,7 @@ import {
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, NgIconComponent],
   templateUrl: './registro.component.html',
 })
 export class RegistroComponent implements OnInit {
@@ -43,7 +44,7 @@ export class RegistroComponent implements OnInit {
   };
 
   modal = { visible: false, tipo: 'info', titulo: '', mensaje: '', esExpirado: false };
-  logoSrc = '/iconos/candado.png';
+  logoSrc = '/mikunaigenlogo-borde.png';
   logoEsDelNegocio = false;
   tituloMarca = 'Mikunaigen';
 

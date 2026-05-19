@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, of, Subscription, timer } from 'rxjs';
@@ -7,7 +8,7 @@ import { IpStatusService } from '../../services/ip-status.service';
 @Component({
   selector: 'app-retenido',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgIconComponent],
   templateUrl: './retenido.component.html',
 })
 export class RetenidoComponent implements OnInit, OnDestroy {

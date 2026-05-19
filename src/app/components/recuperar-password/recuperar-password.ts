@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -16,7 +17,7 @@ import {
 @Component({
   selector: 'app-recuperar-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, NgIconComponent],
   templateUrl: './recuperar-password.component.html',
 })
 export class RecuperarPasswordComponent {

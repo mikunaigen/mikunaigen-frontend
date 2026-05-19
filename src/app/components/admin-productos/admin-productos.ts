@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -26,31 +27,31 @@ interface IaSlot {
 @Component({
   selector: 'app-admin-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './admin-productos.component.html',
 })
 export class AdminProductosComponent implements OnInit {
   readonly categoriasProducto: CatOpcion[] = [
-    { value: 'Entrada', label: 'Entrada', img: '/iconos/categoria-entrada.png' },
+    { value: 'Entrada', label: 'Entrada', img: 'heroQueueList' },
     {
       value: 'Plato Principal',
       label: 'Plato Principal',
-      img: '/iconos/categoria-plato-principal.png',
+      img: 'heroBeaker',
     },
-    { value: 'Postres', label: 'Postres', img: '/iconos/categoria-postres.png' },
-    { value: 'Bebidas', label: 'Bebidas', img: '/iconos/categoria-bebidas.png' },
+    { value: 'Postres', label: 'Postres', img: 'heroCake' },
+    { value: 'Bebidas', label: 'Bebidas', img: 'heroBeaker' },
   ];
 
   readonly categoriasIngrediente: CatOpcion[] = [
-    { value: 'Verduras', label: 'Verduras', img: '/iconos/categoria-verduras.png' },
-    { value: 'Carnes', label: 'Carnes', img: '/iconos/categoria-carnes.png' },
-    { value: 'Huevos', label: 'Huevos', img: '/iconos/categoria-huevos.png' },
-    { value: 'Marinos', label: 'Marinos', img: '/iconos/categoria-marinos.png' },
-    { value: 'Abarrotes', label: 'Abarrotes', img: '/iconos/categoria-abarrotes.png' },
-    { value: 'Lácteos', label: 'Lácteos', img: '/iconos/categoria-lacteos.png' },
-    { value: 'Bebidas', label: 'Bebidas', img: '/iconos/categoria-bebidas.png' },
-    { value: 'Frutas', label: 'Frutas', img: '/iconos/categoria-frutas.png' },
-    { value: 'Panadería', label: 'Panadería', img: '/iconos/categoria-panaderia.png' },
+    { value: 'Verduras', label: 'Verduras', img: 'heroSparkles' },
+    { value: 'Carnes', label: 'Carnes', img: 'heroFire' },
+    { value: 'Huevos', label: 'Huevos', img: 'heroCircleStack' },
+    { value: 'Marinos', label: 'Marinos', img: 'heroBeaker' },
+    { value: 'Abarrotes', label: 'Abarrotes', img: 'heroArchiveBox' },
+    { value: 'Lácteos', label: 'Lácteos', img: 'heroBeaker' },
+    { value: 'Bebidas', label: 'Bebidas', img: 'heroBeaker' },
+    { value: 'Frutas', label: 'Frutas', img: 'heroSparkles' },
+    { value: 'Panadería', label: 'Panadería', img: 'heroCake' },
   ];
 
   private readonly apiCatalogo = environment.apiUrl + '/catalogo';
@@ -707,12 +708,12 @@ export class AdminProductosComponent implements OnInit {
 
   imgIconoIngrediente(cat: string | undefined): string {
     const c = (cat || '').trim();
-    return this.categoriasIngrediente.find((x) => x.value === c)?.img ?? '/iconos/lupa.png';
+    return this.categoriasIngrediente.find((x) => x.value === c)?.img ?? 'heroMagnifyingGlass';
   }
 
   imgIconoProducto(cat: string | undefined): string {
     const c = (cat || '').trim();
-    return this.categoriasProducto.find((x) => x.value === c)?.img ?? '/iconos/lupa.png';
+    return this.categoriasProducto.find((x) => x.value === c)?.img ?? 'heroMagnifyingGlass';
   }
 
   get unidadAbastecerModal(): string {

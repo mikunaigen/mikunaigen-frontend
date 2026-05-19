@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -44,7 +45,7 @@ export interface CajaOrdenDetalle {
 @Component({
   selector: 'app-panel-caja',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, CompradorNavComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, CompradorNavComponent, NgIconComponent],
   templateUrl: './panel-caja.component.html',
   styleUrl: './panel-caja.css',
 })

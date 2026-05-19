@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -8,7 +9,7 @@ import { CartService } from '../../services/cart.service';
 @Component({
   selector: 'app-comprador-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgIconComponent],
   templateUrl: './comprador-nav.component.html',
 })
 export class CompradorNavComponent implements OnInit, OnDestroy {

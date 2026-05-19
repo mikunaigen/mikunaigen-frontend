@@ -10,11 +10,12 @@ import { CartService, type VerificarPreciosResponseDto } from '../../services/ca
 import { ConfigService } from '../../services/config.service';
 import { ThemeService } from '../../services/theme.service';
 import { environment } from '@env/environment';
+import { NgIconComponent } from '@ng-icons/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, NgIconComponent],
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit {

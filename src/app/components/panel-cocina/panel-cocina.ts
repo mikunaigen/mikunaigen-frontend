@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -38,7 +39,7 @@ interface CocinaOrdenCard {
 @Component({
   selector: 'app-panel-cocina',
   standalone: true,
-  imports: [CommonModule, RouterModule, LogoutButtonComponent, CompradorNavComponent],
+  imports: [CommonModule, RouterModule, LogoutButtonComponent, CompradorNavComponent, NgIconComponent],
   templateUrl: './panel-cocina.component.html',
   styleUrl: './panel-cocina.css',
 })

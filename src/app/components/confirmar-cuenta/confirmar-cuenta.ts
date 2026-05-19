@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -18,7 +19,7 @@ import {
 @Component({
   selector: 'app-confirmar-cuenta',
   standalone: true,
-  imports: [CommonModule, FormsModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './confirmar-cuenta.component.html',
 })
 export class ConfirmarCuentaComponent implements OnInit {

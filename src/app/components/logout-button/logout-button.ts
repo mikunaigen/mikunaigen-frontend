@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { NgIconComponent } from '@ng-icons/core';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { ThemeService } from '../../services/theme.service';
@@ -8,7 +9,7 @@ import { ThemeService } from '../../services/theme.service';
 @Component({
   selector: 'app-logout-button',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIconComponent],
   template: `
     <button
       type="button"
@@ -18,18 +19,16 @@ import { ThemeService } from '../../services/theme.service';
           ? 'border-white/40 bg-white/10 text-white hover:bg-white/20'
           : 'border-gray-300 bg-white text-secondary hover:bg-gray-50 dark:border-dark-border dark:bg-dark-surface dark:text-blue-300 dark:hover:bg-slate-800'
       "
-      class="inline-flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold shadow-sm transition sm:w-max"
+      class="inline-flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold shadow-sm transition sm:w-max dark:shadow-none"
     >
       <span class="rb-logo-chip !p-1" *ngIf="variant === 'on-light'">
-        <img src="/iconos/logout.png" alt="" width="16" height="16" class="h-4 w-4 object-contain" />
+        <ng-icon name="heroArrowRightOnRectangle" size="16" class="text-secondary dark:text-blue-400" />
       </span>
-      <img
+      <ng-icon
         *ngIf="variant === 'on-dark'"
-        src="/iconos/logout.png"
-        alt=""
-        width="16"
-        height="16"
-        class="h-4 w-4 object-contain"
+        name="heroArrowRightOnRectangle"
+        size="16"
+        class="text-white"
       />
       Cerrar sesión
     </button>

@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -43,7 +44,7 @@ interface BackupAutomationDto {
 @Component({
   selector: 'app-admin-respaldos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './admin-respaldos.component.html',
 })
 export class AdminRespaldosComponent implements OnInit {
@@ -135,10 +136,10 @@ export class AdminRespaldosComponent implements OnInit {
 
   iconoEstadoUltimo(): string {
     const t = this.textoEstadoUltimo();
-    if (t === 'Exitoso') return '/iconos/correcto-check-verde.png';
-    if (t === 'Fallido' || t === 'Cancelado') return '/iconos/error-rojo.png';
-    if (t === 'En proceso') return '/iconos/consulta-informacion-azul.png';
-    return '/iconos/advertencia-amarillo.png';
+    if (t === 'Exitoso') return 'heroCheckCircle';
+    if (t === 'Fallido' || t === 'Cancelado') return 'heroXCircle';
+    if (t === 'En proceso') return 'heroInformationCircle';
+    return 'heroExclamationTriangle';
   }
 
   cuandoUltimoIntento(): string {

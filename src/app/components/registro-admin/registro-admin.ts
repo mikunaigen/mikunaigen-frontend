@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -21,7 +22,7 @@ import {
 @Component({
   selector: 'app-registro-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './registro-admin.component.html',
 })
 export class RegistroAdminComponent {

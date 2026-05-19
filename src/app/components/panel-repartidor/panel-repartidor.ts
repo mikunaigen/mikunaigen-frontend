@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -57,6 +58,7 @@ interface RepartidorOrdenDetalle {
     LogoutButtonComponent,
     ThemeToggleComponent,
     CompradorNavComponent,
+    NgIconComponent,
   ],
   templateUrl: './panel-repartidor.component.html',
   styleUrl: './panel-repartidor.css',

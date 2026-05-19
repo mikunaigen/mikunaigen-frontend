@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -18,7 +19,7 @@ import { LogoutButtonComponent } from '../logout-button/logout-button';
 @Component({
   selector: 'app-setup-inicial',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
   templateUrl: './setup-inicial.component.html',
 })
 export class SetupInicialComponent implements OnInit {

@@ -2,7 +2,7 @@
   <nav class="rb-nav sticky top-0 z-50 flex flex-col items-stretch gap-3 bg-secondary text-white shadow-sm dark:shadow-none sm:flex-row sm:items-center sm:justify-between">
     <div class="flex items-center gap-2">
       <span class="rb-logo-chip !bg-white/15 !p-1.5">
-        <img src="/iconos/plato.png" alt="" width="28" height="28" class="h-7 w-7 object-contain" />
+        <ng-icon name="heroBeaker" size="28" class="h-7 w-7 object-contain text-secondary dark:text-blue-400" />
       </span>
       <h1 class="rb-nav-title text-white">Panel de Cocina</h1>
     </div>
@@ -115,7 +115,7 @@
   <div *ngIf="modal() as m" class="rb-modal-backdrop z-[75]">
     <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <img src="/iconos/error-rojo.png" alt="" width="48" height="48" class="h-12 w-12 object-contain" />
+        <ng-icon name="heroXCircle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ m.titulo }}</h3>
       <p class="mb-8 text-sm font-medium text-danger dark:text-red-200 lg:text-base">{{ m.mensaje }}</p>

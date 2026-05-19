@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { NgIconComponent } from '@ng-icons/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -40,7 +41,7 @@ interface SeguimientoListasResp {
 @Component({
   selector: 'app-seguimiento-pedido',
   standalone: true,
-  imports: [CommonModule, RouterModule, LogoutButtonComponent, CompradorNavComponent],
+  imports: [CommonModule, RouterModule, LogoutButtonComponent, CompradorNavComponent, NgIconComponent],
   templateUrl: './seguimiento-pedido.component.html',
 })
 export class SeguimientoPedidoComponent implements OnInit {
@@ -73,12 +74,12 @@ export class SeguimientoPedidoComponent implements OnInit {
   errorCalif = '';
 
   readonly pasos = [
-    { key: 'VALIDANDO_PAGO', label1: 'Validando', label2: 'Pago', icon: '/iconos/documento.png' },
-    { key: 'PAGO_VALIDADO', label1: 'Pago', label2: 'Validado', icon: '/iconos/billetes-soles.png' },
-    { key: 'EN_COCINA', label1: 'En', label2: 'Cocina', icon: '/iconos/plato.png' },
-    { key: 'PREPARADO', label1: 'Preparado', label2: '', icon: '/iconos/destellos-recomendaciones.png' },
-    { key: 'EN_CAMINO', label1: 'En', label2: 'Camino', icon: '/iconos/camion-abastecer-ingrediente.png' },
-    { key: 'ENTREGADO', label1: 'Entregado', label2: '', icon: '/iconos/like-pulgar.png' },
+    { key: 'VALIDANDO_PAGO', label1: 'Validando', label2: 'Pago', icon: 'heroDocumentText' },
+    { key: 'PAGO_VALIDADO', label1: 'Pago', label2: 'Validado', icon: 'heroBanknotes' },
+    { key: 'EN_COCINA', label1: 'En', label2: 'Cocina', icon: 'heroBeaker' },
+    { key: 'PREPARADO', label1: 'Preparado', label2: '', icon: 'heroSparkles' },
+    { key: 'EN_CAMINO', label1: 'En', label2: 'Camino', icon: 'heroTruck' },
+    { key: 'ENTREGADO', label1: 'Entregado', label2: '', icon: 'heroHandThumbUp' },
   ] as const;
 
   ngOnInit(): void {
