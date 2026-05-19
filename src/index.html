@@ -3,6 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <title>Mikunaigen</title>
+    <script>
+      if (window.global === undefined) {
+        window.global = window;
+      }
+    </script>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="/mikunaigenlogo.png" />
