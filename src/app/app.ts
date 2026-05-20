@@ -9,7 +9,6 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
 import { AuthService } from './services/auth.service';
 import { WebsocketService } from './services/websocket.service';
 import { MaintenanceService } from './services/maintenance.service';
-import { CartService } from './services/cart.service';
 import { ThemeService } from './services/theme.service';
 
 @Component({
@@ -17,8 +16,18 @@ import { ThemeService } from './services/theme.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, ThemeToggleComponent, NgIconComponent],
   template: `
-    <router-outlet></router-outlet>
-    <app-theme-toggle *ngIf="!hideThemeFab" />
+    <div class="rb-mesh-bg" aria-hidden="true">
+      <div class="rb-mesh-bg__stage">
+        <span class="rb-mesh-blob rb-mesh-blob--1"></span>
+        <span class="rb-mesh-blob rb-mesh-blob--2"></span>
+        <span class="rb-mesh-blob rb-mesh-blob--3"></span>
+        <span class="rb-mesh-blob rb-mesh-blob--4"></span>
+        <span class="rb-mesh-blob rb-mesh-blob--5"></span>
+      </div>
+    </div>
+    <div class="rb-app-content">
+      <router-outlet></router-outlet>
+      <app-theme-toggle *ngIf="!hideThemeFab" />
     <div
       *ngIf="backendStatus.isOffline()"
       class="rb-modal-backdrop z-[100] cursor-wait items-start overflow-y-auto pt-[min(15vh,5rem)] sm:items-center sm:pt-0"
@@ -111,6 +120,7 @@ import { ThemeService } from './services/theme.service';
         </div>
       </div>
     </div>
+    </div>
   `,
 })
 export class App implements OnInit, OnDestroy {
@@ -141,7 +151,6 @@ export class App implements OnInit, OnDestroy {
     private authService: AuthService,
     private websocketService: WebsocketService,
     readonly maintenance: MaintenanceService,
-    private cart: CartService,
     private theme: ThemeService,
   ) {}
 
@@ -217,7 +226,6 @@ export class App implements OnInit, OnDestroy {
 
   cerrarSesionPorSuspension(): void {
     this.cuentaSuspendidaModal = false;
-    this.cart.limpiarLocal();
     this.authService.clearSession();
     this.theme.onLogout();
     this.wsCuentaSub?.unsubscribe();

@@ -4,7 +4,11 @@
   >
     <div class="flex flex-wrap items-center gap-2">
       <span class="rb-logo-chip !bg-white/15 !p-1.5 dark:!bg-white/10">
-        <ng-icon name="heroBanknotes" size="28" class="h-7 w-7 object-contain sm:h-8 sm:w-8 text-secondary dark:text-blue-400" />
+        <ng-icon
+          name="heroBanknotes"
+          size="28"
+          class="h-7 w-7 object-contain sm:h-8 sm:w-8 text-secondary dark:text-blue-400"
+        />
       </span>
       <h1 class="rb-nav-title text-white">Panel de Caja</h1>
     </div>
@@ -18,10 +22,19 @@
     <div
       class="relative mb-6 overflow-hidden rounded-2xl border border-secondary/20 bg-gray-50/50 p-4 dark:border-dark-border dark:bg-dark-surface sm:mb-8 sm:p-6 lg:p-8"
     >
-      <div class="absolute left-0 top-0 h-full w-0.5 bg-secondary/35 dark:bg-blue-400/40" aria-hidden="true"></div>
-      <h2 class="mb-1 flex flex-wrap items-center gap-2 text-2xl font-semibold tracking-tight text-secondary sm:text-3xl lg:text-4xl dark:text-blue-400">
+      <div
+        class="absolute left-0 top-0 h-full w-0.5 bg-secondary/35 dark:bg-blue-400/40"
+        aria-hidden="true"
+      ></div>
+      <h2
+        class="mb-1 flex flex-wrap items-center gap-2 text-2xl font-semibold tracking-tight text-secondary sm:text-3xl lg:text-4xl dark:text-blue-400"
+      >
         <span class="rb-logo-chip !p-1">
-          <ng-icon name="heroShoppingCart" size="28" class="h-7 w-7 object-contain sm:h-8 sm:w-8 text-secondary dark:text-blue-400" />
+          <ng-icon
+            name="heroShoppingCart"
+            size="28"
+            class="h-7 w-7 object-contain sm:h-8 sm:w-8 text-secondary dark:text-blue-400"
+          />
         </span>
         Pagos por validar
       </h2>
@@ -35,13 +48,19 @@
         class="flex flex-col gap-3 border-b border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5 dark:border-dark-border"
       >
         <h3 class="text-lg font-semibold text-secondary sm:text-xl dark:text-blue-400">Bandeja</h3>
-        <span class="text-xs font-medium text-neutral-muted dark:text-dark-text-muted" *ngIf="!cargandoLista() && !errorLista()">
+        <span
+          class="text-xs font-medium text-neutral-muted dark:text-dark-text-muted"
+          *ngIf="!cargandoLista() && !errorLista()"
+        >
           {{ ordenes().length }} pendiente(s)
         </span>
       </div>
 
-      <div *ngIf="cargandoLista()" class="px-4 py-10 text-center text-sm text-neutral-muted dark:text-dark-text-muted sm:px-6">
-        Cargando órdenes…
+      <div
+        *ngIf="cargandoLista()"
+        class="px-4 py-10 text-center text-sm text-neutral-muted dark:text-dark-text-muted sm:px-6"
+      >
+        Cargando órdenes...
       </div>
 
       <p
@@ -58,7 +77,10 @@
         No hay pedidos esperando validación de pago.
       </p>
 
-      <div *ngIf="!cargandoLista() && !errorLista() && ordenes().length > 0" class="hidden overflow-x-auto md:block">
+      <div
+        *ngIf="!cargandoLista() && !errorLista() && ordenes().length > 0"
+        class="hidden overflow-x-auto md:block"
+      >
         <table class="w-full min-w-[720px] border-collapse text-left text-sm">
           <thead>
             <tr class="rb-table-header-row">
@@ -75,17 +97,25 @@
               class="cursor-pointer border-b border-gray-100 transition hover:bg-gray-50/80 dark:border-dark-border dark:hover:bg-slate-900/50"
               (click)="abrirDetalle(o.id)"
             >
-              <td class="p-4 font-mono text-xs sm:text-sm">#{{ o.id.slice(0, 8) }}…</td>
-              <td class="p-4 text-neutral-strong dark:text-dark-text-muted">{{ formatoFecha(o.createdAt) }}</td>
+              <td class="p-4 font-mono text-xs sm:text-sm">#{{ o.id.slice(0, 8) }}...</td>
+              <td class="p-4 text-neutral-strong dark:text-dark-text-muted">
+                {{ formatoFecha(o.createdAt) }}
+              </td>
               <td class="p-4 font-medium">{{ o.clienteNombre || '—' }}</td>
-              <td class="p-4 font-semibold text-success dark:text-emerald-400">{{ formatoMoneda(o.total) }}</td>
+              <td class="p-4 font-semibold text-success dark:text-emerald-400">
+                {{ formatoMoneda(o.total) }}
+              </td>
               <td class="p-4 text-right">
                 <button
                   type="button"
                   (click)="abrirDetalle(o.id); $event.stopPropagation()"
                   class="inline-flex min-h-11 items-center gap-2 rounded-xl border border-secondary/30 bg-white px-3 py-2 text-sm font-semibold text-secondary shadow-sm transition hover:bg-gray-50 dark:border-blue-400/35 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700"
                 >
-                  <ng-icon name="heroInformationCircle" size="18" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    name="heroInformationCircle"
+                    size="18"
+                    class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                  />
                   Revisar
                 </button>
               </td>
@@ -94,24 +124,41 @@
         </table>
       </div>
 
-      <div *ngIf="!cargandoLista() && !errorLista() && ordenes().length > 0" class="block space-y-4 p-4 md:hidden">
+      <div
+        *ngIf="!cargandoLista() && !errorLista() && ordenes().length > 0"
+        class="block space-y-4 p-4 md:hidden"
+      >
         <article
           *ngFor="let o of ordenes()"
           class="rb-card cursor-pointer p-4 shadow-sm transition hover:shadow-md dark:hover:shadow-none"
           (click)="abrirDetalle(o.id)"
         >
-          <div class="flex items-start justify-between gap-2 border-b border-gray-100 pb-3 dark:border-dark-border">
-            <span class="font-mono text-xs text-neutral-strong dark:text-dark-text-muted">#{{ o.id.slice(0, 8) }}</span>
-            <span class="text-sm font-semibold text-success dark:text-emerald-400">{{ formatoMoneda(o.total) }}</span>
+          <div
+            class="flex items-start justify-between gap-2 border-b border-gray-100 pb-3 dark:border-dark-border"
+          >
+            <span class="font-mono text-xs text-neutral-strong dark:text-dark-text-muted"
+              >#{{ o.id.slice(0, 8) }}</span
+            >
+            <span class="text-sm font-semibold text-success dark:text-emerald-400">{{
+              formatoMoneda(o.total)
+            }}</span>
           </div>
-          <p class="mt-3 text-sm font-medium text-gray-900 dark:text-dark-text-strong">{{ o.clienteNombre || '—' }}</p>
-          <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">{{ formatoFecha(o.createdAt) }}</p>
+          <p class="mt-3 text-sm font-medium text-gray-900 dark:text-dark-text-strong">
+            {{ o.clienteNombre || '—' }}
+          </p>
+          <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
+            {{ formatoFecha(o.createdAt) }}
+          </p>
           <button
             type="button"
             (click)="abrirDetalle(o.id); $event.stopPropagation()"
             class="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-secondary/30 py-2.5 text-sm font-semibold text-secondary dark:border-blue-400/35 dark:text-blue-300"
           >
-            <ng-icon name="heroInformationCircle" size="18" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+            <ng-icon
+              name="heroInformationCircle"
+              size="18"
+              class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+            />
             Revisar pedido
           </button>
         </article>
@@ -126,17 +173,28 @@
     aria-modal="true"
     aria-label="Detalle del pedido"
   >
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px] dark:bg-black/60" (click)="cerrarDetalle()"></div>
+    <div
+      class="absolute inset-0 bg-black/40 backdrop-blur-[2px] dark:bg-black/60"
+      (click)="cerrarDetalle()"
+    ></div>
     <aside
       class="absolute right-0 top-0 flex h-full w-full max-w-lg flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-dark-border dark:bg-dark-surface"
       (click)="$event.stopPropagation()"
     >
-      <div class="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-dark-border sm:px-5">
+      <div
+        class="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-dark-border sm:px-5"
+      >
         <div class="flex items-center gap-2">
           <span class="rb-logo-chip !p-1">
-            <ng-icon name="heroUsers" size="22" class="h-6 w-6 object-contain text-secondary dark:text-blue-400" />
+            <ng-icon
+              name="heroUsers"
+              size="22"
+              class="h-6 w-6 object-contain text-secondary dark:text-blue-400"
+            />
           </span>
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Detalle del pedido</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+            Detalle del pedido
+          </h2>
         </div>
         <button
           type="button"
@@ -149,27 +207,50 @@
       </div>
 
       <div class="flex-1 overflow-y-auto px-4 py-4 sm:px-5">
-        <div *ngIf="cargandoDetalle()" class="py-10 text-center text-sm text-neutral-muted dark:text-dark-text-muted">
-          Cargando…
+        <div
+          *ngIf="cargandoDetalle()"
+          class="py-10 text-center text-sm text-neutral-muted dark:text-dark-text-muted"
+        >
+          Cargando...
         </div>
 
         <ng-container *ngIf="!cargandoDetalle() && detalle() as d">
-          <p class="font-mono text-xs text-neutral-muted dark:text-dark-text-muted">ID: {{ d.id }}</p>
-          <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">{{ formatoFecha(d.createdAt) }}</p>
+          <p class="font-mono text-xs text-neutral-muted dark:text-dark-text-muted">
+            ID: {{ d.id }}
+          </p>
+          <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
+            {{ formatoFecha(d.createdAt) }}
+          </p>
 
-          <div class="mt-6 rounded-xl border border-gray-100 bg-gray-50/80 p-4 dark:border-dark-border dark:bg-slate-900/50">
-            <p class="text-xs font-semibold uppercase tracking-wide text-secondary dark:text-blue-300">Cliente</p>
+          <div
+            class="mt-6 rounded-xl border border-gray-100 bg-gray-50/80 p-4 dark:border-dark-border dark:bg-slate-900/50"
+          >
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-secondary dark:text-blue-300"
+            >
+              Cliente
+            </p>
             <p class="mt-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
               {{ d.clienteNombres }} {{ d.clienteApellidos }}
             </p>
-            <p class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted" *ngIf="d.clienteEmail">
+            <p
+              class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted"
+              *ngIf="d.clienteEmail"
+            >
               {{ d.clienteEmail }}
             </p>
-            <p class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted" *ngIf="d.clienteTelefono">
+            <p
+              class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted"
+              *ngIf="d.clienteTelefono"
+            >
               {{ d.clienteTelefono }}
             </p>
             <div class="mt-3 flex gap-2 border-t border-gray-200 pt-3 dark:border-dark-border">
-              <ng-icon name="heroChartPie" size="18" class="mt-0.5 h-4 w-4 shrink-0 opacity-70 text-secondary dark:text-blue-400" />
+              <ng-icon
+                name="heroChartPie"
+                size="18"
+                class="mt-0.5 h-4 w-4 shrink-0 opacity-70 text-secondary dark:text-blue-400"
+              />
               <p class="text-sm leading-relaxed text-neutral-strong dark:text-dark-text-muted">
                 <span class="font-medium text-gray-800 dark:text-slate-200">Entrega:</span>
                 {{ d.direccionEntrega || '—' }}
@@ -181,28 +262,50 @@
             class="mt-4 flex items-center justify-between gap-3 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 dark:border-orange-400/25 dark:bg-orange-950/20"
           >
             <div class="flex items-center gap-2">
-              <ng-icon name="heroBanknotes" size="24" class="h-6 w-6 object-contain text-secondary dark:text-blue-400" />
-              <span class="text-sm font-medium text-neutral-strong dark:text-dark-text-muted">Total a pagar</span>
+              <ng-icon
+                name="heroBanknotes"
+                size="24"
+                class="h-6 w-6 object-contain text-secondary dark:text-blue-400"
+              />
+              <span class="text-sm font-medium text-neutral-strong dark:text-dark-text-muted"
+                >Total a pagar</span
+              >
             </div>
-            <span class="text-lg font-bold text-primary dark:text-orange-300">{{ formatoMoneda(d.total) }}</span>
+            <span class="text-lg font-bold text-primary dark:text-orange-300">{{
+              formatoMoneda(d.total)
+            }}</span>
           </div>
 
           <div class="mt-6">
-            <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-secondary dark:text-blue-300">Ítems</p>
+            <p
+              class="mb-2 text-xs font-semibold uppercase tracking-wide text-secondary dark:text-blue-300"
+            >
+              Ítems
+            </p>
             <ul class="space-y-2">
               <li
                 *ngFor="let line of d.lineas"
                 class="flex justify-between gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2 text-sm dark:border-dark-border dark:bg-slate-900/40"
               >
-                <span class="min-w-0 font-medium text-gray-900 dark:text-dark-text-strong">{{ line.nombreProducto }} × {{ line.cantidad }}</span>
-                <span class="shrink-0 font-semibold text-gray-800 dark:text-slate-200">{{ formatoMoneda(line.subtotal) }}</span>
+                <span class="min-w-0 font-medium text-gray-900 dark:text-dark-text-strong"
+                  >{{ line.nombreProducto }} × {{ line.cantidad }}</span
+                >
+                <span class="shrink-0 font-semibold text-gray-800 dark:text-slate-200">{{
+                  formatoMoneda(line.subtotal)
+                }}</span>
               </li>
             </ul>
           </div>
 
           <div class="mt-6">
-            <p class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-secondary dark:text-blue-300">
-              <ng-icon name="heroCheckCircle" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+            <p
+              class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-secondary dark:text-blue-300"
+            >
+              <ng-icon
+                name="heroCheckCircle"
+                size="16"
+                class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+              />
               Comprobante
             </p>
             <div
@@ -224,12 +327,20 @@
             >
               Ampliar imagen
             </button>
-            <p *ngIf="!d.comprobanteDataUrl" class="text-sm text-neutral-muted dark:text-dark-text-muted">Sin imagen.</p>
+            <p
+              *ngIf="!d.comprobanteDataUrl"
+              class="text-sm text-neutral-muted dark:text-dark-text-muted"
+            >
+              Sin imagen.
+            </p>
           </div>
         </ng-container>
       </div>
 
-      <div class="border-t border-gray-200 bg-gray-50/90 px-4 py-4 dark:border-dark-border dark:bg-slate-900/80 sm:px-5" *ngIf="!cargandoDetalle() && detalle()">
+      <div
+        class="border-t border-gray-200 bg-gray-50/90 px-4 py-4 dark:border-dark-border dark:bg-slate-900/80 sm:px-5"
+        *ngIf="!cargandoDetalle() && detalle()"
+      >
         <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
           <button
             type="button"
@@ -253,19 +364,42 @@
   </div>
 
   <div *ngIf="modalConfirmarValidar()" class="rb-modal-backdrop z-[70]">
-    <div class="rb-modal max-w-md text-left shadow-lg dark:shadow-none" (click)="$event.stopPropagation()">
-      <div class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border">
-        <ng-icon name="heroCheckCircle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+    <div
+      class="rb-modal max-w-md text-left shadow-lg dark:shadow-none"
+      (click)="$event.stopPropagation()"
+    >
+      <div
+        class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border"
+      >
+        <ng-icon
+          name="heroCheckCircle"
+          size="48"
+          class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
-      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Confirmar validación</h3>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Confirmar validación
+      </h3>
       <p class="mb-6 text-sm text-neutral-strong dark:text-dark-text-muted lg:text-base">
-        ¿Confirmar validación del pedido<span *ngIf="ordenSeleccionadaId() as oid"> #{{ oid.slice(0, 8) }}</span>?
+        ¿Confirmar validación del pedido<span *ngIf="ordenSeleccionadaId() as oid">
+          #{{ oid.slice(0, 8) }}</span
+        >?
       </p>
       <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
-        <button type="button" (click)="cerrarModalConfirmarValidar()" class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto">
+        <button
+          type="button"
+          (click)="cerrarModalConfirmarValidar()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
           Cancelar
         </button>
-        <button type="button" (click)="confirmarValidar()" class="rb-btn-success order-1 w-full sm:order-2 sm:w-auto">Confirmar</button>
+        <button
+          type="button"
+          (click)="confirmarValidar()"
+          class="rb-btn-success order-1 w-full sm:order-2 sm:w-auto"
+        >
+          Confirmar
+        </button>
       </div>
     </div>
   </div>
@@ -274,11 +408,22 @@
     *ngIf="modalRechazar()"
     class="rb-modal-backdrop z-[70] items-start overflow-y-auto py-8 sm:items-center sm:py-10"
   >
-    <div class="rb-modal max-w-lg text-left shadow-lg dark:shadow-none" (click)="$event.stopPropagation()">
-      <div class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border">
-        <ng-icon name="heroExclamationTriangle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+    <div
+      class="rb-modal max-w-lg text-left shadow-lg dark:shadow-none"
+      (click)="$event.stopPropagation()"
+    >
+      <div
+        class="rb-modal-icon !mb-5 !bg-white !text-3xl !ring-2 !ring-gray-200 dark:!bg-white dark:!ring-dark-border"
+      >
+        <ng-icon
+          name="heroExclamationTriangle"
+          size="48"
+          class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
-      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Rechazar pago</h3>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Rechazar pago
+      </h3>
       <p class="mb-3 text-sm text-neutral-strong dark:text-dark-text-muted">
         Indica el motivo. Se enviará al cliente por correo.
       </p>
@@ -289,10 +434,14 @@
         [(ngModel)]="motivoRechazo"
         rows="4"
         class="rb-input rb-focus-primary mb-6 min-h-[7rem] w-full resize-y"
-        placeholder="Ej.: El monto transferido es menor al total…"
+        placeholder="Ej.: El monto transferido es menor al total..."
       ></textarea>
       <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
-        <button type="button" (click)="cerrarModalRechazar()" class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto">
+        <button
+          type="button"
+          (click)="cerrarModalRechazar()"
+          class="rb-btn-secondary order-2 w-full sm:order-1 sm:w-auto"
+        >
           Volver
         </button>
         <button
@@ -331,11 +480,21 @@
   <div *ngIf="modalError() as err" class="rb-modal-backdrop z-[75]">
     <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <ng-icon name="heroXCircle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon
+          name="heroXCircle"
+          size="48"
+          class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
-      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ err.titulo }}</h3>
-      <p class="mb-8 text-sm font-medium text-danger dark:text-red-200 lg:text-base">{{ err.mensaje }}</p>
-      <button type="button" (click)="cerrarModalError()" class="rb-btn-danger w-full sm:w-max">Entendido</button>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        {{ err.titulo }}
+      </h3>
+      <p class="mb-8 text-sm font-medium text-danger dark:text-red-200 lg:text-base">
+        {{ err.mensaje }}
+      </p>
+      <button type="button" (click)="cerrarModalError()" class="rb-btn-danger w-full sm:w-max">
+        Entendido
+      </button>
     </div>
   </div>
 </div>

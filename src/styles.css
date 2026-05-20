@@ -18,17 +18,133 @@
   --color-dark-text-muted: #94a3b8;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
-  @apply bg-white text-gray-900 antialiased dark:bg-dark-bg dark:text-dark-text-strong;
+  @apply min-h-full bg-transparent text-gray-900 antialiased dark:text-dark-text-strong;
+}
+
+.rb-mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+  background: #f4f7fb;
+}
+
+.dark .rb-mesh-bg {
+  background: #0f172a;
+}
+
+.rb-mesh-bg__stage {
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+}
+/* ─── Mesh Blobs ─────────────────────────────────────────────── */
+.rb-mesh-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(72px);           /* ↓ de 88px → ahorra GPU */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  /* will-change eliminado → evita capas extra de composición */
+}
+
+/* Pastel suave — luz */
+.rb-mesh-blob--1 {
+  top: -6%;  left: -4%;
+  width: 44vw; height: 40vw;
+  background: rgba(221, 214, 254, 0.52);   /* lavanda */
+  animation: rb-mesh-drift-1 22s ease-in-out infinite alternate;
+}
+.rb-mesh-blob--2 {
+  top: -4%;  right: -8%;
+  width: 42vw; height: 46vw;
+  background: rgba(186, 230, 253, 0.46);   /* celeste */
+  animation: rb-mesh-drift-2 25s ease-in-out infinite alternate;
+  animation-delay: -7s;
+}
+.rb-mesh-blob--3 {
+  bottom: -12%; right: -4%;
+  width: 46vw; height: 38vw;
+  background: rgba(187, 247, 208, 0.42);   /* menta */
+  animation: rb-mesh-drift-3 21s ease-in-out infinite alternate;
+  animation-delay: -14s;
+}
+.rb-mesh-blob--4 {
+  bottom: -8%;  left: -10%;
+  width: 40vw; height: 44vw;
+  background: rgba(253, 213, 204, 0.46);   /* melocotón */
+  animation: rb-mesh-drift-4 26s ease-in-out infinite alternate;
+  animation-delay: -4s;
+}
+.rb-mesh-blob--5 {
+  top: 30%; left: 26%;
+  width: 38vw; height: 36vw;
+  background: rgba(254, 240, 138, 0.28);   /* amarillo suave */
+  animation: rb-mesh-drift-5 23s ease-in-out infinite alternate;
+  animation-delay: -11s;
+}
+
+/* Pastel oscuro — dark mode */
+.dark .rb-mesh-blob--1 { background: rgba(139, 92, 246, 0.10); }
+.dark .rb-mesh-blob--2 { background: rgba(56, 189, 248, 0.09); }
+.dark .rb-mesh-blob--3 { background: rgba(52, 211, 153, 0.08); }
+.dark .rb-mesh-blob--4 { background: rgba(251, 113, 133, 0.08); }
+.dark .rb-mesh-blob--5 { background: rgba(250, 204, 21,  0.06); }
+
+/* Keyframes — movimientos menores → menos repaint */
+@keyframes rb-mesh-drift-1 {
+  from { transform: translate3d(0,     0,    0) scale(1);    }
+  to   { transform: translate3d(9vw,   7vh,  0) scale(1.10); }
+}
+@keyframes rb-mesh-drift-2 {
+  from { transform: translate3d(0,     0,    0) scale(1);    }
+  to   { transform: translate3d(-8vw,  9vh,  0) scale(1.08); }
+}
+@keyframes rb-mesh-drift-3 {
+  from { transform: translate3d(0,     0,    0) scale(1.04); }
+  to   { transform: translate3d(-7vw, -6vh,  0) scale(0.94); }
+}
+@keyframes rb-mesh-drift-4 {
+  from { transform: translate3d(0,     0,    0) scale(1);    }
+  to   { transform: translate3d(8vw,  -7vh,  0) scale(1.09); }
+}
+@keyframes rb-mesh-drift-5 {
+  from { transform: translate3d(0,     0,    0) scale(0.96); }
+  to   { transform: translate3d(-6vw,  5vh,  0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-mesh-blob { animation: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-mesh-blob {
+    animation: none !important;
+  }
+}
+
+.rb-app-content {
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 @layer components {
   .rb-page {
-    @apply min-h-screen bg-white text-gray-900 antialiased dark:bg-dark-bg dark:text-dark-text-strong;
+    @apply min-h-screen bg-transparent text-gray-900 antialiased dark:text-dark-text-strong;
   }
 
   .rb-page-center {
-    @apply flex min-h-screen items-center justify-center bg-white px-4 py-8 sm:px-6 sm:py-12 lg:px-8 dark:bg-dark-bg dark:text-dark-text-strong;
+    @apply flex min-h-screen items-center justify-center bg-transparent px-4 py-8 sm:px-6 sm:py-12 lg:px-8 dark:text-dark-text-strong;
   }
 
   .rb-container {
@@ -142,7 +258,11 @@ body {
   }
 
   .rb-modal-icon {
-    @apply mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-50 text-2xl font-semibold ring-1 ring-gray-200/80 dark:bg-white dark:ring-dark-border;
+    @apply mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-50 text-2xl font-semibold ring-1 ring-gray-200/80 dark:bg-slate-800 dark:ring-dark-border;
+  }
+
+  .rb-modal-icon ng-icon {
+    @apply text-secondary dark:text-blue-400;
   }
 
   .rb-divider {
@@ -150,10 +270,64 @@ body {
   }
 
   .rb-logo-chip {
-    @apply inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm ring-1 ring-black/5 dark:ring-white/10;
+    @apply inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm ring-1 ring-black/5 dark:bg-slate-800 dark:ring-dark-border;
+  }
+
+  .rb-logo-chip ng-icon {
+    @apply text-secondary dark:text-blue-400;
+  }
+
+  .rb-feature-icon {
+    @apply mb-4 flex h-13 w-13 items-center justify-center rounded-full bg-gray-100 ring-1 ring-gray-200/60 sm:mb-5 sm:h-14 sm:w-14 dark:bg-slate-800 dark:ring-dark-border;
+  }
+
+  .rb-feature-icon ng-icon {
+    @apply text-secondary dark:text-blue-400;
+  }
+
+  .rb-feature-icon--primary ng-icon {
+    @apply text-primary dark:text-orange-400;
   }
 
   .rb-table-header-row {
     @apply border-b border-gray-200 bg-gray-50/80 text-xs font-medium uppercase tracking-wide text-neutral-strong dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-muted;
+  }
+
+  /* Iconos Heroicons en zona app (usuario/admin); excluye login, registro y páginas públicas */
+  .rb-page:not(.rb-page--auth) ng-icon,
+  .rb-nav ng-icon {
+    @apply text-secondary dark:text-blue-400;
+  }
+
+  .rb-page:not(.rb-page--auth) .text-danger ng-icon,
+  .rb-page:not(.rb-page--auth) ng-icon.text-danger,
+  .rb-page:not(.rb-page--auth) .text-danger > ng-icon {
+    @apply text-danger dark:text-red-400;
+  }
+
+  .rb-page:not(.rb-page--auth) .text-success ng-icon,
+  .rb-page:not(.rb-page--auth) ng-icon.text-success,
+  .rb-page:not(.rb-page--auth) .text-success > ng-icon {
+    @apply text-success dark:text-emerald-400;
+  }
+
+  .rb-page:not(.rb-page--auth) .text-warning ng-icon,
+  .rb-page:not(.rb-page--auth) ng-icon.text-warning,
+  .rb-page:not(.rb-page--auth) .text-warning > ng-icon {
+    @apply text-warning dark:text-amber-400;
+  }
+
+  .rb-page:not(.rb-page--auth) .text-primary ng-icon,
+  .rb-page:not(.rb-page--auth) ng-icon.text-primary,
+  .rb-page:not(.rb-page--auth) .text-primary > ng-icon,
+  .rb-page:not(.rb-page--auth) .rb-feature-icon--primary ng-icon {
+    @apply text-primary dark:text-orange-400;
+  }
+
+  .rb-page:not(.rb-page--auth) .text-white ng-icon,
+  .rb-page:not(.rb-page--auth) ng-icon.text-white,
+  .rb-nav .text-white ng-icon,
+  .rb-nav ng-icon.text-white {
+    @apply text-white;
   }
 }

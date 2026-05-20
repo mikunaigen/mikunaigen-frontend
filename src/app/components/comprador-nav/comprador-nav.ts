@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgIconComponent } from '@ng-icons/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-comprador-nav',
@@ -14,17 +13,16 @@ import { CartService } from '../../services/cart.service';
 })
 export class CompradorNavComponent implements OnInit, OnDestroy {
   @Input() variant: 'primary' | 'secondary' = 'primary';
-  @Output() carritoClick = new EventEmitter<void>();
 
-  readonly cart = inject(CartService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private routerSub?: Subscription;
 
   rutaPanelTrabajo: string | null = null;
-  mostrarMenu = true;
+  esAdmin = false;
+  mostrarInicio = true;
+  mostrarFormular = false;
   mostrarMiPerfil = true;
-  carritoModoPanel = false;
   mostrarPanelTrabajo = false;
   mostrarObjetivoNutricional = false;
   mostrarParametrizacion = false;
@@ -35,18 +33,10 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(() => this.actualizarVisibilidad());
-    const uid = this.auth.getSession()?.userId;
-    if (uid && this.cart.puedeSincronizar()) {
-      this.cart.cargarDesdeServidor(uid).subscribe();
-    }
   }
 
   ngOnDestroy(): void {
     this.routerSub?.unsubscribe();
-  }
-
-  onCarritoClick(): void {
-    this.carritoClick.emit();
   }
 
   claseEnlace(): string {
@@ -58,9 +48,10 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
 
   private actualizarVisibilidad(): void {
     const actual = this.router.url.split('?')[0];
-    this.mostrarMenu = actual !== '/usuario-home';
+    this.esAdmin = this.auth.esAdministrador();
+    this.mostrarInicio = !this.esAdmin && actual !== '/usuario-home';
+    this.mostrarFormular = this.esAdmin;
     this.mostrarMiPerfil = actual !== '/mi-perfil';
-    this.carritoModoPanel = false;
     this.mostrarPanelTrabajo =
       !!this.rutaPanelTrabajo && actual !== this.rutaPanelTrabajo;
     this.mostrarObjetivoNutricional =

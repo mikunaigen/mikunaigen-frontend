@@ -16,7 +16,7 @@
     </header>
 
     <p *ngIf="cargando() && vacio()" class="text-sm text-neutral-muted dark:text-dark-text-muted">
-      Verificando dataset…
+      Verificando dataset...
     </p>
 
     <section
@@ -30,16 +30,13 @@
       <p class="mt-2 text-sm text-neutral-muted dark:text-dark-text-muted">
         Sube un archivo CSV (máx. 5 MB) con las columnas exactas del formato MINSA.
       </p>
-      <p class="mt-3 break-all rounded-lg bg-gray-50 p-3 text-left text-xs text-neutral-strong dark:bg-slate-900/50 dark:text-slate-300">
+      <p
+        class="mt-3 break-all rounded-lg bg-gray-50 p-3 text-left text-xs text-neutral-strong dark:bg-slate-900/50 dark:text-slate-300"
+      >
         {{ columnasCsv }}
       </p>
       <div class="mt-6 flex flex-col items-center gap-3">
-        <input
-          type="file"
-          accept=".csv,text/csv"
-          (change)="onArchivoCsv($event)"
-          class="text-sm"
-        />
+        <input type="file" accept=".csv,text/csv" (change)="onArchivoCsv($event)" class="text-sm" />
         <button
           type="button"
           (click)="importarCsv()"
@@ -47,7 +44,7 @@
           class="rb-btn rb-btn-primary inline-flex min-h-11 items-center gap-2 px-6"
         >
           <ng-icon name="heroArrowUpTray" size="18" />
-          {{ subiendoCsv() ? 'Importando…' : 'Importar CSV' }}
+          {{ subiendoCsv() ? 'Importando...' : 'Importar CSV' }}
         </button>
       </div>
     </section>
@@ -90,7 +87,9 @@
           </div>
         </div>
         <div *ngIf="filtroCampo" class="mt-4">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-muted">Rango de valor</p>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-muted">
+            Rango de valor
+          </p>
           <div class="flex flex-wrap gap-2">
             <button
               type="button"
@@ -153,12 +152,12 @@
             class="rb-btn rb-btn-primary inline-flex min-h-10 items-center gap-2"
           >
             <ng-icon name="heroCheckCircle" size="18" />
-            {{ guardando() ? 'Guardando…' : 'Guardar cambios' }}
+            {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>
       </div>
 
-      <p *ngIf="cargando()" class="text-sm text-neutral-muted">Cargando tabla…</p>
+      <p *ngIf="cargando()" class="text-sm text-neutral-muted">Cargando tabla...</p>
 
       <div *ngIf="!cargando()" class="rb-card overflow-hidden">
         <div class="overflow-x-auto">
@@ -168,7 +167,9 @@
                 <th class="sticky left-0 z-10 bg-gray-100 px-2 py-2 dark:bg-slate-900">Código</th>
                 <th class="px-2 py-2">Grupo</th>
                 <th class="min-w-[10rem] px-2 py-2">Nombre</th>
-                <th *ngFor="let c of camposNumericos" class="whitespace-nowrap px-2 py-2">{{ c.label }}</th>
+                <th *ngFor="let c of camposNumericos" class="whitespace-nowrap px-2 py-2">
+                  {{ c.label }}
+                </th>
                 <th *ngFor="let m of meses" class="px-1 py-2 text-center">{{ m.label }}</th>
                 <th class="min-w-[8rem] px-2 py-2">Modificado</th>
               </tr>
@@ -194,7 +195,9 @@
                     (ngModelChange)="marcarDirty(row)"
                     class="rb-input min-w-[7rem] py-1 text-xs"
                   >
-                    <option *ngFor="let cat of metaFiltros()?.categoriasPermitidas" [value]="cat">{{ cat }}</option>
+                    <option *ngFor="let cat of metaFiltros()?.categoriasPermitidas" [value]="cat">
+                      {{ cat }}
+                    </option>
                   </select>
                 </td>
                 <td class="px-1 py-1">
@@ -225,7 +228,9 @@
                 </td>
                 <td class="px-2 py-1 text-[10px] text-neutral-muted dark:text-dark-text-muted">
                   <span *ngIf="row.modificado_por_nombre">{{ row.modificado_por_nombre }}</span>
-                  <span *ngIf="row.fecha_modificacion" class="block">{{ row.fecha_modificacion | date: 'short' }}</span>
+                  <span *ngIf="row.fecha_modificacion" class="block">{{
+                    row.fecha_modificacion | date: 'short'
+                  }}</span>
                 </td>
               </tr>
             </tbody>
@@ -251,6 +256,8 @@
     />
     <h3 class="mt-3 text-lg font-semibold">{{ m.titulo }}</h3>
     <p class="mt-2 text-sm text-neutral-muted">{{ m.mensaje }}</p>
-    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">Aceptar</button>
+    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">
+      Aceptar
+    </button>
   </div>
 </div>

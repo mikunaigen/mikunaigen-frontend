@@ -12,9 +12,6 @@ import { AdminProductosComponent } from './components/admin-productos/admin-prod
 import { AdminDatasetAlimentosComponent } from './components/admin-dataset-alimentos/admin-dataset-alimentos';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 import { AdminRespaldosComponent } from './components/admin-respaldos/admin-respaldos';
-import { CheckoutComponent } from './components/checkout/checkout';
-import { PedidoEnviadoComponent } from './components/pedido-enviado/pedido-enviado';
-import { SeguimientoPedidoComponent } from './components/seguimiento-pedido/seguimiento-pedido';
 import { InicioRedirectComponent } from './components/inicio-redirect/inicio-redirect';
 import { PresentacionComponent } from './components/presentacion/presentacion';
 import { RetenidoComponent } from './components/retenido/retenido';
@@ -79,21 +76,6 @@ export const routes: Routes = [
     path: 'admin-solicitudes-plan',
     component: AdminSolicitudesPlanComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
-  },
-  {
-    path: 'checkout',
-    component: CheckoutComponent,
-    canActivate: [ipBlockGuard, configRequiredGuard, clienteGuard],
-  },
-  {
-    path: 'pedido-enviado',
-    component: PedidoEnviadoComponent,
-    canActivate: [ipBlockGuard, configRequiredGuard, clienteGuard],
-  },
-  {
-    path: 'seguimiento-pedido',
-    component: SeguimientoPedidoComponent,
-    canActivate: [ipBlockGuard, configRequiredGuard, clienteGuard],
   },
   {
     path: 'dashboard',

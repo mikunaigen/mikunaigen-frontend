@@ -18,7 +18,9 @@
     </header>
 
     <section class="rb-card rb-card-pad mb-6">
-      <h3 class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+      <h3
+        class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong"
+      >
         <ng-icon name="heroDocumentText" size="18" />
         Cargar perfil de ejemplo
       </h3>
@@ -26,7 +28,7 @@
         <div class="min-w-0 flex-1">
           <label class="rb-label !normal-case">Perfil predefinido</label>
           <select [(ngModel)]="perfilSeleccionado" class="rb-input rb-focus-secondary w-full">
-            <option value="">Selecciona un caso…</option>
+            <option value="">Selecciona un caso...</option>
             <option *ngFor="let p of perfiles" [value]="p.id">{{ p.nombre }}</option>
           </select>
         </div>
@@ -44,11 +46,15 @@
           *ngFor="let p of perfiles"
           class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs dark:border-dark-border dark:bg-slate-900/40"
         >
-          <span class="flex items-center gap-2 font-semibold text-gray-900 dark:text-dark-text-strong">
+          <span
+            class="flex items-center gap-2 font-semibold text-gray-900 dark:text-dark-text-strong"
+          >
             <ng-icon [name]="iconoPerfil(p)" size="16" class="text-secondary dark:text-blue-400" />
             {{ p.nombre }}
           </span>
-          <span class="mt-1 block text-neutral-muted dark:text-dark-text-muted">{{ p.descripcion }}</span>
+          <span class="mt-1 block text-neutral-muted dark:text-dark-text-muted">{{
+            p.descripcion
+          }}</span>
         </li>
       </ul>
     </section>
@@ -59,7 +65,9 @@
           <div class="mb-1 flex items-start justify-between gap-2">
             <label [for]="campo.key" class="rb-label !normal-case !mb-0">
               {{ campo.label }}
-              <span class="font-normal text-neutral-muted dark:text-dark-text-muted">({{ campo.unidad }})</span>
+              <span class="font-normal text-neutral-muted dark:text-dark-text-muted"
+                >({{ campo.unidad }})</span
+              >
             </label>
             <span class="group relative shrink-0">
               <ng-icon
@@ -90,13 +98,18 @@
             [class.border-red-500]="errorCampo(campo)"
             [class.dark:border-red-400]="errorCampo(campo)"
           />
-          <p *ngIf="errorCampo(campo) as err" class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">
+          <p
+            *ngIf="errorCampo(campo) as err"
+            class="mt-1 text-xs font-medium text-red-600 dark:text-red-400"
+          >
             {{ err }}
           </p>
         </div>
       </div>
 
-      <div class="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 dark:border-dark-border sm:flex-row sm:items-center sm:justify-between">
+      <div
+        class="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 dark:border-dark-border sm:flex-row sm:items-center sm:justify-between"
+      >
         <a
           routerLink="/parametrizacion"
           class="inline-flex items-center justify-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400"
@@ -117,7 +130,7 @@
           class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
         >
           <ng-icon name="heroCheckCircle" size="18" />
-          {{ validando() ? 'Validando…' : 'Confirmar objetivo' }}
+          {{ validando() ? 'Validando...' : 'Confirmar objetivo' }}
         </button>
       </div>
     </form>
@@ -129,7 +142,11 @@
   class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
   (click)="cerrarModal()"
 >
-  <div class="rb-card rb-card-pad max-w-md text-center" role="dialog" (click)="$event.stopPropagation()">
+  <div
+    class="rb-card rb-card-pad max-w-md text-center"
+    role="dialog"
+    (click)="$event.stopPropagation()"
+  >
     <ng-icon
       [name]="m.tipo === 'ok' ? 'heroCheckCircle' : 'heroExclamationTriangle'"
       size="40"
@@ -139,6 +156,8 @@
     />
     <h3 class="mt-3 text-lg font-semibold">{{ m.titulo }}</h3>
     <p class="mt-2 text-sm text-neutral-muted dark:text-dark-text-muted">{{ m.mensaje }}</p>
-    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">Aceptar</button>
+    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">
+      Aceptar
+    </button>
   </div>
 </div>

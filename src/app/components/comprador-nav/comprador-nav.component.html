@@ -1,71 +1,38 @@
 <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
   <a *ngIf="mostrarParametrizacion" routerLink="/parametrizacion" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroAdjustmentsHorizontal" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon name="heroAdjustmentsHorizontal" size="18" class="h-5 w-5 object-contain" />
     </span>
     Parametrización
   </a>
   <a *ngIf="mostrarObjetivoNutricional" routerLink="/objetivo-nutricional" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroBeaker" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon name="heroBeaker" size="18" class="h-5 w-5 object-contain" />
     </span>
     Objetivo nutricional
   </a>
-  <a *ngIf="mostrarMenu" routerLink="/usuario-home" [ngClass]="claseEnlace()">
+  <button
+    *ngIf="mostrarFormular"
+    type="button"
+    [ngClass]="claseEnlace()"
+    class="cursor-default opacity-95"
+    aria-disabled="true"
+    title="Próximamente"
+  >
     <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroHome" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon name="heroDocumentText" size="18" class="h-5 w-5 object-contain" />
+    </span>
+    Formular
+  </button>
+  <a *ngIf="mostrarInicio" routerLink="/usuario-home" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <ng-icon name="heroHome" size="18" class="h-5 w-5 object-contain" />
     </span>
     Inicio
   </a>
-  <a
-    *ngIf="!carritoModoPanel"
-    routerLink="/usuario-home"
-    [ngClass]="claseEnlace()"
-    class="relative"
-  >
-    <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroShoppingCart" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-    </span>
-    Carrito
-    @if (cart.totalUnidades() > 0) {
-      <span
-        class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-none text-white shadow-sm"
-        aria-live="polite"
-      >
-        {{ cart.totalUnidades() }}
-      </span>
-    }
-  </a>
-  <button
-    *ngIf="carritoModoPanel"
-    type="button"
-    (click)="onCarritoClick()"
-    [ngClass]="claseEnlace()"
-    class="relative"
-    aria-label="Abrir carrito de compras"
-  >
-    <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroShoppingCart" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-    </span>
-    Carrito
-    @if (cart.totalUnidades() > 0) {
-      <span
-        class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-none text-white shadow-sm"
-        aria-live="polite"
-      >
-        {{ cart.totalUnidades() }}
-      </span>
-    }
-  </button>
-  <a routerLink="/seguimiento-pedido" [ngClass]="claseEnlace()">
-    <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroInformationCircle" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-    </span>
-    Mis pedidos
-  </a>
   <a *ngIf="mostrarMiPerfil" routerLink="/mi-perfil" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroUsers" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon name="heroUsers" size="18" class="h-5 w-5 object-contain" />
     </span>
     Mi perfil
   </a>
@@ -75,7 +42,7 @@
     [ngClass]="claseEnlace()"
   >
     <span class="rb-logo-chip !p-1">
-      <ng-icon name="heroCog6Tooth" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon name="heroCog6Tooth" size="18" class="h-5 w-5 object-contain" />
     </span>
     Panel de trabajo
   </a>

@@ -18,8 +18,8 @@
             >
             <app-logout-button variant="on-dark" />
           </div>
-      </div>
-      
+        </div>
+
         <div
           class="-mx-1 flex gap-1 overflow-x-auto border-b border-white/20 pb-0 px-1 text-sm sm:mx-0 sm:px-0"
         >
@@ -33,8 +33,8 @@
             "
             class="min-h-11 shrink-0 whitespace-nowrap px-4 pb-3 pt-1 transition"
           >
-          1. Ingredientes (Insumos)
-        </button>
+            1. Ingredientes (Insumos)
+          </button>
           <button
             type="button"
             (click)="cambiarPestana('productos')"
@@ -46,9 +46,9 @@
             class="min-h-11 shrink-0 whitespace-nowrap px-4 pb-3 pt-1 transition"
           >
             2. Productos (Recetas)
-        </button>
+          </button>
+        </div>
       </div>
-    </div>
 
       <div
         *ngIf="pestanaActiva === 'ingredientes'"
@@ -83,7 +83,11 @@
                   class="flex min-h-11 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-semibold transition sm:text-sm"
                 >
                   <span class="rb-logo-chip !p-1.5">
-                    <ng-icon [name]="c.img" size="32" class="h-8 w-8  text-secondary dark:text-blue-400" />
+                    <ng-icon
+                      [name]="c.img"
+                      size="32"
+                      class="h-8 w-8 text-secondary dark:text-blue-400"
+                    />
                   </span>
                   <span>{{ c.label }}</span>
                 </button>
@@ -98,11 +102,11 @@
                 name="iu"
                 class="rb-input rb-focus-secondary text-neutral-strong dark:text-slate-200"
               >
-              <option value="UNIDADES">Unidades (U)</option>
-              <option value="GR">Gramos (gr)</option>
-              <option value="ML">Mililitros (ml)</option>
-            </select>
-          </div>
+                <option value="UNIDADES">Unidades (U)</option>
+                <option value="GR">Gramos (gr)</option>
+                <option value="ML">Mililitros (ml)</option>
+              </select>
+            </div>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
               <div>
@@ -136,9 +140,9 @@
                   autocomplete="off"
                 />
               </div>
-          </div>
+            </div>
 
-          <div>
+            <div>
               <label class="rb-label">Foto del insumo (obligatoria, 1 foto)</label>
               <input
                 type="file"
@@ -156,19 +160,19 @@
                   class="h-full w-full rounded-lg object-cover"
                 />
               </div>
-          </div>
+            </div>
 
             <button type="submit" [disabled]="cargando" class="rb-btn-secondary w-full sm:w-max">
               <span
                 *ngIf="cargando"
                 class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
               ></span>
-            Guardar Ingrediente
-          </button>
-        </form>
-      </div>
+              Guardar Ingrediente
+            </button>
+          </form>
+        </div>
 
-      <div>
+        <div>
           <h3
             class="mb-4 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong"
           >
@@ -201,7 +205,11 @@
               class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
             >
               <span class="rb-logo-chip !p-1">
-                <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
+                <ng-icon
+                  [name]="c.img"
+                  size="20"
+                  class="h-5 w-5 text-secondary dark:text-blue-400"
+                />
               </span>
               <span>{{ c.label }}</span>
             </button>
@@ -211,7 +219,11 @@
           <div class="relative mb-3">
             <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
               <span class="rb-logo-chip !p-1">
-                <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroMagnifyingGlass"
+                  size="20"
+                  class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+                />
               </span>
             </span>
             <input
@@ -220,7 +232,7 @@
               name="busqAlmacen"
               [(ngModel)]="busquedaAlmacen"
               class="rb-input rb-focus-secondary w-full pl-12"
-              placeholder="Escribe para filtrar por nombre…"
+              placeholder="Escribe para filtrar por nombre..."
               autocomplete="off"
             />
           </div>
@@ -241,7 +253,11 @@
               class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
             >
               <span class="rb-logo-chip !p-1">
-                <ng-icon name="heroTruck" size="22" class="h-6 w-6 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroTruck"
+                  size="22"
+                  class="h-6 w-6 object-contain text-secondary dark:text-blue-400"
+                />
               </span>
               Abastecer stock
             </button>
@@ -271,7 +287,11 @@
                 class="absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-secondary shadow-sm transition hover:bg-gray-50 dark:border-dark-border dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Editar insumo"
               >
-                <ng-icon name="heroPencilSquare" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroPencilSquare"
+                  size="16"
+                  class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                />
               </button>
               <button
                 type="button"
@@ -279,7 +299,11 @@
                 class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-danger text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Eliminar insumo"
               >
-                <ng-icon name="heroTrash" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroTrash"
+                  size="16"
+                  class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                />
               </button>
               <button
                 type="button"
@@ -289,11 +313,7 @@
                 <div
                   class="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:h-14 sm:w-14"
                 >
-                  <img
-                    [src]="ing.imageBase64 || ''"
-                    alt=""
-                    class="h-full w-full object-cover"
-                  />
+                  <img [src]="ing.imageBase64 || ''" alt="" class="h-full w-full object-cover" />
                 </div>
                 <div class="min-w-0 flex-1">
                   <p
@@ -357,7 +377,11 @@
                     class="flex min-h-11 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-semibold transition sm:text-sm"
                   >
                     <span class="rb-logo-chip !p-1.5">
-                      <ng-icon [name]="c.img" size="32" class="h-8 w-8  text-secondary dark:text-blue-400" />
+                      <ng-icon
+                        [name]="c.img"
+                        size="32"
+                        class="h-8 w-8 text-secondary dark:text-blue-400"
+                      />
                     </span>
                     <span>{{ c.label }}</span>
                   </button>
@@ -376,7 +400,7 @@
                   class="rb-input rb-focus-primary"
                   autocomplete="off"
                 />
-    </div>
+              </div>
 
               <div>
                 <label class="rb-label !normal-case">Descripción</label>
@@ -387,7 +411,7 @@
                 ></textarea>
               </div>
 
-        <div>
+              <div>
                 <label class="rb-label">Fotos del Plato (Puedes seleccionar varias)</label>
                 <input
                   type="file"
@@ -409,7 +433,11 @@
                       class="absolute -right-1 -top-1 flex h-6 w-6 min-h-6 min-w-6 items-center justify-center rounded-full bg-danger text-xs text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                       aria-label="Eliminar imagen"
                     >
-                      <ng-icon name="heroTrash" size="12" class="h-3 w-3 object-contain text-secondary dark:text-blue-400" />
+                      <ng-icon
+                        name="heroTrash"
+                        size="12"
+                        class="h-3 w-3 object-contain text-secondary dark:text-blue-400"
+                      />
                     </button>
                   </div>
                 </div>
@@ -455,7 +483,11 @@
                 class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
               >
                 <span class="rb-logo-chip !p-1">
-                  <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    [name]="c.img"
+                    size="20"
+                    class="h-5 w-5 text-secondary dark:text-blue-400"
+                  />
                 </span>
                 <span>{{ c.label }}</span>
               </button>
@@ -465,7 +497,11 @@
             <div class="relative mb-3">
               <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
                 <span class="rb-logo-chip !p-1">
-                  <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    name="heroMagnifyingGlass"
+                    size="20"
+                    class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+                  />
                 </span>
               </span>
               <input
@@ -474,7 +510,7 @@
                 name="busqReceta"
                 [(ngModel)]="busquedaReceta"
                 class="rb-input rb-focus-primary w-full pl-12"
-                placeholder="Escribe para filtrar por nombre…"
+                placeholder="Escribe para filtrar por nombre..."
                 autocomplete="off"
               />
             </div>
@@ -522,7 +558,12 @@
                   type="text"
                   inputmode="decimal"
                   [value]="cantidadRecetaText"
-                  (input)="cantidadRecetaText = filtrarDecimalPositivo($event, unidadInsumoSeleccionado === 'UNIDADES' ? 0 : 2)"
+                  (input)="
+                    cantidadRecetaText = filtrarDecimalPositivo(
+                      $event,
+                      unidadInsumoSeleccionado === 'UNIDADES' ? 0 : 2
+                    )
+                  "
                   (keydown)="bloquearNoEuler($event, unidadInsumoSeleccionado !== 'UNIDADES')"
                   class="rb-input rb-focus-primary w-full text-center sm:text-left"
                   autocomplete="off"
@@ -544,7 +585,11 @@
                 aria-label="Añadir insumo a la receta"
               >
                 <span class="rb-logo-chip !p-1">
-                  <ng-icon name="heroPlus" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    name="heroPlus"
+                    size="18"
+                    class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+                  />
                 </span>
               </button>
             </div>
@@ -576,7 +621,11 @@
                     class="rounded p-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/40"
                     aria-label="Quitar insumo"
                   >
-                    <ng-icon name="heroTrash" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                    <ng-icon
+                      name="heroTrash"
+                      size="16"
+                      class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                    />
                   </button>
                 </div>
               </div>
@@ -630,7 +679,11 @@
               class="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs font-semibold transition sm:gap-2 sm:px-3 sm:text-sm"
             >
               <span class="rb-logo-chip !p-1">
-                <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
+                <ng-icon
+                  [name]="c.img"
+                  size="20"
+                  class="h-5 w-5 text-secondary dark:text-blue-400"
+                />
               </span>
               <span>{{ c.label }}</span>
             </button>
@@ -640,7 +693,11 @@
           <div class="relative mb-4">
             <span class="pointer-events-none absolute left-3 top-1/2 z-[1] -translate-y-1/2">
               <span class="rb-logo-chip !p-1">
-                <ng-icon name="heroMagnifyingGlass" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroMagnifyingGlass"
+                  size="20"
+                  class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+                />
               </span>
             </span>
             <input
@@ -649,7 +706,7 @@
               name="busqCatalogo"
               [(ngModel)]="busquedaCatalogo"
               class="rb-input rb-focus-primary w-full pl-12"
-              placeholder="Escribe para filtrar por nombre…"
+              placeholder="Escribe para filtrar por nombre..."
               autocomplete="off"
             />
           </div>
@@ -673,7 +730,11 @@
                 class="absolute left-2 top-2 z-10 flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-primary shadow-sm transition hover:bg-gray-50 dark:border-dark-border dark:bg-slate-800 dark:text-orange-300 dark:hover:bg-slate-700 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Editar producto"
               >
-                <ng-icon name="heroPencilSquare" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroPencilSquare"
+                  size="16"
+                  class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                />
               </button>
               <button
                 type="button"
@@ -681,16 +742,16 @@
                 class="absolute right-2 top-2 z-10 flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-lg bg-danger text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                 aria-label="Eliminar producto"
               >
-                <ng-icon name="heroTrash" size="16" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                <ng-icon
+                  name="heroTrash"
+                  size="16"
+                  class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                />
               </button>
               <div
                 class="mb-3 mt-11 aspect-square w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-slate-900"
               >
-                <img
-                  [src]="prod.imagesBase64[0] || ''"
-                  alt=""
-                  class="h-full w-full object-cover"
-                />
+                <img [src]="prod.imagesBase64[0] || ''" alt="" class="h-full w-full object-cover" />
               </div>
               <h4
                 class="mb-1 text-sm font-semibold leading-tight text-gray-900 lg:text-base dark:text-dark-text-strong"
@@ -718,14 +779,17 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
   <div *ngIf="modalOrdenBloqueo.visible" class="rb-modal-backdrop z-[70]">
     <div class="rb-modal max-w-md">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <ng-icon name="heroXCircle" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon
+          name="heroXCircle"
+          size="48"
+          class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
         No se puede eliminar
@@ -837,9 +901,9 @@
         >
           Eliminar insumo
         </button>
-              </div>
-            </div>
-          </div>
+      </div>
+    </div>
+  </div>
 
   <div *ngIf="modalEditarIngrediente.visible" class="rb-modal-backdrop z-[62]">
     <div
@@ -875,7 +939,11 @@
               class="flex min-h-11 items-center gap-2 rounded-xl border p-2 text-left text-xs font-semibold transition"
             >
               <span class="rb-logo-chip !p-1">
-                <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
+                <ng-icon
+                  [name]="c.img"
+                  size="20"
+                  class="h-5 w-5 text-secondary dark:text-blue-400"
+                />
               </span>
               {{ c.label }}
             </button>
@@ -1049,7 +1117,11 @@
                 class="flex min-h-11 items-center gap-2 rounded-xl border p-2 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span class="rb-logo-chip !p-1">
-                  <ng-icon [name]="c.img" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    [name]="c.img"
+                    size="20"
+                    class="h-5 w-5 text-secondary dark:text-blue-400"
+                  />
                 </span>
                 {{ c.label }}
               </button>
@@ -1099,12 +1171,16 @@
                   class="absolute -right-1 -top-1 flex h-6 w-6 min-h-6 min-w-6 items-center justify-center rounded-full bg-danger text-xs text-white opacity-100 shadow-sm transition hover:opacity-95 sm:opacity-0 sm:group-hover:opacity-100"
                   aria-label="Quitar imagen"
                 >
-                  <ng-icon name="heroTrash" size="20" class="h-3 w-3 object-contain text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    name="heroTrash"
+                    size="20"
+                    class="h-3 w-3 object-contain text-secondary dark:text-blue-400"
+                  />
                 </button>
               </div>
             </div>
+          </div>
         </div>
-      </div>
 
         <div
           class="min-w-0 rounded-2xl border border-primary/15 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10 sm:p-5"
@@ -1165,7 +1241,11 @@
             <div class="relative mb-2">
               <span class="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2">
                 <span class="rb-logo-chip !p-0.5">
-                  <ng-icon name="heroMagnifyingGlass" size="20" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    name="heroMagnifyingGlass"
+                    size="20"
+                    class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                  />
                 </span>
               </span>
               <input
@@ -1204,7 +1284,12 @@
                 <input
                   type="text"
                   [value]="editCantidadRecetaText"
-                  (input)="editCantidadRecetaText = filtrarDecimalPositivo($event, unidadInsumoSeleccionadoEdit === 'UNIDADES' ? 0 : 2)"
+                  (input)="
+                    editCantidadRecetaText = filtrarDecimalPositivo(
+                      $event,
+                      unidadInsumoSeleccionadoEdit === 'UNIDADES' ? 0 : 2
+                    )
+                  "
                   (keydown)="bloquearNoEuler($event, unidadInsumoSeleccionadoEdit !== 'UNIDADES')"
                   class="rb-input rb-focus-primary w-full text-sm"
                   name="editCantRec"
@@ -1216,7 +1301,11 @@
                 class="inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 dark:shadow-none sm:w-auto"
               >
                 <span class="rb-logo-chip !p-1">
-                  <ng-icon name="heroPlus" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+                  <ng-icon
+                    name="heroPlus"
+                    size="20"
+                    class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+                  />
                 </span>
               </button>
             </div>
@@ -1239,7 +1328,11 @@
                     (click)="quitarInsumoEdit(idx)"
                     class="min-h-8 min-w-8 rounded p-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/40"
                   >
-                    <ng-icon name="heroTrash" size="20" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
+                    <ng-icon
+                      name="heroTrash"
+                      size="20"
+                      class="h-4 w-4 object-contain text-secondary dark:text-blue-400"
+                    />
                   </button>
                 </div>
               </div>
@@ -1247,7 +1340,7 @@
           </div>
         </div>
       </div>
-      
+
       <div
         class="mt-6 flex flex-col gap-2 border-t border-gray-200 pt-4 dark:border-dark-border sm:flex-row sm:justify-end"
       >
@@ -1278,7 +1371,11 @@
     <div class="rb-modal max-w-md !p-5 text-left sm:!p-8" (click)="$event.stopPropagation()">
       <div class="mb-4 flex items-start gap-3">
         <span class="rb-logo-chip !p-1.5 shrink-0">
-          <ng-icon name="heroTruck" size="28" class="h-7 w-7 object-contain text-secondary dark:text-blue-400" />
+          <ng-icon
+            name="heroTruck"
+            size="28"
+            class="h-7 w-7 object-contain text-secondary dark:text-blue-400"
+          />
         </span>
         <div class="min-w-0">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
@@ -1381,9 +1478,11 @@
   <div *ngIf="modal.visible" class="rb-modal-backdrop z-[80]">
     <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
       <div class="rb-modal-icon !mb-6 !text-3xl">
-        <ng-icon [name]="
-            modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'
-          " size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon
+          [name]="modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'"
+          size="48"
+          class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
         {{ modal.titulo }}
@@ -1405,8 +1504,8 @@
           class="w-full sm:w-max"
           [ngClass]="modal.tipo === 'error' ? 'rb-btn-danger' : 'rb-btn-secondary'"
         >
-        Entendido
-      </button>
+          Entendido
+        </button>
       </div>
     </div>
   </div>

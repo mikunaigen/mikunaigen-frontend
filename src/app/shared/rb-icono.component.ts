@@ -13,7 +13,7 @@ import { NgIconComponent } from '@ng-icons/core';
       [class.justify-center]="chip"
       [class.rounded-full]="chip"
       [class.bg-gray-100]="chip"
-      [class.dark:bg-white]="chip"
+      [class.dark:bg-slate-800]="chip"
     >
       <ng-icon [name]="nombre" [size]="tamano" [class]="clases" />
     </span>

@@ -319,7 +319,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.cargando = false;
-          this.abrirModal('error', 'Error', err.error?.message || 'No se pudo generar un nuevo código.');
+          this.abrirModal(
+            'error',
+            'Error',
+            err.error?.message || 'No se pudo generar un nuevo código.',
+          );
         },
       });
   }
@@ -428,7 +432,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.wsSub?.unsubscribe();
     this.pollSub?.unsubscribe();
     this.countdownSub?.unsubscribe();
-    this.abrirModal('exito', 'Cuenta activada', 'Tu cuenta fue activada correctamente. Redirigiendo al inicio de sesión…');
+    this.abrirModal(
+      'exito',
+      'Cuenta activada',
+      'Tu cuenta fue activada correctamente. Redirigiendo al inicio de sesión...',
+    );
     setTimeout(() => this.router.navigate(['/login']), 2500);
   }
 

@@ -104,10 +104,6 @@ export class AuthService {
     return null;
   }
 
-  puedeComprar(): boolean {
-    return this.isLoggedIn() && this.esUsuarioFormulacion();
-  }
-
   obtenerEstadoUsuarios(): Observable<EstadoUsuariosDto> {
     return this.http.get<EstadoUsuariosDto>(`${environment.apiUrl}/auth/estado-usuarios`);
   }

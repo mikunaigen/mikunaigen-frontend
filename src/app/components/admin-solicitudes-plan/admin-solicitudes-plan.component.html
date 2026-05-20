@@ -9,7 +9,7 @@
           <ng-icon name="heroArrowLeft" size="16" />
           Panel
         </a>
-        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Gestión de usuarios</h1>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Gestión de Usuarios</h1>
         <p class="rb-kicker mt-1">Cuentas, suscripciones y solicitudes de cambio de plan</p>
       </div>
       <app-logout-button />
@@ -63,7 +63,7 @@
               type="search"
               [(ngModel)]="filtroBusqueda"
               class="rb-input w-full"
-              placeholder="Escribe para filtrar…"
+              placeholder="Escribe para filtrar..."
               (keyup.enter)="cargarUsuarios()"
             />
           </div>
@@ -86,7 +86,11 @@
             </select>
           </div>
         </div>
-        <button type="button" class="rb-btn-secondary mt-4 w-full min-h-11 sm:w-max" (click)="cargarUsuarios()">
+        <button
+          type="button"
+          class="rb-btn-secondary mt-4 w-full min-h-11 sm:w-max"
+          (click)="cargarUsuarios()"
+        >
           <span class="inline-flex items-center gap-2">
             <ng-icon name="heroMagnifyingGlass" size="18" />
             Aplicar filtros
@@ -94,13 +98,18 @@
         </button>
       </div>
 
-      <p *ngIf="cargandoUsuarios()" class="text-center text-sm text-neutral-muted dark:text-dark-text-muted">
-        Cargando usuarios…
+      <p
+        *ngIf="cargandoUsuarios()"
+        class="text-center text-sm text-neutral-muted dark:text-dark-text-muted"
+      >
+        Cargando usuarios...
       </p>
 
       <div class="hidden overflow-x-auto md:block" *ngIf="!cargandoUsuarios()">
         <table class="rb-card w-full min-w-[720px] overflow-hidden text-left text-sm">
-          <thead class="bg-gray-50 text-xs uppercase text-neutral-muted dark:bg-slate-900 dark:text-dark-text-muted">
+          <thead
+            class="bg-gray-50 text-xs uppercase text-neutral-muted dark:bg-slate-900 dark:text-dark-text-muted"
+          >
             <tr>
               <th class="px-4 py-3">Usuario</th>
               <th class="px-4 py-3">Contacto</th>
@@ -124,7 +133,9 @@
                       class="inline-flex h-2 w-2 shrink-0 rounded-full bg-amber-500"
                       title="Solicitud de cambio pendiente"
                     ></span>
-                    <span class="font-medium text-gray-900 dark:text-dark-text-strong">{{ u.nombre }}</span>
+                    <span class="font-medium text-gray-900 dark:text-dark-text-strong">{{
+                      u.nombre
+                    }}</span>
                   </div>
                 </td>
                 <td class="px-4 py-3 text-neutral-strong dark:text-slate-300">
@@ -152,7 +163,9 @@
                     {{ u.estadoCuenta }}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-neutral-muted">{{ u.fechaRegistro | date: 'shortDate' }}</td>
+                <td class="px-4 py-3 text-neutral-muted">
+                  {{ u.fechaRegistro | date: 'shortDate' }}
+                </td>
                 <td class="px-4 py-3">
                   <div class="flex flex-wrap justify-end gap-2">
                     <button
@@ -189,13 +202,18 @@
                   </div>
                 </td>
               </tr>
-              <tr *ngIf="usuarioExpandido() === u.id" class="border-t border-gray-100 dark:border-dark-border">
+              <tr
+                *ngIf="usuarioExpandido() === u.id"
+                class="border-t border-gray-100 dark:border-dark-border"
+              >
                 <td colspan="6" class="bg-gray-50 px-4 py-4 dark:bg-slate-900/50">
                   <ng-container *ngIf="u.solicitudPendiente as sol">
                     <div
                       class="mb-4 rounded-xl border border-amber-400/40 bg-amber-50/80 p-4 dark:border-amber-500/30 dark:bg-amber-950/20"
                     >
-                      <p class="mb-2 flex items-center gap-2 font-semibold text-amber-900 dark:text-amber-100">
+                      <p
+                        class="mb-2 flex items-center gap-2 font-semibold text-amber-900 dark:text-amber-100"
+                      >
                         <ng-icon name="heroExclamationTriangle" size="20" />
                         Solicitud de cambio a {{ sol.rolSolicitado }}
                       </p>
@@ -207,7 +225,7 @@
                           *ngIf="estaCargandoComprobante(sol.id)"
                           class="text-sm text-neutral-muted"
                         >
-                          Cargando comprobante…
+                          Cargando comprobante...
                         </p>
                         <app-imagen-preview
                           *ngIf="urlComprobante(sol.id) as url"
@@ -217,13 +235,21 @@
                         />
                       </div>
                       <div class="flex flex-col gap-2 sm:flex-row">
-                        <button type="button" class="rb-btn-success min-h-11 flex-1" (click)="solicitarAprobar(u)">
+                        <button
+                          type="button"
+                          class="rb-btn-success min-h-11 flex-1"
+                          (click)="solicitarAprobar(u)"
+                        >
                           <span class="inline-flex items-center justify-center gap-2">
                             <ng-icon name="heroCheckCircle" size="18" />
                             Aprobar
                           </span>
                         </button>
-                        <button type="button" class="rb-btn-neutral min-h-11 flex-1" (click)="solicitarRechazoUsuario(u)">
+                        <button
+                          type="button"
+                          class="rb-btn-neutral min-h-11 flex-1"
+                          (click)="solicitarRechazoUsuario(u)"
+                        >
                           <span class="inline-flex items-center justify-center gap-2">
                             <ng-icon name="heroXCircle" size="18" />
                             Rechazar
@@ -232,7 +258,10 @@
                       </div>
                     </div>
                   </ng-container>
-                  <p *ngIf="!u.solicitudPendiente" class="text-sm text-neutral-muted dark:text-dark-text-muted">
+                  <p
+                    *ngIf="!u.solicitudPendiente"
+                    class="text-sm text-neutral-muted dark:text-dark-text-muted"
+                  >
                     Sin solicitud de cambio de plan pendiente.
                   </p>
                 </td>
@@ -271,12 +300,23 @@
           <p class="text-sm">
             Plan: <strong>{{ u.estadoSuscripcion }}</strong> · {{ u.estadoCuenta }}
           </p>
-          <p class="mt-1 text-xs text-neutral-muted">Registro: {{ u.fechaRegistro | date: 'short' }}</p>
+          <p class="mt-1 text-xs text-neutral-muted">
+            Registro: {{ u.fechaRegistro | date: 'short' }}
+          </p>
           <div class="mt-4 flex flex-col gap-2">
-            <button type="button" class="rb-btn-neutral min-h-11" (click)="toggleExpandirUsuario(u)">
+            <button
+              type="button"
+              class="rb-btn-neutral min-h-11"
+              (click)="toggleExpandirUsuario(u)"
+            >
               {{ usuarioExpandido() === u.id ? 'Ocultar detalle' : 'Ver detalle' }}
             </button>
-            <button *ngIf="u.puedeRenovar" type="button" class="rb-btn-secondary min-h-11" (click)="solicitarRenovacion(u)">
+            <button
+              *ngIf="u.puedeRenovar"
+              type="button"
+              class="rb-btn-secondary min-h-11"
+              (click)="solicitarRenovacion(u)"
+            >
               Registrar renovación
             </button>
             <button
@@ -287,11 +327,19 @@
             >
               Desactivar cuenta
             </button>
-            <button *ngIf="u.suspendido" type="button" class="rb-btn-success min-h-11" (click)="solicitarReactivar(u)">
+            <button
+              *ngIf="u.suspendido"
+              type="button"
+              class="rb-btn-success min-h-11"
+              (click)="solicitarReactivar(u)"
+            >
               Reactivar cuenta
             </button>
           </div>
-          <div *ngIf="usuarioExpandido() === u.id && u.solicitudPendiente as sol" class="mt-4 border-t border-gray-200 pt-4 dark:border-dark-border">
+          <div
+            *ngIf="usuarioExpandido() === u.id && u.solicitudPendiente as sol"
+            class="mt-4 border-t border-gray-200 pt-4 dark:border-dark-border"
+          >
             <p class="mb-2 text-sm"><strong>Justificación:</strong> {{ sol.justificacion }}</p>
             <app-imagen-preview
               *ngIf="urlComprobante(sol.id) as url"
@@ -300,8 +348,16 @@
               etiqueta="Comprobante"
             />
             <div class="mt-3 flex flex-col gap-2">
-              <button type="button" class="rb-btn-success min-h-11" (click)="solicitarAprobar(u)">Aprobar</button>
-              <button type="button" class="rb-btn-neutral min-h-11" (click)="solicitarRechazoUsuario(u)">Rechazar</button>
+              <button type="button" class="rb-btn-success min-h-11" (click)="solicitarAprobar(u)">
+                Aprobar
+              </button>
+              <button
+                type="button"
+                class="rb-btn-neutral min-h-11"
+                (click)="solicitarRechazoUsuario(u)"
+              >
+                Rechazar
+              </button>
             </div>
           </div>
         </article>
@@ -311,7 +367,11 @@
     <ng-container *ngIf="pestanaActiva === 'solicitudes'">
       <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-center">
         <label class="rb-label !normal-case !mb-0">Filtrar por estado</label>
-        <select [(ngModel)]="filtro" (change)="cargarSolicitudes()" class="rb-input w-full sm:max-w-xs">
+        <select
+          [(ngModel)]="filtro"
+          (change)="cargarSolicitudes()"
+          class="rb-input w-full sm:max-w-xs"
+        >
           <option value="pendiente">Pendientes</option>
           <option value="aprobada">Aprobadas</option>
           <option value="rechazada">Rechazadas</option>
@@ -319,7 +379,12 @@
         </select>
       </div>
 
-      <p *ngIf="cargando()" class="text-center text-sm text-neutral-muted dark:text-dark-text-muted">Cargando…</p>
+      <p
+        *ngIf="cargando()"
+        class="text-center text-sm text-neutral-muted dark:text-dark-text-muted"
+      >
+        Cargando...
+      </p>
 
       <div class="mx-auto max-w-4xl space-y-4" *ngIf="!cargando()">
         <article *ngFor="let s of solicitudes()" class="rb-card rb-card-pad">
@@ -333,7 +398,11 @@
               </div>
               <p class="text-sm text-neutral-muted dark:text-dark-text-muted">
                 <span class="inline-flex items-center gap-1">
-                  <ng-icon name="heroSparkles" size="16" class="text-primary dark:text-orange-300" />
+                  <ng-icon
+                    name="heroSparkles"
+                    size="16"
+                    class="text-primary dark:text-orange-300"
+                  />
                   Plan: {{ s.rolSolicitado }}
                 </span>
                 · Estado: {{ etiquetaEstado(s.estado) }} · {{ s.fechaSolicitud | date: 'short' }}
@@ -346,7 +415,7 @@
                   class="flex items-center gap-2 text-sm text-neutral-muted dark:text-dark-text-muted"
                 >
                   <ng-icon name="heroPhoto" size="18" />
-                  Cargando comprobante…
+                  Cargando comprobante...
                 </p>
                 <app-imagen-preview
                   *ngIf="urlComprobante(s.id) as url"
@@ -368,14 +437,25 @@
               </div>
             </div>
 
-            <div *ngIf="s.estado === 'pendiente'" class="flex flex-col gap-2 sm:flex-row lg:flex-col lg:shrink-0">
-              <button type="button" class="rb-btn-success w-full min-h-11 sm:w-max" (click)="aprobar(s)">
+            <div
+              *ngIf="s.estado === 'pendiente'"
+              class="flex flex-col gap-2 sm:flex-row lg:flex-col lg:shrink-0"
+            >
+              <button
+                type="button"
+                class="rb-btn-success w-full min-h-11 sm:w-max"
+                (click)="aprobar(s)"
+              >
                 <span class="inline-flex items-center gap-2">
                   <ng-icon name="heroCheckCircle" size="18" />
                   Aprobar
                 </span>
               </button>
-              <button type="button" class="rb-btn-neutral w-full min-h-11 sm:w-max" (click)="abrirRechazo(s)">
+              <button
+                type="button"
+                class="rb-btn-neutral w-full min-h-11 sm:w-max"
+                (click)="abrirRechazo(s)"
+              >
                 <span class="inline-flex items-center gap-2">
                   <ng-icon name="heroXCircle" size="18" />
                   Rechazar
@@ -384,7 +464,10 @@
             </div>
           </div>
         </article>
-        <p *ngIf="solicitudes().length === 0" class="text-center text-neutral-muted dark:text-dark-text-muted">
+        <p
+          *ngIf="solicitudes().length === 0"
+          class="text-center text-neutral-muted dark:text-dark-text-muted"
+        >
           No hay solicitudes con este filtro.
         </p>
       </div>
@@ -396,10 +479,18 @@
       <h3 class="mb-2 font-semibold text-gray-900 dark:text-dark-text-strong">{{ c.titulo }}</h3>
       <p class="mb-6 text-sm text-neutral-strong dark:text-dark-text-muted">{{ c.mensaje }}</p>
       <div class="flex flex-col gap-2 sm:flex-row">
-        <button type="button" class="rb-btn-neutral min-h-11 flex-1" (click)="cancelarConfirmacion()">
+        <button
+          type="button"
+          class="rb-btn-neutral min-h-11 flex-1"
+          (click)="cancelarConfirmacion()"
+        >
           Cancelar
         </button>
-        <button type="button" class="rb-btn-secondary min-h-11 flex-1" (click)="ejecutarConfirmacion()">
+        <button
+          type="button"
+          class="rb-btn-secondary min-h-11 flex-1"
+          (click)="ejecutarConfirmacion()"
+        >
           Confirmar
         </button>
       </div>
@@ -408,7 +499,9 @@
 
   <div *ngIf="seleccionada() as sel" class="rb-modal-backdrop">
     <div class="rb-modal max-w-md dark:bg-dark-surface">
-      <h3 class="mb-2 flex items-center gap-2 font-semibold text-gray-900 dark:text-dark-text-strong">
+      <h3
+        class="mb-2 flex items-center gap-2 font-semibold text-gray-900 dark:text-dark-text-strong"
+      >
         <ng-icon name="heroXCircle" size="22" class="text-danger" />
         Rechazar solicitud
       </h3>
@@ -422,7 +515,11 @@
         placeholder="Motivo del rechazo (obligatorio)"
       ></textarea>
       <div class="mt-4 flex flex-col gap-2 sm:flex-row">
-        <button type="button" class="rb-btn-neutral min-h-11 flex-1" (click)="seleccionada.set(null)">
+        <button
+          type="button"
+          class="rb-btn-neutral min-h-11 flex-1"
+          (click)="seleccionada.set(null)"
+        >
           Cancelar
         </button>
         <button type="button" class="rb-btn-secondary min-h-11 flex-1" (click)="confirmarRechazo()">
@@ -441,9 +538,13 @@
           class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
         />
       </div>
-      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ m.titulo }}</h3>
+      <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        {{ m.titulo }}
+      </h3>
       <p class="mb-4 text-sm text-neutral-strong dark:text-dark-text-muted">{{ m.mensaje }}</p>
-      <button type="button" class="rb-btn-success mx-auto w-full sm:w-max" (click)="cerrarModal()">Entendido</button>
+      <button type="button" class="rb-btn-success mx-auto w-full sm:w-max" (click)="cerrarModal()">
+        Entendido
+      </button>
     </div>
   </div>
 </div>

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
 import { AuthService } from '../../services/auth.service';
-import { CartService } from '../../services/cart.service';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
@@ -22,7 +21,7 @@ import { ThemeService } from '../../services/theme.service';
       class="inline-flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold shadow-sm transition sm:w-max dark:shadow-none"
     >
       <span class="rb-logo-chip !p-1" *ngIf="variant === 'on-light'">
-        <ng-icon name="heroArrowRightOnRectangle" size="16" class="text-secondary dark:text-blue-400" />
+        <ng-icon name="heroArrowRightOnRectangle" size="16" />
       </span>
       <ng-icon
         *ngIf="variant === 'on-dark'"
@@ -39,13 +38,11 @@ export class LogoutButtonComponent {
 
   constructor(
     private auth: AuthService,
-    private cart: CartService,
     private router: Router,
     private theme: ThemeService,
   ) {}
 
   cerrarSesion(): void {
-    this.cart.limpiarLocal();
     this.auth.clearSession();
     this.theme.onLogout();
     void this.router.navigate(['/presentacion']);

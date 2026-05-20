@@ -13,15 +13,20 @@
     <header class="mb-8 text-center sm:text-left">
       <h2 class="rb-heading text-2xl sm:text-3xl">Parametrización de formulación</h2>
       <p class="rb-kicker mt-2 max-w-2xl">
-        Restricciones de ingredientes, presupuesto y modo de optimización para la generación de recetas.
+        Restricciones de ingredientes, presupuesto y modo de optimización para la generación de
+        recetas.
       </p>
     </header>
 
-    <p *ngIf="cargando()" class="text-sm text-neutral-muted dark:text-dark-text-muted">Cargando…</p>
+    <p *ngIf="cargando()" class="text-sm text-neutral-muted dark:text-dark-text-muted">
+      Cargando...
+    </p>
 
     <ng-container *ngIf="!cargando() && contexto() as ctx">
       <section class="rb-card rb-card-pad mb-6">
-        <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        <h3
+          class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong"
+        >
           <ng-icon name="heroAdjustmentsHorizontal" size="22" />
           Modo de optimización
         </h3>
@@ -35,9 +40,15 @@
             (click)="alternarCabeza(cabeza.codigo)"
             [disabled]="cabezaBloqueada(cabeza.codigo)"
             class="relative flex flex-col gap-2 rounded-xl border p-4 text-left transition"
-            [class.border-primary]="cabezaSeleccionada(cabeza.codigo) && !cabezaBloqueada(cabeza.codigo)"
-            [class.bg-primary/5]="cabezaSeleccionada(cabeza.codigo) && !cabezaBloqueada(cabeza.codigo)"
-            [class.dark:border-orange-400]="cabezaSeleccionada(cabeza.codigo) && !cabezaBloqueada(cabeza.codigo)"
+            [class.border-primary]="
+              cabezaSeleccionada(cabeza.codigo) && !cabezaBloqueada(cabeza.codigo)
+            "
+            [class.bg-primary/5]="
+              cabezaSeleccionada(cabeza.codigo) && !cabezaBloqueada(cabeza.codigo)
+            "
+            [class.dark:border-orange-400]="
+              cabezaSeleccionada(cabeza.codigo) && !cabezaBloqueada(cabeza.codigo)
+            "
             [class.opacity-50]="cabezaBloqueada(cabeza.codigo)"
             [class.cursor-not-allowed]="cabezaBloqueada(cabeza.codigo)"
           >
@@ -51,14 +62,19 @@
                 class="text-primary dark:text-orange-300"
               />
             </span>
-            <span class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">{{ cabeza.titulo }}</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">{{
+              cabeza.titulo
+            }}</span>
             <span class="text-xs text-neutral-muted dark:text-dark-text-muted">
               <span class="font-medium">Prioriza:</span> {{ cabeza.prioriza }}
             </span>
             <span class="text-xs text-neutral-muted dark:text-dark-text-muted">
               <span class="font-medium">Sacrifica:</span> {{ cabeza.sacrifica }}
             </span>
-            <span *ngIf="cabezaBloqueada(cabeza.codigo)" class="text-xs font-medium text-amber-700 dark:text-amber-300">
+            <span
+              *ngIf="cabezaBloqueada(cabeza.codigo)"
+              class="text-xs font-medium text-amber-700 dark:text-amber-300"
+            >
               {{ capacidades()?.mensajePlanBloqueado }}
             </span>
           </button>
@@ -66,7 +82,9 @@
       </section>
 
       <section class="rb-card rb-card-pad mb-6">
-        <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        <h3
+          class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong"
+        >
           <ng-icon name="heroBanknotes" size="22" />
           Presupuesto máximo de producción
         </h3>
@@ -82,7 +100,10 @@
             class="rb-input rb-focus-secondary max-w-xs"
             placeholder="Ej. 15.00"
           />
-          <p *ngIf="errores()['presupuestoMaximo']" class="mt-1 text-xs font-medium text-red-600 dark:text-red-400">
+          <p
+            *ngIf="errores()['presupuestoMaximo']"
+            class="mt-1 text-xs font-medium text-red-600 dark:text-red-400"
+          >
             {{ errores()['presupuestoMaximo'] }}
           </p>
           <p class="mt-3 text-xs text-neutral-muted dark:text-dark-text-muted">
@@ -98,13 +119,17 @@
               {{ r.etiqueta }}
             </button>
           </div>
-          <p class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/30 dark:text-amber-100">
+          <p
+            class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/30 dark:text-amber-100"
+          >
             <ng-icon name="heroExclamationTriangle" size="16" class="mr-1 inline" />
             {{ ctx.parametrizacion.mensajePresupuestoExcedido }}
           </p>
         </div>
         <ng-template #presupuestoBloqueado>
-          <div class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 dark:border-dark-border dark:bg-slate-900/50">
+          <div
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 dark:border-dark-border dark:bg-slate-900/50"
+          >
             <ng-icon name="heroLockClosed" size="20" class="shrink-0 text-neutral-muted" />
             <p class="text-sm text-neutral-muted dark:text-dark-text-muted">
               {{ capacidades()?.mensajePlanBloqueado }}
@@ -114,7 +139,9 @@
       </section>
 
       <section class="rb-card rb-card-pad mb-6">
-        <h3 class="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        <h3
+          class="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong"
+        >
           <ng-icon name="heroCalendar" size="22" />
           Filtro de estacionalidad
         </h3>
@@ -129,16 +156,22 @@
             class="mt-1"
           />
           <span class="text-sm text-gray-900 dark:text-dark-text-strong">
-            ¿Desea usar únicamente ingredientes de temporada del mes {{ capacidades()?.nombreMesActual }}?
+            ¿Desea usar únicamente ingredientes de temporada del mes
+            {{ capacidades()?.nombreMesActual }}?
           </span>
         </label>
-        <p *ngIf="!capacidades()?.puedeEstacionalidad" class="mt-2 text-xs font-medium text-amber-700 dark:text-amber-300">
+        <p
+          *ngIf="!capacidades()?.puedeEstacionalidad"
+          class="mt-2 text-xs font-medium text-amber-700 dark:text-amber-300"
+        >
           {{ capacidades()?.mensajePlanBloqueado }}
         </p>
       </section>
 
       <section class="rb-card rb-card-pad mb-6">
-        <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        <h3
+          class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong"
+        >
           <ng-icon name="heroXCircle" size="22" />
           Restricciones de ingredientes
         </h3>
@@ -147,7 +180,11 @@
           <div>
             <label class="rb-label !normal-case">Buscar por nombre</label>
             <div class="relative">
-              <ng-icon name="heroMagnifyingGlass" size="18" class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-muted" />
+              <ng-icon
+                name="heroMagnifyingGlass"
+                size="18"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-muted"
+              />
               <input
                 type="text"
                 [(ngModel)]="busquedaNombre"
@@ -174,10 +211,15 @@
           *ngIf="resultadosBusqueda().length > 0"
           class="mb-6 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-dark-border"
         >
-          <li *ngFor="let a of resultadosBusqueda()" class="border-b border-gray-100 last:border-0 dark:border-dark-border">
+          <li
+            *ngFor="let a of resultadosBusqueda()"
+            class="border-b border-gray-100 last:border-0 dark:border-dark-border"
+          >
             <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-2">
               <div>
-                <p class="text-sm font-medium text-gray-900 dark:text-dark-text-strong">{{ a.nombre }}</p>
+                <p class="text-sm font-medium text-gray-900 dark:text-dark-text-strong">
+                  {{ a.nombre }}
+                </p>
                 <p class="text-xs text-neutral-muted">{{ a.categoria }}</p>
               </div>
               <div class="flex gap-2">
@@ -200,28 +242,42 @@
             </div>
           </li>
         </ul>
-        <p *ngIf="buscando()" class="mb-4 text-xs text-neutral-muted">Buscando…</p>
+        <p *ngIf="buscando()" class="mb-4 text-xs text-neutral-muted">Buscando...</p>
 
         <div class="mb-6">
-          <h4 class="mb-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Excluidos</h4>
-          <p class="mb-2 text-xs text-neutral-muted">No aparecerán en recetas generadas (máx. {{ capacidades()?.maxExclusiones }}).</p>
+          <h4 class="mb-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+            Excluidos
+          </h4>
+          <p class="mb-2 text-xs text-neutral-muted">
+            No aparecerán en recetas generadas (máx. {{ capacidades()?.maxExclusiones }}).
+          </p>
           <ul *ngIf="exclusiones.length > 0" class="flex flex-wrap gap-2">
             <li
               *ngFor="let ex of exclusiones"
               class="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-sm dark:border-red-500/40 dark:bg-red-950/30"
             >
               <span>{{ ex.nombre || 'Ingrediente #' + ex.alimentoId }}</span>
-              <button type="button" (click)="quitarExclusion(ex.alimentoId)" class="text-red-600 hover:text-red-800">
+              <button
+                type="button"
+                (click)="quitarExclusion(ex.alimentoId)"
+                class="text-red-600 hover:text-red-800"
+              >
                 <ng-icon name="heroXMark" size="16" />
               </button>
             </li>
           </ul>
-          <p *ngIf="exclusiones.length === 0" class="text-xs text-neutral-muted">Sin exclusiones.</p>
+          <p *ngIf="exclusiones.length === 0" class="text-xs text-neutral-muted">
+            Sin exclusiones.
+          </p>
         </div>
 
         <div *ngIf="capacidades()?.puedePriorizarIngredientes">
-          <h4 class="mb-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Priorizados</h4>
-          <p class="mb-2 text-xs text-neutral-muted">El modelo intentará incluirlos (máx. {{ capacidades()?.maxPriorizados }}).</p>
+          <h4 class="mb-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+            Priorizados
+          </h4>
+          <p class="mb-2 text-xs text-neutral-muted">
+            El modelo intentará incluirlos (máx. {{ capacidades()?.maxPriorizados }}).
+          </p>
           <ul *ngIf="priorizados.length > 0" class="space-y-2">
             <li
               *ngFor="let pr of priorizados"
@@ -239,18 +295,27 @@
                   <ng-icon name="heroInformationCircle" size="16" />
                   Composición
                 </button>
-                <button type="button" (click)="quitarPriorizado(pr.alimentoId)" class="text-neutral-muted hover:text-red-600">
+                <button
+                  type="button"
+                  (click)="quitarPriorizado(pr.alimentoId)"
+                  class="text-neutral-muted hover:text-red-600"
+                >
                   <ng-icon name="heroXMark" size="16" />
                 </button>
               </div>
             </li>
           </ul>
-          <p *ngIf="priorizados.length === 0" class="text-xs text-neutral-muted">Sin ingredientes priorizados.</p>
+          <p *ngIf="priorizados.length === 0" class="text-xs text-neutral-muted">
+            Sin ingredientes priorizados.
+          </p>
         </div>
       </section>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <a routerLink="/objetivo-nutricional" class="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400">
+        <a
+          routerLink="/objetivo-nutricional"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400"
+        >
           <ng-icon name="heroBeaker" size="16" />
           Objetivo nutricional
         </a>
@@ -261,7 +326,7 @@
           class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
         >
           <ng-icon name="heroCheckCircle" size="18" />
-          {{ guardando() ? 'Guardando…' : 'Guardar parametrización' }}
+          {{ guardando() ? 'Guardando...' : 'Guardar parametrización' }}
         </button>
       </div>
     </ng-container>
@@ -283,7 +348,9 @@
     />
     <h3 class="mt-3 text-lg font-semibold">{{ m.titulo }}</h3>
     <p class="mt-2 text-sm text-neutral-muted">{{ m.mensaje }}</p>
-    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">Aceptar</button>
+    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">
+      Aceptar
+    </button>
   </div>
 </div>
 
@@ -292,18 +359,26 @@
   class="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 p-4"
   (click)="cerrarComposicion()"
 >
-  <div class="rb-card rb-card-pad max-h-[85vh] w-full max-w-md overflow-y-auto" (click)="$event.stopPropagation()">
+  <div
+    class="rb-card rb-card-pad max-h-[85vh] w-full max-w-md overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
     <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold">
       <ng-icon name="heroInformationCircle" size="22" />
       {{ composicionTitulo() }}
     </h3>
     <p class="mb-2 text-xs text-neutral-muted">{{ comp['categoria'] }}</p>
     <ul class="space-y-2 text-sm">
-      <li *ngFor="let item of etiquetasComposicion(comp)" class="flex justify-between gap-4 border-b border-gray-100 py-1 dark:border-dark-border">
+      <li
+        *ngFor="let item of etiquetasComposicion(comp)"
+        class="flex justify-between gap-4 border-b border-gray-100 py-1 dark:border-dark-border"
+      >
         <span class="text-neutral-muted">{{ item.label }}</span>
         <span class="font-medium">{{ item.valor }}</span>
       </li>
     </ul>
-    <button type="button" class="rb-btn rb-btn-secondary mt-6 w-full" (click)="cerrarComposicion()">Cerrar</button>
+    <button type="button" class="rb-btn rb-btn-secondary mt-6 w-full" (click)="cerrarComposicion()">
+      Cerrar
+    </button>
   </div>
 </div>

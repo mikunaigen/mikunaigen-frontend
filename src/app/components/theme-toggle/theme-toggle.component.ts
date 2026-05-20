@@ -15,7 +15,7 @@ import { ThemeService } from '../../services/theme.service';
       [attr.aria-label]="useSolIcon ? 'Activar modo claro' : 'Activar modo oscuro'"
       [attr.title]="useSolIcon ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
     >
-      <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-white">
+      <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-slate-800 dark:ring dark:ring-dark-border">
         <ng-icon
           [name]="useSolIcon ? 'heroSun' : 'heroMoon'"
           size="22"
