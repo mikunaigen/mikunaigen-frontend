@@ -130,14 +130,31 @@ export class AdminDatasetAlimentosComponent implements OnInit {
       });
   }
 
-  onArchivoCsv(event: Event): void {
+  onArchivoCsv(event: Event): boolean {
     const input = event.target as HTMLInputElement;
-    this.archivoCsv = input.files?.[0] ?? null;
+    const file = input.files?.[0];
+    if (!file) {
+      this.archivoCsv = null;
+      return false;
+    }
+    if (!this.esCsvValido(file)) {
+      this.archivoCsv = null;
+      input.value = '';
+      this.mostrarAlertaCsvInvalido();
+      return false;
+    }
+    this.archivoCsv = file;
+    return true;
   }
 
   importarCsv(): void {
     if (!this.archivoCsv) {
       this.mostrarError('Selecciona un archivo CSV.');
+      return;
+    }
+    if (!this.esCsvValido(this.archivoCsv)) {
+      this.archivoCsv = null;
+      this.mostrarAlertaCsvInvalido();
       return;
     }
     if (this.archivoCsv.size > 5 * 1024 * 1024) {
@@ -298,5 +315,27 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   private mostrarError(mensaje: string): void {
     this.modal.set({ tipo: 'error', titulo: 'Error', mensaje });
+  }
+
+  private mostrarAlertaCsvInvalido(): void {
+    this.modal.set({
+      tipo: 'error',
+      titulo: 'Archivo no permitido',
+      mensaje:
+        'Solo se permiten archivos CSV (.csv). Elige un archivo con extensión .csv y las columnas del formato MINSA.',
+    });
+  }
+
+  private esCsvValido(file: File): boolean {
+    const nombre = file.name.trim().toLowerCase();
+    if (!nombre.endsWith('.csv')) {
+      return false;
+    }
+    const tipo = (file.type || '').toLowerCase();
+    if (!tipo) {
+      return true;
+    }
+    const permitidos = new Set(['text/csv', 'application/csv', 'application/vnd.ms-excel', 'text/plain']);
+    return permitidos.has(tipo);
   }
 }

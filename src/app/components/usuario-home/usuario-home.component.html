@@ -15,47 +15,38 @@
       <p class="rb-kicker mx-auto mt-2 max-w-2xl">
         Consulta las funcionalidades de tu plan actual y solicita un ascenso cuando lo necesites.
       </p>
-      <div
-        *ngIf="auth.esUsuarioFormulacion()"
-        class="mt-4 flex flex-wrap items-center justify-center gap-4"
-      >
-        <a
-          routerLink="/parametrizacion"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline dark:text-orange-300"
-        >
-          <ng-icon name="heroAdjustmentsHorizontal" size="18" />
-          Parametrización
-        </a>
-        <a
-          routerLink="/objetivo-nutricional"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400"
-        >
-          <ng-icon name="heroBeaker" size="18" />
-          Objetivo nutricional
-        </a>
-        <button
-          type="button"
-          (click)="irAPreferencias()"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400"
-        >
-          <ng-icon name="heroAdjustmentsHorizontal" size="18" />
-          Preferencias de formulación
-        </button>
-      </div>
     </header>
 
     <section
       *ngIf="auth.esUsuarioFormulacion()"
-      id="preferencias-formulacion"
-      class="rb-card rb-card-pad mb-8"
-      [class.ring-2]="requiereConfiguracion()"
-      [class.ring-primary]="requiereConfiguracion()"
-      [class.dark:ring-orange-400]="requiereConfiguracion()"
+      class="mb-10 grid max-w-3xl grid-cols-1 gap-6 sm:mx-auto sm:grid-cols-2"
     >
-      <app-preferencias-formulacion
-        [modoOnboarding]="requiereConfiguracion()"
-        (requiereConfiguracionChange)="onPreferenciasEstado($event)"
-      />
+      <a
+        routerLink="/parametrizacion"
+        class="rb-card group flex aspect-square flex-col items-center justify-center gap-5 p-8 text-center transition hover:border-secondary/35 hover:shadow-md dark:hover:border-blue-400/45 dark:hover:shadow-none"
+      >
+        <span
+          class="flex h-24 w-24 items-center justify-center rounded-2xl bg-gray-100 ring-1 ring-gray-200/80 dark:bg-slate-800 dark:ring-dark-border sm:h-28 sm:w-28"
+        >
+          <ng-icon name="heroAdjustmentsHorizontal" size="52" class="text-secondary dark:text-blue-400" />
+        </span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong sm:text-xl">
+          Parametrización
+        </span>
+      </a>
+      <a
+        routerLink="/objetivo-nutricional"
+        class="rb-card group flex aspect-square flex-col items-center justify-center gap-5 p-8 text-center transition hover:border-primary/35 hover:shadow-md dark:hover:border-orange-400/45 dark:hover:shadow-none"
+      >
+        <span
+          class="flex h-24 w-24 items-center justify-center rounded-2xl bg-gray-100 ring-1 ring-gray-200/80 dark:bg-slate-800 dark:ring-dark-border sm:h-28 sm:w-28"
+        >
+          <ng-icon name="heroBeaker" size="52" class="text-primary dark:text-orange-400" />
+        </span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong sm:text-xl">
+          Objetivo nutricional
+        </span>
+      </a>
     </section>
 
     <p *ngIf="cargando()" class="text-center text-sm text-neutral-muted dark:text-dark-text-muted">

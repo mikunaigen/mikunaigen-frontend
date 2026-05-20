@@ -86,6 +86,10 @@ export class MiPerfilComponent implements OnInit, OnDestroy {
     return this.auth.esUsuarioFormulacion();
   }
 
+  esAdministrador(): boolean {
+    return this.auth.esAdministrador();
+  }
+
   volver(): void {
     const path = this.auth.getPostLoginPath();
     const queryParams = this.auth.getPostLoginQueryParams();

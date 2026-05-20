@@ -12,6 +12,7 @@ import { AdminProductosComponent } from './components/admin-productos/admin-prod
 import { AdminDatasetAlimentosComponent } from './components/admin-dataset-alimentos/admin-dataset-alimentos';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 import { AdminRespaldosComponent } from './components/admin-respaldos/admin-respaldos';
+import { AdminModelosIaComponent } from './components/admin-modelos-ia/admin-modelos-ia';
 import { InicioRedirectComponent } from './components/inicio-redirect/inicio-redirect';
 import { PresentacionComponent } from './components/presentacion/presentacion';
 import { RetenidoComponent } from './components/retenido/retenido';
@@ -97,7 +98,11 @@ export const routes: Routes = [
     component: AdminDatasetAlimentosComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
-  { path: 'admin-modelos-ia', redirectTo: 'dashboard', pathMatch: 'full' },
+  {
+    path: 'admin-modelos-ia',
+    component: AdminModelosIaComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
+  },
   { path: 'caja', redirectTo: 'gestion-administrador', pathMatch: 'full' },
   { path: 'cocina', redirectTo: 'gestion-administrador', pathMatch: 'full' },
   { path: 'entregas', redirectTo: 'gestion-administrador', pathMatch: 'full' },

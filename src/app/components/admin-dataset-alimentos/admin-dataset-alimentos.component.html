@@ -1,16 +1,16 @@
 <div class="rb-page">
-  <div class="rb-container max-w-[100rem]">
-    <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div class="rb-container mx-auto max-w-6xl py-8 sm:py-12">
+    <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <a
           routerLink="/gestion-administrador"
-          class="mb-2 inline-flex items-center gap-1 text-sm font-medium text-secondary hover:underline dark:text-blue-400"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
         >
           <ng-icon name="heroArrowLeft" size="16" />
-          Panel de administración
+          Panel de Administración
         </a>
-        <h1 class="rb-heading text-2xl sm:text-3xl">Dataset de alimentos MINSA</h1>
-        <p class="rb-kicker mt-1">Tablas Peruanas · valores nutricionales y estacionalidad</p>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Dataset de Entrenamiento MINSA</h1>
+        <p class="rb-kicker mt-1">Tablas Peruanas de Composición de Alimentos (TPCA)</p>
       </div>
       <app-logout-button />
     </header>
@@ -25,10 +25,10 @@
     >
       <ng-icon name="heroArrowUpTray" size="48" class="mx-auto text-secondary dark:text-blue-400" />
       <h2 class="mt-4 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
-        Carga inicial del dataset
+        Carga del dataset
       </h2>
       <p class="mt-2 text-sm text-neutral-muted dark:text-dark-text-muted">
-        Sube un archivo CSV (máx. 5 MB) con las columnas exactas del formato MINSA.
+        Sube un archivo CSV (máx. 5 MB) con las columnas del formato MINSA.
       </p>
       <p
         class="mt-3 break-all rounded-lg bg-gray-50 p-3 text-left text-xs text-neutral-strong dark:bg-slate-900/50 dark:text-slate-300"
@@ -36,7 +36,7 @@
         {{ columnasCsv }}
       </p>
       <div class="mt-6 flex flex-col items-center gap-3">
-        <input type="file" accept=".csv,text/csv" (change)="onArchivoCsv($event)" class="text-sm" />
+        <input type="file" accept=".csv" (change)="onArchivoCsv($event)" class="text-sm" />
         <button
           type="button"
           (click)="importarCsv()"
@@ -125,9 +125,9 @@
           <input
             #csvReimport
             type="file"
-            accept=".csv,text/csv"
+            accept=".csv"
             class="hidden"
-            (change)="onArchivoCsv($event); importarCsv()"
+            (change)="onArchivoCsv($event) && importarCsv()"
           />
         </div>
       </section>

@@ -1,33 +1,31 @@
-<div class="rb-page">
-  <div class="rb-container">
-    <div class="rb-card overflow-hidden">
-      <div
-        class="border-b border-white/10 bg-secondary px-4 py-6 text-white dark:bg-slate-800 sm:px-6 sm:py-7 lg:px-8"
-      >
-        <div class="mb-6 flex flex-col items-stretch justify-between gap-4 sm:items-start md:flex-row md:items-center">
-          <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
-            Configuración de Modelos de IA
-          </h2>
-          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <a
-              routerLink="/gestion-administrador"
-              class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
-              >Volver al Panel</a
-            >
-            <app-logout-button variant="on-dark" />
-          </div>
-        </div>
+﻿<div class="rb-page">
+  <div class="rb-container mx-auto max-w-6xl py-8 sm:py-12">
+    <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <a
+          routerLink="/gestion-administrador"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
+        >
+          <ng-icon name="heroArrowLeft" size="16" />
+          Panel de Administración
+        </a>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Entrenamiento del Modelo</h1>
+        <p class="rb-kicker mt-1">
+          Realiza entrenamiento y despliegues del modelo de formulación de alimentos a partir del dataset
+        </p>
       </div>
+      <app-logout-button />
+    </header>
 
-      <div class="p-4 sm:p-6 lg:p-8">
+    <div>
         <div class="mb-6 rounded-2xl border border-secondary/20 bg-secondary/5 p-4 dark:border-blue-400/30 dark:bg-slate-800/60 sm:p-6">
           <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 class="text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
-                Gestión de Slots
+                Gestión del Slot
               </h3>
               <p class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted">
-                Administra versiones del modelo y encoders para recomendaciones personalizadas en menú.
+                Administra versiones del modelo
               </p>
             </div>
             <label
@@ -52,7 +50,7 @@
           *ngIf="cargandoIa"
           class="mb-6 rounded-xl border border-dashed border-gray-200 p-5 text-sm text-neutral-muted dark:border-dark-border dark:text-dark-text-muted"
         >
-          Cargando configuración de modelos IA...
+          Cargando configuraciÃ³n de modelos IA...
         </p>
 
         <div *ngIf="!cargandoIa" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -133,7 +131,7 @@
               <strong class="text-gray-800 dark:text-slate-200">{{ slot.metaModeloFileName || 'Sin archivo' }}</strong>
             </p>
             <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              Última versión:
+              Ãšltima versiÃ³n:
               <strong class="text-gray-800 dark:text-slate-200">{{
                 slot.uploadedAt ? (slot.uploadedAt | date: 'dd/MM/yyyy HH:mm') : 'No registrada'
               }}</strong>
@@ -170,7 +168,7 @@
                 [disabled]="guardandoIa"
                 class="rb-btn-secondary w-full border-0 bg-secondary text-white dark:bg-blue-600"
               >
-                {{ guardandoIa ? 'Cargando...' : 'Subir versión al Slot 1' }}
+                {{ guardandoIa ? 'Cargando...' : 'Subir versiÃ³n al Slot 1' }}
               </button>
             </div>
             <div *ngIf="slot.slotNumber === 2" class="mt-4 space-y-3">
@@ -268,7 +266,6 @@
             </div>
           </article>
         </div>
-      </div>
     </div>
   </div>
 </div>
@@ -304,7 +301,7 @@
       {{ modalDataset.mensaje }}
     </p>
     <p class="mb-6 text-xs text-neutral-muted dark:text-dark-text-muted">
-      Slot {{ modalDataset.slot }} · {{ modalDataset.fileName }}
+      Slot {{ modalDataset.slot }} Â· {{ modalDataset.fileName }}
     </p>
     <div class="flex flex-col gap-3 sm:flex-row sm:justify-center mb-4" *ngIf="modalDataset.fase === 'listo'">
       <a
@@ -316,7 +313,7 @@
         <span class="rb-logo-chip !p-1">
           <ng-icon name="heroInformationCircle" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
         </span>
-        Haz clic aquí para descargar
+        Haz clic aquÃ­ para descargar
       </a>
     </div>
     <div class="flex justify-center">

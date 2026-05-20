@@ -1,33 +1,21 @@
 <div class="rb-page">
-  <div class="rb-container">
-    <div class="rb-card overflow-hidden">
-      <div
-        class="border-b border-white/10 bg-secondary px-4 py-6 text-white dark:bg-slate-800 sm:px-6 sm:py-7 lg:px-8"
-      >
-        <div
-          class="flex flex-col items-stretch justify-between gap-4 sm:items-start md:flex-row md:items-center"
+  <div class="rb-container mx-auto max-w-6xl py-8 sm:py-12">
+    <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <a
+          routerLink="/gestion-administrador"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
         >
-          <div class="flex items-start gap-3">
-            <ng-icon name="heroDocumentText" size="40" class="mt-1 h-10 w-10 object-contain text-secondary dark:text-blue-400" />
-            <div>
-              <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
-                Respaldos de Bases de Datos
-              </h2>
-              <p class="mt-1 text-sm text-white/80">PostgreSQL y MongoDB en Backblaze</p>
-            </div>
-          </div>
-          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <a
-              routerLink="/gestion-administrador"
-              class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
-              >Volver al Panel</a
-            >
-            <app-logout-button variant="on-dark" />
-          </div>
-        </div>
+          <ng-icon name="heroArrowLeft" size="16" />
+          Panel de Administración
+        </a>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Respaldos de Base de Datos</h1>
+        <p class="rb-kicker mt-1">PostgreSQL en Backblaze B2</p>
       </div>
+      <app-logout-button />
+    </header>
 
-      <div class="p-4 sm:p-6 lg:p-8">
+    <div>
         <section class="rb-section-muted mb-6 sm:mb-8">
           <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div class="flex items-start gap-3">
@@ -37,7 +25,7 @@
               <div>
                 <h3 class="rb-heading-accent mb-1 text-base sm:text-lg">Configuración de Backup Automático</h3>
                 <p class="text-xs font-medium text-neutral-strong dark:text-dark-text-muted sm:text-sm">
-                  Semanal: lunes a la hora indicada. Mensual: día 1 de cada mes. Zona horaria del servidor (América/Lima).
+                  Zona horaria del servidor configurado como América/Lima.
                 </p>
               </div>
             </div>
@@ -59,7 +47,7 @@
                     <ng-icon name="heroLockClosed" size="18" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
                     Activar backup automático
                   </span>
-                  <span class="text-xs text-neutral-strong dark:text-dark-text-muted">El servidor disparará GitHub Actions en la ventana programada.</span>
+                  <span class="text-xs text-neutral-strong dark:text-dark-text-muted">Usar GitHub Actions para automatizar backups.</span>
                 </span>
               </label>
 
@@ -97,9 +85,9 @@
                 <span class="flex flex-col gap-1">
                   <span class="flex items-center gap-2 text-sm font-semibold text-neutral-strong dark:text-dark-text-strong">
                     <ng-icon name="heroEnvelope" size="18" class="h-4 w-4 object-contain text-secondary dark:text-blue-400" />
-                    Enviar reporte al correo SMTP tras finalizar
+                    Enviar correo electrónico tras finalizar
                   </span>
-                  <span class="text-xs text-neutral-strong dark:text-dark-text-muted">Usa el correo SMTP configurado en el sistema.</span>
+                  <span class="text-xs text-neutral-strong dark:text-dark-text-muted">Usa el correo SMTP configurado.</span>
                 </span>
               </label>
 
@@ -131,7 +119,7 @@
               <div class="border-t border-gray-200 pt-4 dark:border-slate-700/80">
                 <div class="mb-2 flex items-center gap-2">
                   <ng-icon [name]="iconoEstadoUltimo()" size="20" class="h-5 w-5  text-secondary dark:text-blue-400" />
-                  <span class="text-xs font-semibold uppercase tracking-wide text-neutral-strong dark:text-dark-text-muted">Último intento (GitHub)</span>
+                  <span class="text-xs font-semibold uppercase tracking-wide text-neutral-strong dark:text-dark-text-muted">Último intento</span>
                 </div>
                 <p class="text-sm font-semibold text-neutral-strong dark:text-dark-text-strong">
                   {{ textoEstadoUltimo() }}
@@ -148,7 +136,7 @@
           <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-2">
               <ng-icon name="heroDocumentText" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-              <h3 class="rb-heading-accent !mb-0 text-base">Respaldos conjuntos PostgreSQL + MongoDB</h3>
+              <h3 class="rb-heading-accent !mb-0 text-base">Respaldos de la Base de Datos PostgreSQL</h3>
             </div>
             <div class="flex flex-col gap-2 sm:flex-row">
               <button type="button" (click)="generar()" [disabled]="cargando" class="rb-btn-secondary">
@@ -169,10 +157,9 @@
             <table class="w-full min-w-[760px] text-left text-sm">
               <thead class="rb-table-header-row">
                 <tr>
-                  <th class="px-4 py-3">Lote</th>
+                  <th class="px-4 py-3">Número</th>
                   <th class="px-4 py-3">Backup PostgreSQL</th>
-                  <th class="px-4 py-3">Backup MongoDB</th>
-                  <th class="px-4 py-3">Tamaño total</th>
+                  <th class="px-4 py-3">Tamaño</th>
                   <th class="px-4 py-3">Fecha</th>
                   <th class="px-4 py-3 text-right">Acciones</th>
                 </tr>
@@ -184,7 +171,6 @@
                 >
                   <td class="px-4 py-3 font-mono text-xs">{{ r.pairId }}</td>
                   <td class="px-4 py-3 font-mono text-xs">{{ r.postgresKey }}</td>
-                  <td class="px-4 py-3 font-mono text-xs">{{ r.mongoKey }}</td>
                   <td class="px-4 py-3">{{ formatBytes(r.sizeBytes) }}</td>
                   <td class="px-4 py-3 text-xs text-neutral-strong dark:text-dark-text-muted">
                     {{ r.lastModified || '—' }}
@@ -204,14 +190,13 @@
                 </tr>
                 <tr *ngIf="!items.length">
                   <td colspan="6" class="px-4 py-6 text-center text-sm text-neutral-strong dark:text-dark-text-muted">
-                    No hay respaldos conjuntos disponibles.
+                    No hay respaldos disponibles.
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </section>
-      </div>
     </div>
   </div>
 </div>

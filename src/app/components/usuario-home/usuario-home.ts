@@ -23,9 +23,6 @@ import {
   precioMostrarPlan,
   type PlanDetalle,
 } from '../../data/plan-detalles';
-import { PreferenciasService } from '../../services/preferencias.service';
-import { PreferenciasFormulacionComponent } from '../preferencias-formulacion/preferencias-formulacion';
-
 @Component({
   selector: 'app-usuario-home',
   standalone: true,
@@ -37,7 +34,6 @@ import { PreferenciasFormulacionComponent } from '../preferencias-formulacion/pr
     LogoutButtonComponent,
     CompradorNavComponent,
     ImagenPreviewComponent,
-    PreferenciasFormulacionComponent,
   ],
   templateUrl: './usuario-home.component.html',
 })
@@ -46,11 +42,8 @@ export class UsuarioHomeComponent implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly websocket = inject(WebsocketService);
-  private readonly preferenciasService = inject(PreferenciasService);
-
   private wsSub?: Subscription;
 
-  requiereConfiguracion = signal(false);
   cargando = signal(true);
   enviando = signal(false);
   contexto = signal<PlanContextoDto | null>(null);
@@ -74,23 +67,7 @@ export class UsuarioHomeComponent implements OnInit, OnDestroy {
       return;
     }
     this.cargarContexto();
-    this.cargarEstadoPreferencias();
     this.iniciarEscuchaPlanes();
-  }
-
-  cargarEstadoPreferencias(): void {
-    this.preferenciasService.obtenerContexto().subscribe({
-      next: (ctx) => this.requiereConfiguracion.set(ctx.requiereConfiguracion),
-      error: () => {},
-    });
-  }
-
-  onPreferenciasEstado(requiere: boolean): void {
-    this.requiereConfiguracion.set(requiere);
-  }
-
-  irAPreferencias(): void {
-    document.getElementById('preferencias-formulacion')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   ngOnDestroy(): void {

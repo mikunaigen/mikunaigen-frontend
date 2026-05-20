@@ -1,35 +1,62 @@
-<div class="rb-page-center relative">
-  <div *ngIf="configuracionYaCompleta && sesionActiva" class="absolute right-4 top-4 z-10 sm:right-6 sm:top-6">
+<div [ngClass]="modoEdicion && sesionActiva ? 'rb-page' : 'rb-page-center relative'">
+  <div
+    *ngIf="!(modoEdicion && sesionActiva) && configuracionYaCompleta && sesionActiva"
+    class="absolute right-4 top-4 z-10 sm:right-6 sm:top-6"
+  >
     <app-logout-button />
   </div>
 
-  <div class="rb-shell-md rb-card mx-auto w-full overflow-hidden">
-    <div class="border-b border-white/10 bg-secondary px-4 py-6 text-white dark:bg-slate-800 sm:px-6 sm:py-7 lg:px-8">
+  <div
+    [ngClass]="
+      modoEdicion && sesionActiva
+        ? 'rb-container mx-auto max-w-6xl py-8 sm:py-12'
+        : 'rb-shell-md rb-card mx-auto w-full overflow-hidden'
+    "
+  >
+    <header
+      *ngIf="modoEdicion && sesionActiva"
+      class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div>
+        <a
+          routerLink="/gestion-administrador"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
+        >
+          <ng-icon name="heroArrowLeft" size="16" />
+          Panel de Administración
+        </a>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Configuración de la Plataforma</h1>
+        <p class="rb-kicker mt-1">
+          Nombre, logo, teléfono de contacto y medios de pago para cambios de plan.
+        </p>
+      </div>
+      <app-logout-button />
+    </header>
+
+    <div
+      [ngClass]="modoEdicion && sesionActiva ? 'rb-card overflow-hidden' : ''"
+    >
+      <p
+        *ngIf="modoEdicion && sesionActiva"
+        class="border-b border-gray-200 px-4 py-4 text-sm text-neutral-strong dark:border-dark-border dark:text-dark-text-muted sm:px-6"
+      >
+        Los siguientes datos se recuperaron de la base de datos de la plataforma.
+      </p>
+
+    <div
+      *ngIf="!(modoEdicion && sesionActiva)"
+      class="border-b border-white/10 bg-secondary px-4 py-6 text-white dark:bg-slate-800 sm:px-6 sm:py-7 lg:px-8"
+    >
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
-            {{
-              modoEdicion
-                ? 'Actualización de configuración de la plataforma'
-                : 'Configuración inicial de la plataforma'
-            }}
+            Configuración inicial de la plataforma
           </h2>
           <p class="mt-2 text-sm text-white/85 lg:text-base">
-            <ng-container *ngIf="modoEdicion">
-              Los siguientes datos se recuperaron de la base de datos de la plataforma.
-            </ng-container>
-            <ng-container *ngIf="!modoEdicion">
-              Los siguientes datos se guardarán en la base de datos de la plataforma. Si más adelante deseas cambiar el
-              correo o la contraseña de aplicación Gmail, tendrás que validarlo mediante un código.
-            </ng-container>
+            Los siguientes datos se guardarán en la base de datos de la plataforma. Si más adelante deseas cambiar el
+            correo o la contraseña de aplicación Gmail, tendrás que validarlo mediante un código.
           </p>
         </div>
-        <a
-          *ngIf="configuracionYaCompleta && sesionActiva"
-          routerLink="/gestion-administrador"
-          class="inline-flex min-h-11 w-full shrink-0 items-center justify-center rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
-          >Volver al panel</a
-        >
       </div>
     </div>
 

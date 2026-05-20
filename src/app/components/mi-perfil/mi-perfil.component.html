@@ -1,125 +1,131 @@
 <div class="rb-page">
-  <div class="rb-container">
-    <div class="rb-card overflow-hidden">
-      <div class="border-b border-white/10 bg-secondary px-4 py-6 text-white dark:bg-slate-800 sm:px-6 sm:py-7 lg:px-8">
-        <div class="mb-6 flex flex-col items-stretch justify-between gap-4 sm:items-start md:flex-row md:items-center">
-          <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">Mi Perfil</h2>
-          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <button
-              type="button"
-              (click)="volver()"
-              class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-max"
-            >
-              Volver
-            </button>
-            <app-logout-button variant="on-dark" />
-          </div>
-        </div>
-        <p class="text-sm text-white/90">Actualiza tus datos personales.</p>
+  <div class="rb-container mx-auto max-w-6xl py-8 sm:py-12">
+    <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <a
+          *ngIf="esAdministrador()"
+          routerLink="/gestion-administrador"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
+        >
+          <ng-icon name="heroArrowLeft" size="16" />
+          Panel de Administración
+        </a>
+        <a
+          *ngIf="!esAdministrador()"
+          href="#"
+          (click)="volver(); $event.preventDefault()"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
+        >
+          <ng-icon name="heroArrowLeft" size="16" />
+          Volver
+        </a>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Mi Perfil</h1>
+        <p class="rb-kicker mt-1">Actualiza tus datos personales.</p>
+      </div>
+      <app-logout-button />
+    </header>
+
+    <div class="rb-card rb-card-pad mb-6">
+      <div
+        *ngIf="solicitudPlanEnRevision()"
+        class="mb-6 rounded-xl border border-amber-400/50 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-100"
+      >
+        Solicitud de cambio de plan en revisión
+        <span *ngIf="solicitudRolSolicitado()"> ({{ etiquetaRolSolicitud() }})</span>
       </div>
 
-      <div class="p-4 sm:p-6 lg:p-8">
-        <div
-          *ngIf="solicitudPlanEnRevision()"
-          class="mb-6 rounded-xl border border-amber-400/50 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-100"
-        >
-          Solicitud de cambio de plan en revisión
-          <span *ngIf="solicitudRolSolicitado()"> ({{ etiquetaRolSolicitud() }})</span>
+      <p *ngIf="cargando()" class="text-sm text-neutral-muted dark:text-dark-text-muted">Cargando perfil...</p>
+
+      <form *ngIf="!cargando()" (ngSubmit)="guardarCambios()" class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div>
+            <label class="rb-label !normal-case">Nombres</label>
+            <input
+              [value]="form.nombres"
+              name="nombres"
+              class="rb-input rb-focus-secondary"
+              autocomplete="given-name"
+              (input)="soloLetras($event, 'nombres', 100)"
+              required
+            />
+          </div>
+          <div>
+            <label class="rb-label !normal-case">Apellidos</label>
+            <input
+              [value]="form.apellidos"
+              name="apellidos"
+              class="rb-input rb-focus-secondary"
+              autocomplete="family-name"
+              (input)="soloLetras($event, 'apellidos', 100)"
+              required
+            />
+          </div>
         </div>
 
-        <p *ngIf="cargando()" class="text-sm text-neutral-muted dark:text-dark-text-muted">Cargando perfil...</p>
-
-        <form *ngIf="!cargando()" (ngSubmit)="guardarCambios()" class="space-y-4">
-          <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div>
-              <label class="rb-label !normal-case">Nombres</label>
-              <input
-                [value]="form.nombres"
-                name="nombres"
-                class="rb-input rb-focus-secondary"
-                autocomplete="given-name"
-                (input)="soloLetras($event, 'nombres', 100)"
-                required
-              />
-            </div>
-            <div>
-              <label class="rb-label !normal-case">Apellidos</label>
-              <input
-                [value]="form.apellidos"
-                name="apellidos"
-                class="rb-input rb-focus-secondary"
-                autocomplete="family-name"
-                (input)="soloLetras($event, 'apellidos', 100)"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div>
-              <label class="rb-label !normal-case">DNI</label>
-              <input
-                [value]="form.dni || '—'"
-                class="rb-input cursor-not-allowed opacity-60"
-                readonly
-                aria-readonly="true"
-              />
-            </div>
-            <div>
-              <label class="rb-label !normal-case">Teléfono</label>
-              <input
-                [value]="form.phone || '—'"
-                class="rb-input cursor-not-allowed opacity-60"
-                readonly
-                aria-readonly="true"
-              />
-              <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                Verificado con Telegram.
-              </p>
-            </div>
-            <div>
-              <label class="rb-label !normal-case">Correo electrónico</label>
-              <input
-                [value]="form.email"
-                class="rb-input cursor-not-allowed opacity-60"
-                readonly
-                aria-readonly="true"
-              />
-            </div>
-          </div>
-
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div>
-            <label class="rb-label !normal-case">Plan actual</label>
+            <label class="rb-label !normal-case">DNI</label>
             <input
-              [value]="etiquetaRol()"
-              class="rb-input max-w-md cursor-not-allowed opacity-60"
+              [value]="form.dni || '—'"
+              class="rb-input cursor-not-allowed opacity-60"
               readonly
               aria-readonly="true"
             />
           </div>
-
-          <div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
-            <button
-              type="submit"
-              [disabled]="guardando()"
-              class="rb-btn-secondary min-h-11 border-0 bg-secondary text-white disabled:opacity-45"
-            >
-              {{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}
-            </button>
-            <button
-              type="button"
-              (click)="cambiarPassword()"
-              [disabled]="enviandoCodigo()"
-              class="rb-btn-primary min-h-11 disabled:opacity-45"
-            >
-              {{ enviandoCodigo() ? 'Enviando código...' : 'Cambiar Contraseña' }}
-            </button>
+          <div>
+            <label class="rb-label !normal-case">Teléfono</label>
+            <input
+              [value]="form.phone || '—'"
+              class="rb-input cursor-not-allowed opacity-60"
+              readonly
+              aria-readonly="true"
+            />
+            <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
+              Verificado con Telegram.
+            </p>
           </div>
-        </form>
-      </div>
+          <div>
+            <label class="rb-label !normal-case">Correo electrónico</label>
+            <input
+              [value]="form.email"
+              class="rb-input cursor-not-allowed opacity-60"
+              readonly
+              aria-readonly="true"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="rb-label !normal-case">Plan actual</label>
+          <input
+            [value]="etiquetaRol()"
+            class="rb-input max-w-md cursor-not-allowed opacity-60"
+            readonly
+            aria-readonly="true"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
+          <button
+            type="submit"
+            [disabled]="guardando()"
+            class="rb-btn-secondary min-h-11 border-0 bg-secondary text-white disabled:opacity-45"
+          >
+            {{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+          <button
+            type="button"
+            (click)="cambiarPassword()"
+            [disabled]="enviandoCodigo()"
+            class="rb-btn-primary min-h-11 disabled:opacity-45"
+          >
+            {{ enviandoCodigo() ? 'Enviando código...' : 'Cambiar Contraseña' }}
+          </button>
+        </div>
+      </form>
     </div>
 
-    <div *ngIf="esUsuarioFormulacion()" class="rb-card mt-6 overflow-hidden">
+    <div *ngIf="esUsuarioFormulacion()" class="rb-card overflow-hidden">
       <div class="border-b border-gray-200 bg-gray-50 px-4 py-4 dark:border-dark-border dark:bg-slate-900/50 sm:px-6">
         <h3 class="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
           <ng-icon name="heroAdjustmentsHorizontal" size="22" />
