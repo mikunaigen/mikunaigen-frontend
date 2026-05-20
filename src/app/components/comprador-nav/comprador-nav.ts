@@ -26,6 +26,8 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
   mostrarMiPerfil = true;
   carritoModoPanel = false;
   mostrarPanelTrabajo = false;
+  mostrarObjetivoNutricional = false;
+  mostrarParametrizacion = false;
 
   ngOnInit(): void {
     this.rutaPanelTrabajo = this.auth.getWorkPanelPath();
@@ -61,5 +63,9 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
     this.carritoModoPanel = false;
     this.mostrarPanelTrabajo =
       !!this.rutaPanelTrabajo && actual !== this.rutaPanelTrabajo;
+    this.mostrarObjetivoNutricional =
+      this.auth.esUsuarioFormulacion() && actual !== '/objetivo-nutricional';
+    this.mostrarParametrizacion =
+      this.auth.esUsuarioFormulacion() && actual !== '/parametrizacion';
   }
 }

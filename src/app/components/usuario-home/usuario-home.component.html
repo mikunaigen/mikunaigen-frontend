@@ -15,7 +15,45 @@
       <p class="rb-kicker mx-auto mt-2 max-w-2xl">
         Consulta las funcionalidades de tu plan actual y solicita un ascenso cuando lo necesites.
       </p>
+      <div *ngIf="auth.esUsuarioFormulacion()" class="mt-4 flex flex-wrap items-center justify-center gap-4">
+        <a
+          routerLink="/parametrizacion"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline dark:text-orange-300"
+        >
+          <ng-icon name="heroAdjustmentsHorizontal" size="18" />
+          Parametrización
+        </a>
+        <a
+          routerLink="/objetivo-nutricional"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400"
+        >
+          <ng-icon name="heroBeaker" size="18" />
+          Objetivo nutricional
+        </a>
+        <button
+          type="button"
+          (click)="irAPreferencias()"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:underline dark:text-blue-400"
+        >
+          <ng-icon name="heroAdjustmentsHorizontal" size="18" />
+          Preferencias de formulación
+        </button>
+      </div>
     </header>
+
+    <section
+      *ngIf="auth.esUsuarioFormulacion()"
+      id="preferencias-formulacion"
+      class="rb-card rb-card-pad mb-8"
+      [class.ring-2]="requiereConfiguracion()"
+      [class.ring-primary]="requiereConfiguracion()"
+      [class.dark:ring-orange-400]="requiereConfiguracion()"
+    >
+      <app-preferencias-formulacion
+        [modoOnboarding]="requiereConfiguracion()"
+        (requiereConfiguracionChange)="onPreferenciasEstado($event)"
+      />
+    </section>
 
     <p *ngIf="cargando()" class="text-center text-sm text-neutral-muted dark:text-dark-text-muted">
       Cargando…

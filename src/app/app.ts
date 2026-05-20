@@ -9,6 +9,8 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
 import { AuthService } from './services/auth.service';
 import { WebsocketService } from './services/websocket.service';
 import { MaintenanceService } from './services/maintenance.service';
+import { CartService } from './services/cart.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -77,6 +79,25 @@ import { MaintenanceService } from './services/maintenance.service';
         </p>
       </div>
     </div>
+    <div *ngIf="cuentaSuspendidaModal" class="rb-modal-backdrop z-[120]">
+      <div class="rb-modal max-w-md border-gray-200 text-center dark:border-dark-border">
+        <div class="rb-modal-icon !mb-4">
+          <ng-icon name="heroExclamationTriangle" size="48" class="text-warning" />
+        </div>
+        <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+          Cuenta suspendida
+        </h3>
+        <p class="mb-8 text-sm text-neutral-strong dark:text-dark-text-muted">
+          {{ cuentaSuspendidaMsg }}
+        </p>
+        <button type="button" (click)="cerrarSesionPorSuspension()" class="rb-btn-danger w-full min-h-11 sm:w-max">
+          <span class="inline-flex items-center justify-center gap-2">
+            <ng-icon name="heroArrowRightOnRectangle" size="18" />
+            Cerrar sesión
+          </span>
+        </button>
+      </div>
+    </div>
     <div *ngIf="entradaInvalidaModal" class="rb-modal-backdrop">
       <div class="rb-modal max-w-sm border-gray-200 dark:border-dark-border">
         <div class="rb-modal-icon !mb-6">
@@ -97,6 +118,9 @@ export class App implements OnInit, OnDestroy {
   entradaInvalidaModal = false;
   emailEnvioModal = false;
   emailEnvioMsg = '';
+  cuentaSuspendidaModal = false;
+  cuentaSuspendidaMsg =
+    'Tu cuenta ha sido suspendida por el administrador. Debes cerrar sesión para continuar.';
 
   hideThemeFab = false;
 
@@ -107,6 +131,8 @@ export class App implements OnInit, OnDestroy {
   private navSub?: Subscription;
   private wsEmailSub?: Subscription;
   private wsSystemSub?: Subscription;
+  private wsCuentaSub?: Subscription;
+  private wsCuentaUserId: string | null = null;
 
   constructor(
     private healthService: HealthService,
@@ -115,13 +141,19 @@ export class App implements OnInit, OnDestroy {
     private authService: AuthService,
     private websocketService: WebsocketService,
     readonly maintenance: MaintenanceService,
+    private cart: CartService,
+    private theme: ThemeService,
   ) {}
 
   ngOnInit() {
     this.refreshHideThemeFab();
     this.navSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(() => this.refreshHideThemeFab());
+      .subscribe(() => {
+        this.refreshHideThemeFab();
+        this.iniciarEscuchaCuenta();
+      });
+    this.iniciarEscuchaCuenta();
 
     document.addEventListener('input', this.onDocumentInput, true);
     this.healthService.getStatus().subscribe({
@@ -166,6 +198,7 @@ export class App implements OnInit, OnDestroy {
     this.navSub?.unsubscribe();
     this.wsEmailSub?.unsubscribe();
     this.wsSystemSub?.unsubscribe();
+    this.wsCuentaSub?.unsubscribe();
     document.removeEventListener('input', this.onDocumentInput, true);
   }
 
@@ -180,6 +213,50 @@ export class App implements OnInit, OnDestroy {
 
   cerrarEmailEnvio() {
     this.emailEnvioModal = false;
+  }
+
+  cerrarSesionPorSuspension(): void {
+    this.cuentaSuspendidaModal = false;
+    this.cart.limpiarLocal();
+    this.authService.clearSession();
+    this.theme.onLogout();
+    this.wsCuentaSub?.unsubscribe();
+    this.wsCuentaUserId = null;
+    void this.router.navigate(['/login'], {
+      queryParams: { suspendido: '1' },
+    });
+  }
+
+  private iniciarEscuchaCuenta(): void {
+    const s = this.authService.getSession();
+    if (!s?.userId || !this.authService.isLoggedIn()) {
+      this.wsCuentaSub?.unsubscribe();
+      this.wsCuentaSub = undefined;
+      this.wsCuentaUserId = null;
+      return;
+    }
+    if (this.wsCuentaUserId === s.userId && this.wsCuentaSub) {
+      return;
+    }
+    this.wsCuentaSub?.unsubscribe();
+    this.wsCuentaUserId = s.userId;
+    this.wsCuentaSub = this.websocketService
+      .subscribeToTopic(`/topic/cuenta/usuario/${s.userId}`)
+      .subscribe((raw) => this.procesarEventoCuenta(raw));
+  }
+
+  private procesarEventoCuenta(raw: string): void {
+    try {
+      const o = JSON.parse(raw) as { tipo?: string; message?: string };
+      if (o.tipo === 'cuenta_suspendida') {
+        this.cuentaSuspendidaMsg =
+          o.message ||
+          'Tu cuenta ha sido suspendida por el administrador. Debes cerrar sesión para continuar.';
+        this.cuentaSuspendidaModal = true;
+      }
+    } catch {
+      return;
+    }
   }
 
   private validarEntradaGlobal(event: Event) {

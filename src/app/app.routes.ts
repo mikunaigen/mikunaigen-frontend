@@ -9,6 +9,7 @@ import { ConfirmarCuentaComponent } from './components/confirmar-cuenta/confirma
 import { UsuarioHomeComponent } from './components/usuario-home/usuario-home';
 import { AdminSolicitudesPlanComponent } from './components/admin-solicitudes-plan/admin-solicitudes-plan';
 import { AdminProductosComponent } from './components/admin-productos/admin-productos';
+import { AdminDatasetAlimentosComponent } from './components/admin-dataset-alimentos/admin-dataset-alimentos';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 import { AdminRespaldosComponent } from './components/admin-respaldos/admin-respaldos';
 import { CheckoutComponent } from './components/checkout/checkout';
@@ -18,6 +19,8 @@ import { InicioRedirectComponent } from './components/inicio-redirect/inicio-red
 import { PresentacionComponent } from './components/presentacion/presentacion';
 import { RetenidoComponent } from './components/retenido/retenido';
 import { MiPerfilComponent } from './components/mi-perfil/mi-perfil';
+import { ObjetivoNutricionalComponent } from './components/objetivo-nutricional/objetivo-nutricional';
+import { ParametrizacionFormulacionComponent } from './components/parametrizacion-formulacion/parametrizacion-formulacion';
 import { MantenimientoComponent } from './components/mantenimiento/mantenimiento';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
@@ -61,6 +64,16 @@ export const routes: Routes = [
     component: UsuarioHomeComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard],
   },
+  {
+    path: 'objetivo-nutricional',
+    component: ObjetivoNutricionalComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
+  },
+  {
+    path: 'parametrizacion',
+    component: ParametrizacionFormulacionComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
+  },
   { path: 'menu', redirectTo: 'usuario-home', pathMatch: 'full' },
   {
     path: 'admin-solicitudes-plan',
@@ -95,6 +108,11 @@ export const routes: Routes = [
   {
     path: 'admin-productos',
     component: AdminProductosComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
+  },
+  {
+    path: 'admin-dataset-alimentos',
+    component: AdminDatasetAlimentosComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
   { path: 'admin-modelos-ia', redirectTo: 'dashboard', pathMatch: 'full' },

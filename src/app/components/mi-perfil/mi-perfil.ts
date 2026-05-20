@@ -14,6 +14,7 @@ import {
 import { environment } from '@env/environment';
 import { parsePlanWsEvento, topicPlanesUsuario } from '../../services/plan-usuario.service';
 import { WebsocketService } from '../../services/websocket.service';
+import { PreferenciasFormulacionComponent } from '../preferencias-formulacion/preferencias-formulacion';
 
 type PerfilResponse = {
   userId?: string;
@@ -32,7 +33,14 @@ type PerfilResponse = {
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LogoutButtonComponent, NgIconComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    LogoutButtonComponent,
+    NgIconComponent,
+    PreferenciasFormulacionComponent,
+  ],
   templateUrl: './mi-perfil.component.html',
 })
 export class MiPerfilComponent implements OnInit, OnDestroy {
@@ -72,6 +80,10 @@ export class MiPerfilComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.wsSub?.unsubscribe();
+  }
+
+  esUsuarioFormulacion(): boolean {
+    return this.auth.esUsuarioFormulacion();
   }
 
   volver(): void {

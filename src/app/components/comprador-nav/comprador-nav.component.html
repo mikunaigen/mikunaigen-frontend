@@ -1,4 +1,16 @@
 <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+  <a *ngIf="mostrarParametrizacion" routerLink="/parametrizacion" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <ng-icon name="heroAdjustmentsHorizontal" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+    </span>
+    Parametrización
+  </a>
+  <a *ngIf="mostrarObjetivoNutricional" routerLink="/objetivo-nutricional" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <ng-icon name="heroBeaker" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+    </span>
+    Objetivo nutricional
+  </a>
   <a *ngIf="mostrarMenu" routerLink="/usuario-home" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
       <ng-icon name="heroHome" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />

@@ -1,0 +1,256 @@
+<div class="rb-page">
+  <div class="rb-container max-w-[100rem]">
+    <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <a
+          routerLink="/gestion-administrador"
+          class="mb-2 inline-flex items-center gap-1 text-sm font-medium text-secondary hover:underline dark:text-blue-400"
+        >
+          <ng-icon name="heroArrowLeft" size="16" />
+          Panel de administración
+        </a>
+        <h1 class="rb-heading text-2xl sm:text-3xl">Dataset de alimentos MINSA</h1>
+        <p class="rb-kicker mt-1">Tablas Peruanas · valores nutricionales y estacionalidad</p>
+      </div>
+      <app-logout-button />
+    </header>
+
+    <p *ngIf="cargando() && vacio()" class="text-sm text-neutral-muted dark:text-dark-text-muted">
+      Verificando dataset…
+    </p>
+
+    <section
+      *ngIf="!cargando() && vacio()"
+      class="rb-card rb-card-pad mx-auto max-w-2xl text-center"
+    >
+      <ng-icon name="heroArrowUpTray" size="48" class="mx-auto text-secondary dark:text-blue-400" />
+      <h2 class="mt-4 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+        Carga inicial del dataset
+      </h2>
+      <p class="mt-2 text-sm text-neutral-muted dark:text-dark-text-muted">
+        Sube un archivo CSV (máx. 5 MB) con las columnas exactas del formato MINSA.
+      </p>
+      <p class="mt-3 break-all rounded-lg bg-gray-50 p-3 text-left text-xs text-neutral-strong dark:bg-slate-900/50 dark:text-slate-300">
+        {{ columnasCsv }}
+      </p>
+      <div class="mt-6 flex flex-col items-center gap-3">
+        <input
+          type="file"
+          accept=".csv,text/csv"
+          (change)="onArchivoCsv($event)"
+          class="text-sm"
+        />
+        <button
+          type="button"
+          (click)="importarCsv()"
+          [disabled]="subiendoCsv() || !archivoCsv"
+          class="rb-btn rb-btn-primary inline-flex min-h-11 items-center gap-2 px-6"
+        >
+          <ng-icon name="heroArrowUpTray" size="18" />
+          {{ subiendoCsv() ? 'Importando…' : 'Importar CSV' }}
+        </button>
+      </div>
+    </section>
+
+    <ng-container *ngIf="!vacio()">
+      <section class="rb-card rb-card-pad mb-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end">
+          <div class="min-w-[12rem] flex-1">
+            <label class="rb-label !normal-case">Buscar por nombre o código</label>
+            <div class="relative">
+              <ng-icon
+                name="heroMagnifyingGlass"
+                size="18"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-muted"
+              />
+              <input
+                type="text"
+                [(ngModel)]="filtroNombre"
+                (keyup.enter)="aplicarFiltros()"
+                class="rb-input rb-focus-secondary w-full pl-10"
+                placeholder="Nombre o código MINSA"
+              />
+            </div>
+          </div>
+          <div class="min-w-[10rem]">
+            <label class="rb-label !normal-case">Grupo</label>
+            <select [(ngModel)]="filtroGrupo" class="rb-input rb-focus-secondary w-full">
+              <option value="">Todos</option>
+              <option *ngFor="let g of metaFiltros()?.grupos" [value]="g">{{ g }}</option>
+            </select>
+          </div>
+          <div class="min-w-[10rem]">
+            <label class="rb-label !normal-case">Componente nutricional</label>
+            <select [(ngModel)]="filtroCampo" class="rb-input rb-focus-secondary w-full">
+              <option value="">Sin filtro nutricional</option>
+              <option *ngFor="let c of metaFiltros()?.camposNutricionales" [value]="c">
+                {{ etiquetaCampo(c) }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="filtroCampo" class="mt-4">
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-muted">Rango de valor</p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              *ngFor="let r of metaFiltros()?.rangosFiltro"
+              (click)="seleccionarRango(r.id)"
+              class="rounded-full border px-3 py-1.5 text-xs font-semibold transition"
+              [class.border-primary]="filtroRango === r.id"
+              [class.bg-primary]="filtroRango === r.id"
+              [class.text-white]="filtroRango === r.id"
+              [class.border-gray-200]="filtroRango !== r.id"
+              [class.dark:border-dark-border]="filtroRango !== r.id"
+            >
+              {{ r.etiqueta }}
+            </button>
+          </div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button type="button" (click)="aplicarFiltros()" class="rb-btn rb-btn-primary min-h-10">
+            Aplicar filtros
+          </button>
+          <button type="button" (click)="limpiarFiltros()" class="rb-btn rb-btn-secondary min-h-10">
+            Limpiar
+          </button>
+          <button
+            type="button"
+            (click)="abrirReimportarCsv()"
+            [disabled]="subiendoCsv()"
+            class="rb-btn rb-btn-secondary inline-flex min-h-10 items-center gap-2"
+          >
+            <ng-icon name="heroArrowUpTray" size="16" />
+            Importar CSV
+          </button>
+          <input
+            #csvReimport
+            type="file"
+            accept=".csv,text/csv"
+            class="hidden"
+            (change)="onArchivoCsv($event); importarCsv()"
+          />
+        </div>
+      </section>
+
+      <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-sm text-neutral-muted dark:text-dark-text-muted">
+          {{ alimentos().length }} alimento(s) · las filas editadas se resaltan en ámbar
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            (click)="agregarAlimento()"
+            class="rb-btn rb-btn-secondary inline-flex min-h-10 items-center gap-2"
+          >
+            <ng-icon name="heroPlus" size="18" />
+            Nuevo alimento
+          </button>
+          <button
+            type="button"
+            (click)="guardarCambios()"
+            [disabled]="guardando()"
+            class="rb-btn rb-btn-primary inline-flex min-h-10 items-center gap-2"
+          >
+            <ng-icon name="heroCheckCircle" size="18" />
+            {{ guardando() ? 'Guardando…' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="cargando()" class="text-sm text-neutral-muted">Cargando tabla…</p>
+
+      <div *ngIf="!cargando()" class="rb-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[1400px] border-collapse text-left text-xs">
+            <thead class="bg-gray-100 dark:bg-slate-900">
+              <tr>
+                <th class="sticky left-0 z-10 bg-gray-100 px-2 py-2 dark:bg-slate-900">Código</th>
+                <th class="px-2 py-2">Grupo</th>
+                <th class="min-w-[10rem] px-2 py-2">Nombre</th>
+                <th *ngFor="let c of camposNumericos" class="whitespace-nowrap px-2 py-2">{{ c.label }}</th>
+                <th *ngFor="let m of meses" class="px-1 py-2 text-center">{{ m.label }}</th>
+                <th class="min-w-[8rem] px-2 py-2">Modificado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of alimentos(); trackBy: trackFila"
+                class="border-t border-gray-200 dark:border-dark-border"
+                [class.bg-amber-50]="row._dirty"
+                [class.dark:bg-amber-950/20]="row._dirty"
+              >
+                <td class="sticky left-0 z-10 bg-white px-1 py-1 dark:bg-dark-surface">
+                  <input
+                    type="text"
+                    [(ngModel)]="row.codigo_minsa"
+                    (ngModelChange)="marcarDirty(row)"
+                    class="rb-input w-20 py-1 text-xs"
+                  />
+                </td>
+                <td class="px-1 py-1">
+                  <select
+                    [(ngModel)]="row.categoria"
+                    (ngModelChange)="marcarDirty(row)"
+                    class="rb-input min-w-[7rem] py-1 text-xs"
+                  >
+                    <option *ngFor="let cat of metaFiltros()?.categoriasPermitidas" [value]="cat">{{ cat }}</option>
+                  </select>
+                </td>
+                <td class="px-1 py-1">
+                  <input
+                    type="text"
+                    [(ngModel)]="row.nombre"
+                    (ngModelChange)="marcarDirty(row)"
+                    class="rb-input min-w-[9rem] py-1 text-xs"
+                  />
+                </td>
+                <td *ngFor="let c of camposNumericos" class="px-1 py-1">
+                  <input
+                    type="number"
+                    min="0"
+                    step="any"
+                    [ngModel]="row[c.key]"
+                    (ngModelChange)="onNumChange(row, c.key, $event)"
+                    class="rb-input w-20 py-1 text-xs"
+                  />
+                </td>
+                <td *ngFor="let m of meses" class="px-1 py-1 text-center">
+                  <input
+                    type="checkbox"
+                    [checked]="mesActivo(row, m.key)"
+                    (change)="toggleMes(row, m.key)"
+                    class="h-4 w-4"
+                  />
+                </td>
+                <td class="px-2 py-1 text-[10px] text-neutral-muted dark:text-dark-text-muted">
+                  <span *ngIf="row.modificado_por_nombre">{{ row.modificado_por_nombre }}</span>
+                  <span *ngIf="row.fecha_modificacion" class="block">{{ row.fecha_modificacion | date: 'short' }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div
+  *ngIf="modal() as m"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
+  (click)="cerrarModal()"
+>
+  <div class="rb-card rb-card-pad max-w-md text-center" (click)="$event.stopPropagation()">
+    <ng-icon
+      [name]="m.tipo === 'ok' ? 'heroCheckCircle' : 'heroExclamationTriangle'"
+      size="40"
+      [class.text-green-600]="m.tipo === 'ok'"
+      [class.text-red-600]="m.tipo === 'error'"
+      class="mx-auto"
+    />
+    <h3 class="mt-3 text-lg font-semibold">{{ m.titulo }}</h3>
+    <p class="mt-2 text-sm text-neutral-muted">{{ m.mensaje }}</p>
+    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">Aceptar</button>
+  </div>
+</div>
