@@ -75,14 +75,26 @@ export class AlimentoDatasetAdminService {
     return this.http.get<FiltrosMetaDto>(`${this.base}/filtros`);
   }
 
-  listar(params: Record<string, string | number | undefined>): Observable<{ alimentos: AlimentoDatasetRow[]; total: number }> {
+  listar(params: Record<string, string | number | undefined>): Observable<{
+    alimentos: AlimentoDatasetRow[];
+    total: number;
+    page: number;
+    size: number;
+    totalPages: number;
+  }> {
     const q: Record<string, string> = {};
     for (const [k, v] of Object.entries(params)) {
       if (v !== undefined && v !== null && String(v).trim() !== '') {
         q[k] = String(v);
       }
     }
-    return this.http.get<{ alimentos: AlimentoDatasetRow[]; total: number }>(this.base, { params: q });
+    return this.http.get<{
+      alimentos: AlimentoDatasetRow[];
+      total: number;
+      page: number;
+      size: number;
+      totalPages: number;
+    }>(this.base, { params: q });
   }
 
   crear(body: AlimentoDatasetRow): Observable<{ message: string; alimento: AlimentoDatasetRow }> {
@@ -106,6 +118,46 @@ export class AlimentoDatasetAdminService {
       `${this.base}/importar-csv`,
       fd,
     );
+  }
+
+  importarCsvLote(
+    lineas: string[],
+    filaInicio: number,
+  ): Observable<{ procesadasEnLote: number; total: number }> {
+    return this.http.post<{ procesadasEnLote: number; total: number }>(`${this.base}/importar-csv-lote`, {
+      lineas,
+      filaInicio,
+    });
+  }
+
+  iniciarImportacionCsv(lineas: string[]): Observable<{ jobId: string; total: number }> {
+    return this.http.post<{ jobId: string; total: number }>(`${this.base}/importar-csv/procesar`, { lineas });
+  }
+
+  progresoImportacionCsv(jobId: string): Observable<{
+    actual: number;
+    total: number;
+    registrosEnBd: number;
+    conteoInicialBd: number;
+    estado: string;
+    mensaje: string;
+    registrosProcesados: number;
+    totalBd: number;
+  }> {
+    return this.http.get<{
+      actual: number;
+      total: number;
+      registrosEnBd: number;
+      conteoInicialBd: number;
+      estado: string;
+      mensaje: string;
+      registrosProcesados: number;
+      totalBd: number;
+    }>(`${this.base}/importar-csv/progreso/${jobId}`);
+  }
+
+  cerrarImportacionCsv(jobId: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/importar-csv/progreso/${jobId}`);
   }
 
   aPayload(row: AlimentoDatasetRow): Record<string, unknown> {

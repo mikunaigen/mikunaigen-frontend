@@ -9,6 +9,8 @@ import {
   AlimentoDatasetRow,
   FiltrosMetaDto,
 } from '../../services/alimento-dataset-admin.service';
+import { extraerLineasDatosCsv, leerArchivoCsvComoTexto } from '../../utils/csv-minsa-dataset';
+import { firstValueFrom, timer, switchMap, takeWhile, timeout, catchError, of } from 'rxjs';
 
 type CampoNum = { key: keyof AlimentoDatasetRow; label: string };
 
@@ -51,6 +53,8 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     { key: 'costo_kg_soles', label: 'Costo S/kg' },
   ];
 
+  readonly tamanosPagina = [20, 50, 100] as const;
+
   readonly meses = [
     { key: 'enero', label: 'Ene' },
     { key: 'febrero', label: 'Feb' },
@@ -70,9 +74,16 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   cargando = signal(true);
   guardando = signal(false);
   subiendoCsv = signal(false);
+  progresoCsv = signal<{ actual: number; total: number } | null>(null);
   alimentos = signal<AlimentoDatasetRow[]>([]);
   metaFiltros = signal<FiltrosMetaDto | null>(null);
   modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
+  pagina = signal(0);
+  tamanoPagina = signal(20);
+  totalRegistros = signal(0);
+  totalPaginas = signal(0);
+
+  private readonly filasDirty = new Map<string, AlimentoDatasetRow>();
 
   filtroNombre = '';
   filtroGrupo = '';
@@ -117,17 +128,52 @@ export class AdminDatasetAlimentosComponent implements OnInit {
         grupo: this.filtroGrupo,
         campoNutricional: this.filtroCampo || undefined,
         rangoFiltro: this.filtroCampo ? this.filtroRango : undefined,
+        page: this.pagina(),
+        size: this.tamanoPagina(),
       })
       .subscribe({
         next: (res) => {
           this.cargando.set(false);
-          this.alimentos.set(res.alimentos.map((a) => this.normalizarFila(a)));
+          this.totalRegistros.set(res.total);
+          this.totalPaginas.set(res.totalPages);
+          this.pagina.set(res.page);
+          this.tamanoPagina.set(res.size);
+          this.alimentos.set(res.alimentos.map((a) => this.fusionarFilaConCache(a)));
         },
         error: (err) => {
           this.cargando.set(false);
           this.mostrarError(err?.error?.message || 'No se pudo cargar el dataset.');
         },
       });
+  }
+
+  cantidadCambiosPendientes(): number {
+    return this.filasDirty.size;
+  }
+
+  cambiarTamanoPagina(tamano: number): void {
+    const permitido = this.tamanosPagina.includes(tamano as (typeof this.tamanosPagina)[number])
+      ? tamano
+      : 20;
+    this.tamanoPagina.set(permitido);
+    this.pagina.set(0);
+    this.cargarTabla();
+  }
+
+  irPaginaAnterior(): void {
+    if (this.pagina() <= 0) {
+      return;
+    }
+    this.pagina.update((p) => p - 1);
+    this.cargarTabla();
+  }
+
+  irPaginaSiguiente(): void {
+    if (this.pagina() >= this.totalPaginas() - 1) {
+      return;
+    }
+    this.pagina.update((p) => p + 1);
+    this.cargarTabla();
   }
 
   onArchivoCsv(event: Event): boolean {
@@ -148,36 +194,66 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   }
 
   importarCsv(): void {
-    if (!this.archivoCsv) {
+    void this.ejecutarImportacionCsv();
+  }
+
+  porcentajeProgresoCsv(): number {
+    const p = this.progresoCsv();
+    if (!p || p.total <= 0) {
+      return 0;
+    }
+    return Math.min(100, Math.round((p.actual / p.total) * 100));
+  }
+
+  private async ejecutarImportacionCsv(): Promise<void> {
+    const archivo = this.archivoCsv;
+    if (!archivo) {
       this.mostrarError('Selecciona un archivo CSV.');
       return;
     }
-    if (!this.esCsvValido(this.archivoCsv)) {
+    if (!this.esCsvValido(archivo)) {
       this.archivoCsv = null;
       this.mostrarAlertaCsvInvalido();
       return;
     }
-    if (this.archivoCsv.size > 5 * 1024 * 1024) {
+    if (archivo.size > 5 * 1024 * 1024) {
       this.mostrarError('El archivo no puede superar 5 MB.');
       return;
     }
     this.subiendoCsv.set(true);
-    this.datasetService.importarCsv(this.archivoCsv).subscribe({
-      next: (res) => {
-        this.subiendoCsv.set(false);
-        this.archivoCsv = null;
-        this.vacio.set(false);
-        this.mostrarOk('Importación completada', res.message);
-        this.cargarMetaYTabla();
-      },
-      error: (err) => {
-        this.subiendoCsv.set(false);
-        this.mostrarError(err?.error?.message || 'Error al importar el CSV.');
-      },
-    });
+    this.progresoCsv.set({ actual: 0, total: 0 });
+    try {
+      const texto = await leerArchivoCsvComoTexto(archivo);
+      const lineasDatos = extraerLineasDatosCsv(texto);
+      const total = lineasDatos.length;
+      if (total === 0) {
+        this.mostrarError('El CSV no contiene filas de datos.');
+        return;
+      }
+      this.progresoCsv.set({ actual: 0, total });
+      const job = await firstValueFrom(this.datasetService.iniciarImportacionCsv(lineasDatos));
+      const resultado = await this.esperarFinImportacion(job.jobId, total);
+      this.progresoCsv.set({ actual: total, total });
+      this.archivoCsv = null;
+      this.vacio.set(false);
+      this.mostrarOk(
+        'Importación completada',
+        `Se importaron ${resultado.registrosProcesados} fila(s). Total en PostgreSQL: ${resultado.totalBd}.`,
+      );
+      this.datasetService.cerrarImportacionCsv(job.jobId).subscribe({ error: () => {} });
+      this.cargarMetaYTabla();
+    } catch (err: unknown) {
+      const httpErr = err as { error?: { message?: string; error?: string }; message?: string };
+      const detalle = httpErr?.error?.message ?? httpErr?.error?.error ?? httpErr?.message;
+      this.mostrarError(detalle || 'Error al importar el CSV.');
+    } finally {
+      this.subiendoCsv.set(false);
+      this.progresoCsv.set(null);
+    }
   }
 
   aplicarFiltros(): void {
+    this.pagina.set(0);
     this.cargarTabla();
   }
 
@@ -186,6 +262,7 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     this.filtroGrupo = '';
     this.filtroCampo = '';
     this.filtroRango = 'todos';
+    this.pagina.set(0);
     this.cargarTabla();
   }
 
@@ -198,6 +275,7 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   marcarDirty(row: AlimentoDatasetRow): void {
     row._dirty = true;
+    this.filasDirty.set(this.claveFila(row), row);
   }
 
   mesActivo(row: AlimentoDatasetRow, mes: string): boolean {
@@ -233,11 +311,12 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     this.meses.forEach((m) => {
       (nuevo as Record<string, unknown>)[m.key] = false;
     });
+    this.filasDirty.set(this.claveFila(nuevo), nuevo);
     this.alimentos.update((list) => [nuevo, ...list]);
   }
 
   guardarCambios(): void {
-    const pendientes = this.alimentos().filter((a) => a._dirty);
+    const pendientes = Array.from(this.filasDirty.values());
     if (pendientes.length === 0) {
       this.mostrarError('No hay cambios pendientes por guardar.');
       return;
@@ -253,6 +332,7 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     this.datasetService.guardarLote(pendientes).subscribe({
       next: (res) => {
         this.guardando.set(false);
+        this.filasDirty.clear();
         this.mostrarOk('Cambios guardados', res.message);
         this.cargarTabla();
       },
@@ -298,6 +378,26 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     this.modal.set(null);
   }
 
+  private claveFila(row: AlimentoDatasetRow): string {
+    if (row.id != null) {
+      return `id-${row.id}`;
+    }
+    if (row._clave) {
+      return row._clave;
+    }
+    return `nombre-${row.nombre}`;
+  }
+
+  private fusionarFilaConCache(a: AlimentoDatasetRow): AlimentoDatasetRow {
+    const norm = this.normalizarFila(a);
+    const clave = this.claveFila(norm);
+    const enCache = this.filasDirty.get(clave);
+    if (enCache) {
+      return { ...enCache, _dirty: true };
+    }
+    return norm;
+  }
+
   private normalizarFila(a: AlimentoDatasetRow): AlimentoDatasetRow {
     const fila = { ...a, _dirty: false };
     if (Array.isArray(fila.meses_disponibilidad) && fila.meses_disponibilidad.length === 1 && Array.isArray(fila.meses_disponibilidad[0])) {
@@ -315,6 +415,54 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   private mostrarError(mensaje: string): void {
     this.modal.set({ tipo: 'error', titulo: 'Error', mensaje });
+  }
+
+  private esperarFinImportacion(
+    jobId: string,
+    total: number,
+  ): Promise<{ registrosProcesados: number; totalBd: number }> {
+    return new Promise((resolve, reject) => {
+      const sub = timer(0, 1000)
+        .pipe(
+          switchMap(() =>
+            this.datasetService.progresoImportacionCsv(jobId).pipe(
+              catchError((err) => {
+                reject(err);
+                return of(null);
+              }),
+            ),
+          ),
+          takeWhile((p) => p !== null && p.estado === 'procesando', true),
+          timeout(600_000),
+        )
+        .subscribe({
+          next: (p) => {
+            if (!p) {
+              return;
+            }
+            const totalCsv = p.total > 0 ? p.total : total;
+            this.progresoCsv.set({
+              actual: Math.min(p.actual, totalCsv),
+              total: totalCsv,
+            });
+            if (p.estado === 'completado') {
+              this.progresoCsv.set({ actual: totalCsv, total: totalCsv });
+              sub.unsubscribe();
+              resolve({
+                registrosProcesados: p.registrosProcesados > 0 ? p.registrosProcesados : totalCsv,
+                totalBd: p.totalBd ?? p.registrosEnBd ?? 0,
+              });
+            } else if (p.estado === 'error') {
+              sub.unsubscribe();
+              reject(new Error(p.mensaje || 'Error al importar el CSV.'));
+            }
+          },
+          error: (err) => {
+            sub.unsubscribe();
+            reject(err);
+          },
+        });
+    });
   }
 
   private mostrarAlertaCsvInvalido(): void {

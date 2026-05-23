@@ -15,6 +15,35 @@
       <app-logout-button />
     </header>
 
+    <section
+      *ngIf="progresoCsv() as prog"
+      class="rb-card rb-card-pad mb-6"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div class="mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+          Importando dataset
+        </p>
+        <p class="text-sm tabular-nums text-neutral-muted dark:text-dark-text-muted">
+          {{ prog.actual }} / {{ prog.total }} registros en PostgreSQL ({{ porcentajeProgresoCsv() }}%)
+        </p>
+      </div>
+      <div
+        class="h-3 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-slate-700"
+        role="progressbar"
+        [attr.aria-valuenow]="prog.actual"
+        [attr.aria-valuemin]="0"
+        [attr.aria-valuemax]="prog.total"
+      >
+        <div
+          class="h-full rounded-full bg-secondary transition-[width] duration-300 ease-out dark:bg-blue-500"
+          [style.width.%]="porcentajeProgresoCsv()"
+        ></div>
+      </div>
+    </section>
+
     <p *ngIf="cargando() && vacio()" class="text-sm text-neutral-muted dark:text-dark-text-muted">
       Verificando dataset...
     </p>
@@ -41,7 +70,7 @@
           type="button"
           (click)="importarCsv()"
           [disabled]="subiendoCsv() || !archivoCsv"
-          class="rb-btn rb-btn-primary inline-flex min-h-11 items-center gap-2 px-6"
+          class="rb-btn rb-btn-primary inline-flex min-h-11 w-full items-center justify-center gap-2 px-6 sm:w-auto"
         >
           <ng-icon name="heroArrowUpTray" size="18" />
           {{ subiendoCsv() ? 'Importando...' : 'Importar CSV' }}
@@ -65,7 +94,7 @@
                 [(ngModel)]="filtroNombre"
                 (keyup.enter)="aplicarFiltros()"
                 class="rb-input rb-focus-secondary w-full pl-10"
-                placeholder="Nombre o código MINSA"
+                placeholder=""
               />
             </div>
           </div>
@@ -79,7 +108,7 @@
           <div class="min-w-[10rem]">
             <label class="rb-label !normal-case">Componente nutricional</label>
             <select [(ngModel)]="filtroCampo" class="rb-input rb-focus-secondary w-full">
-              <option value="">Sin filtro nutricional</option>
+              <option value="">Sin filtro seleccionado</option>
               <option *ngFor="let c of metaFiltros()?.camposNutricionales" [value]="c">
                 {{ etiquetaCampo(c) }}
               </option>
@@ -134,7 +163,8 @@
 
       <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p class="text-sm text-neutral-muted dark:text-dark-text-muted">
-          {{ alimentos().length }} alimento(s) · las filas editadas se resaltan en ámbar
+          {{ totalRegistros() }} alimento(s) en total · {{ cantidadCambiosPendientes() }} con cambios
+          pendientes
         </p>
         <div class="flex flex-wrap gap-2">
           <button
@@ -178,8 +208,8 @@
               <tr
                 *ngFor="let row of alimentos(); trackBy: trackFila"
                 class="border-t border-gray-200 dark:border-dark-border"
-                [class.bg-amber-50]="row._dirty"
-                [class.dark:bg-amber-950/20]="row._dirty"
+                [class.bg-amber-500]="row._dirty"
+                [class.dark:bg-amber-800]="row._dirty"
               >
                 <td class="sticky left-0 z-10 bg-white px-1 py-1 dark:bg-dark-surface">
                   <input
@@ -235,6 +265,46 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div
+          class="flex flex-col gap-3 border-t border-gray-200 bg-gray-50 px-4 py-3 dark:border-dark-border dark:bg-slate-900/40 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="text-xs font-medium text-neutral-muted dark:text-dark-text-muted">Filas por página</label>
+            <select
+              [ngModel]="tamanoPagina()"
+              (ngModelChange)="cambiarTamanoPagina($event)"
+              class="rb-input rb-focus-secondary min-h-9 py-1.5 text-xs"
+            >
+              <option *ngFor="let t of tamanosPagina" [ngValue]="t">{{ t }}</option>
+            </select>
+          </div>
+          <p class="text-xs tabular-nums text-neutral-strong dark:text-dark-text-muted">
+            Página {{ totalPaginas() === 0 ? 0 : pagina() + 1 }} de {{ totalPaginas() || 1 }}
+            <span class="text-neutral-muted dark:text-dark-text-muted">
+              ({{ alimentos().length }} de {{ totalRegistros() }})
+            </span>
+          </p>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              (click)="irPaginaAnterior()"
+              [disabled]="pagina() <= 0 || cargando()"
+              class="rb-btn rb-btn-secondary inline-flex min-h-9 min-w-9 items-center justify-center p-2 disabled:opacity-50"
+              aria-label="Página anterior"
+            >
+              <ng-icon name="heroChevronLeft" size="18" />
+            </button>
+            <button
+              type="button"
+              (click)="irPaginaSiguiente()"
+              [disabled]="pagina() >= totalPaginas() - 1 || totalPaginas() === 0 || cargando()"
+              class="rb-btn rb-btn-secondary inline-flex min-h-9 min-w-9 items-center justify-center p-2 disabled:opacity-50"
+              aria-label="Página siguiente"
+            >
+              <ng-icon name="heroChevronRight" size="18" />
+            </button>
+          </div>
         </div>
       </div>
     </ng-container>
