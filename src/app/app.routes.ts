@@ -20,6 +20,7 @@ import { MiPerfilComponent } from './components/mi-perfil/mi-perfil';
 import { ObjetivoNutricionalComponent } from './components/objetivo-nutricional/objetivo-nutricional';
 import { ParametrizacionFormulacionComponent } from './components/parametrizacion-formulacion/parametrizacion-formulacion';
 import { MantenimientoComponent } from './components/mantenimiento/mantenimiento';
+import { MenuClienteComponent } from './components/menu-cliente/menu-cliente';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
 import { adminGuard } from './guards/admin.guard';
@@ -72,7 +73,11 @@ export const routes: Routes = [
     component: ParametrizacionFormulacionComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
   },
-  { path: 'menu', redirectTo: 'usuario-home', pathMatch: 'full' },
+  {
+    path: 'menu',
+    component: MenuClienteComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
+  },
   {
     path: 'admin-solicitudes-plan',
     component: AdminSolicitudesPlanComponent,

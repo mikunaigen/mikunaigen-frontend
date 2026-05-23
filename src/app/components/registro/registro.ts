@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import QRCode from 'qrcode';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -68,6 +69,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
   digitosCodigo = '';
   userIdRegistro = '';
   telegramBotUsername = '';
+  qrTelegramDataUrl = signal<string | null>(null);
 
   usuario = {
     nombres: '',
@@ -266,6 +268,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
         this.segundosRestantes = res.segundosRestantes ?? 120;
         this.iniciarEscuchaActivacion();
         this.iniciarCuentaRegresiva();
+        this.generarQrTelegram();
       },
       error: (err) => {
         this.cargando = false;
@@ -287,6 +290,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.userIdRegistro = '';
     this.digitosCodigo = '';
     this.segundosRestantes = 0;
+    this.qrTelegramDataUrl.set(null);
     this.wsSub?.unsubscribe();
     this.pollSub?.unsubscribe();
     this.countdownSub?.unsubscribe();
@@ -316,6 +320,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
           this.esperandoTelegram = true;
           this.segundosRestantes = res.segundosRestantes ?? 120;
           this.iniciarCuentaRegresiva();
+          this.generarQrTelegram();
         },
         error: (err) => {
           this.cargando = false;
@@ -328,8 +333,32 @@ export class RegistroComponent implements OnInit, OnDestroy {
       });
   }
 
-  abrirTelegram() {
+  obtenerEnlaceTelegram(): string | null {
     if (!this.telegramBotUsername) {
+      return null;
+    }
+    const startParam = encodeURIComponent(this.codigoActivacionCompleto);
+    return `https://t.me/${this.telegramBotUsername}?start=${startParam}`;
+  }
+
+  private generarQrTelegram(): void {
+    const url = this.obtenerEnlaceTelegram();
+    if (!url) {
+      this.qrTelegramDataUrl.set(null);
+      return;
+    }
+    QRCode.toDataURL(url, {
+      width: 220,
+      margin: 1,
+      color: { dark: '#0f172a', light: '#ffffff' },
+    })
+      .then((dataUrl) => this.qrTelegramDataUrl.set(dataUrl))
+      .catch(() => this.qrTelegramDataUrl.set(null));
+  }
+
+  abrirTelegram() {
+    const url = this.obtenerEnlaceTelegram();
+    if (!url) {
       this.abrirModal(
         'error',
         'Telegram no configurado',
@@ -337,8 +366,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    const startParam = encodeURIComponent(this.codigoActivacionCompleto);
-    const url = `https://t.me/${this.telegramBotUsername}?start=${startParam}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
@@ -388,6 +415,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
   private aplicarEstadoActivacion(r: EstadoActivacionResponse) {
     if (r.digitosCodigo) {
       this.digitosCodigo = r.digitosCodigo;
+      this.generarQrTelegram();
     }
     if (r.segundosRestantes != null && r.codigoVigente) {
       this.segundosRestantes = r.segundosRestantes;
@@ -399,6 +427,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
     if (r.codigoExpirado || r.codigoVigente === false) {
       this.codigoExpirado = true;
       this.esperandoTelegram = false;
+      this.qrTelegramDataUrl.set(null);
     }
   }
 
@@ -419,6 +448,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
       if (this.segundosRestantes <= 0 && this.paso === 2 && !this.codigoExpirado) {
         this.codigoExpirado = true;
         this.esperandoTelegram = false;
+        this.qrTelegramDataUrl.set(null);
       }
     });
   }

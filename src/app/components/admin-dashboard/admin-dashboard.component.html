@@ -15,7 +15,42 @@
       <app-logout-button />
     </header>
 
-    <section class="rb-section-muted mb-6 space-y-4">
+    <nav
+      class="mb-6 flex flex-wrap gap-2 border-b border-gray-200 pb-3 dark:border-dark-border"
+      role="tablist"
+    >
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="pestanaActiva === 'kpis'"
+        (click)="seleccionarPestana('kpis')"
+        class="inline-flex min-h-11 items-center rounded-xl px-4 py-2 text-sm font-semibold transition"
+        [ngClass]="
+          pestanaActiva === 'kpis'
+            ? 'bg-secondary text-white dark:bg-blue-600'
+            : 'border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-strong dark:hover:bg-slate-800'
+        "
+      >
+        Indicadores
+      </button>
+      <button
+        *ngIf="mostrarPestanaPrediccion"
+        type="button"
+        role="tab"
+        [attr.aria-selected]="pestanaActiva === 'prediccion'"
+        (click)="seleccionarPestana('prediccion')"
+        class="inline-flex min-h-11 items-center rounded-xl px-4 py-2 text-sm font-semibold transition"
+        [ngClass]="
+          pestanaActiva === 'prediccion'
+            ? 'bg-secondary text-white dark:bg-blue-600'
+            : 'border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-strong dark:hover:bg-slate-800'
+        "
+      >
+        Predicción de Inventario
+      </button>
+    </nav>
+
+    <section *ngIf="pestanaActiva === 'kpis'" class="rb-section-muted mb-6 space-y-4">
       <div class="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
         <div class="min-w-[140px] flex-1">
           <label class="rb-label !normal-case">Desde</label>
@@ -47,6 +82,7 @@
       </div>
     </section>
 
+    <ng-container *ngIf="pestanaActiva === 'kpis'">
     <div
       *ngIf="datos?.alertaPrecision"
       class="mb-6 flex items-start gap-3 rounded-xl border border-warning/40 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100"
@@ -88,6 +124,48 @@
     >
       <p class="rb-kicker">No hay indicadores para el rango seleccionado.</p>
     </div>
+    </ng-container>
+
+    <section *ngIf="pestanaActiva === 'prediccion' && mostrarPestanaPrediccion" class="space-y-6">
+      <p *ngIf="cargandoPrediccion" class="rb-kicker">Cargando predicción de inventario...</p>
+      <p *ngIf="errorPrediccion" class="text-sm text-danger">{{ errorPrediccion }}</p>
+
+      <div
+        *ngIf="!cargandoPrediccion && !errorPrediccion && prediccion?.alertasCriticas?.length"
+        class="flex items-start gap-3 rounded-xl border border-warning/40 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100"
+        role="alert"
+      >
+        <ng-icon name="heroExclamationTriangle" size="22" class="shrink-0 text-warning" />
+        <ul class="list-disc space-y-1 pl-4">
+          <li *ngFor="let a of prediccion!.alertasCriticas">{{ a }}</li>
+        </ul>
+      </div>
+
+      <div
+        *ngIf="!cargandoPrediccion && !errorPrediccion && prediccion?.items?.length"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <article
+          *ngFor="let item of prediccion!.items"
+          class="rb-card rb-card-pad flex flex-col gap-2 dark:shadow-none"
+        >
+          <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong">{{ item.insumo }}</h2>
+          <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
+            Stock actual: <strong>{{ item.stockActual }}</strong>
+          </p>
+          <p class="text-sm text-neutral-strong dark:text-dark-text-muted">
+            Predicción 7 días: <strong>{{ item.prediccion7d }}</strong>
+          </p>
+        </article>
+      </div>
+
+      <div
+        *ngIf="!cargandoPrediccion && !errorPrediccion && prediccion && (!prediccion.items || prediccion.items.length === 0)"
+        class="rb-card rb-card-pad text-center"
+      >
+        <p class="rb-kicker">No hay datos de predicción disponibles.</p>
+      </div>
+    </section>
   </div>
 </div>
 

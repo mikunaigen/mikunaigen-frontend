@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 import { WebsocketService } from '../../services/websocket.service';
 import { environment } from '@env/environment';
+import { IaConfigService } from '../../services/ia-config.service';
 
 type SlotEstado = 'VACIO' | 'CARGANDO' | 'ACTIVO';
 
@@ -68,6 +69,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
     private websocketService: WebsocketService,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
+    private iaConfig: IaConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -274,14 +276,19 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
     this.http.get<any>(`${this.apiIa}`).subscribe({
       next: (resp) => {
         this.cargandoIa = false;
-        this.iaActiva = !!resp?.iaActiva;
-        this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+        this.aplicarRespuestaIa(resp);
       },
       error: () => {
         this.cargandoIa = false;
         this.abrirModal('error', 'IA', 'No se pudo cargar la configuración de modelos IA.');
       },
     });
+  }
+
+  private aplicarRespuestaIa(resp: { iaActiva?: boolean; slots?: IaSlot[] }): void {
+    this.iaActiva = !!resp?.iaActiva;
+    this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+    this.iaConfig.aplicarDesdeAdmin(resp);
   }
 
   onArchivoModeloIaSelected(event: Event) {
@@ -333,8 +340,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (resp) => {
             this.guardandoIa = false;
-            this.iaActiva = !!resp?.iaActiva;
-            this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+            this.aplicarRespuestaIa(resp);
             this.archivoModeloIa = null;
             this.archivoEncodersIa = null;
             this.abrirModal('exito', 'IA', 'Modelo y encoders cargados correctamente en Slot 1.');
@@ -351,16 +357,20 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
   }
 
   actualizarSwitchIa() {
+    const valor = this.iaActiva;
+    this.slotsIa = this.slotsIa.map((s) =>
+      s.slotNumber >= 1 && s.slotNumber <= 3 ? { ...s, slotEnabled: valor } : s,
+    );
     this.guardandoIa = true;
-    this.http.patch<any>(`${this.apiIa}/toggle`, { iaActiva: this.iaActiva }).subscribe({
+    this.http.patch<any>(`${this.apiIa}/toggle`, { iaActiva: valor }).subscribe({
       next: (resp) => {
         this.guardandoIa = false;
-        this.iaActiva = !!resp?.iaActiva;
-        this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+        this.aplicarRespuestaIa(resp);
       },
       error: () => {
         this.guardandoIa = false;
-        this.iaActiva = !this.iaActiva;
+        this.iaActiva = !valor;
+        this.cargarConfiguracionIa();
         this.abrirModal('error', 'IA', 'No se pudo actualizar el interruptor maestro de IA.');
       },
     });
@@ -371,8 +381,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
     this.http.patch<any>(`${this.apiIa}/slot/${slotNumber}/toggle`, { enabled }).subscribe({
       next: (resp) => {
         this.guardandoIa = false;
-        this.iaActiva = !!resp?.iaActiva;
-        this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+        this.aplicarRespuestaIa(resp);
       },
       error: () => {
         this.guardandoIa = false;
@@ -420,8 +429,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (resp) => {
             this.guardandoIa = false;
-            this.iaActiva = !!resp?.iaActiva;
-            this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+            this.aplicarRespuestaIa(resp);
             this.archivoRulesSlot2 = null;
             this.archivoFrequencySlot2 = null;
             this.archivoConfigSlot2 = null;
@@ -468,8 +476,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (resp) => {
             this.guardandoIa = false;
-            this.iaActiva = !!resp?.iaActiva;
-            this.slotsIa = Array.isArray(resp?.slots) ? resp.slots : [];
+            this.aplicarRespuestaIa(resp);
             this.archivoModeloSlot3 = null;
             this.archivoFeatScalerSlot3 = null;
             this.archivoYScalerSlot3 = null;
