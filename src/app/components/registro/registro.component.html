@@ -1,4 +1,7 @@
-<div *ngIf="isAdminMode === null" class="rb-page rb-page--auth relative flex items-center justify-center">
+<div
+  *ngIf="isAdminMode === null"
+  class="rb-page rb-page--auth relative flex items-center justify-center"
+>
   <div
     class="h-10 w-10 animate-spin rounded-full border-2 border-secondary border-t-transparent"
   ></div>
@@ -6,20 +9,25 @@
 
 <div *ngIf="isAdminMode === true" class="rb-page-center relative items-start">
   <div class="rb-container !py-0">
-    <div class="rb-card mx-auto flex w-full flex-col overflow-x-hidden xl:flex-row xl:overflow-hidden">
-    <div class="w-full bg-secondary px-4 py-8 text-center text-white sm:px-8 sm:py-10 sm:text-left xl:w-1/3">
-      <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">Bienvenido</h2>
-      <p class="mt-3 text-sm leading-relaxed text-white/90 lg:text-base">
-        Estás configurando el acceso del <strong>Administrador Principal</strong> para tener control total sobre la plataforma.
-      </p>
-    </div>
-    <ng-container *ngTemplateOutlet="formularioTemplate"></ng-container>
+    <div
+      class="rb-card mx-auto flex w-full flex-col overflow-x-hidden xl:flex-row xl:overflow-hidden"
+    >
+      <div
+        class="w-full bg-secondary px-4 py-8 text-center text-white sm:px-8 sm:py-10 sm:text-left xl:w-1/3"
+      >
+        <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">Bienvenido</h2>
+        <p class="mt-3 text-sm leading-relaxed text-white/90 lg:text-base">
+          Estás configurando el acceso del <strong>Administrador Principal</strong> para tener
+          control total sobre la plataforma.
+        </p>
+      </div>
+      <ng-container *ngTemplateOutlet="formularioTemplate"></ng-container>
     </div>
   </div>
 </div>
 
 <div *ngIf="isAdminMode === false" class="rb-page-center relative items-start">
-  <div class="rb-shell-sm rb-card overflow-x-hidden">
+  <div class="w-full max-w-2xl mx-auto rb-card overflow-x-hidden">
     <div class="bg-primary px-4 py-6 text-center text-white sm:px-8 sm:py-7">
       <div class="mx-auto mb-3 flex h-12 items-center justify-center sm:h-16">
         <img
@@ -38,12 +46,21 @@
 </div>
 
 <ng-template #formularioTemplate>
-  <div class="w-full min-h-0 p-4 sm:p-6 md:p-9" [ngClass]="{ 'xl:w-2/3 xl:min-h-0 xl:overflow-y-auto': isAdminMode }">
+  <div
+    class="w-full min-h-0 p-4 sm:p-6 md:p-9"
+    [ngClass]="{ 'xl:w-2/3 xl:min-h-0 xl:overflow-y-auto': isAdminMode }"
+  >
     <form (ngSubmit)="enviarRegistro()" *ngIf="paso === 1" class="space-y-4">
-      <h3 class="rb-heading-accent border-b border-gray-100 pb-3 dark:border-dark-border" *ngIf="isAdminMode">
+      <h3
+        class="rb-heading-accent border-b border-gray-100 pb-3 dark:border-dark-border"
+        *ngIf="isAdminMode"
+      >
         Registro de Administrador
       </h3>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong" *ngIf="!isAdminMode">
+      <h3
+        class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong"
+        *ngIf="!isAdminMode"
+      >
         Crear mi cuenta
       </h3>
 
@@ -133,7 +150,11 @@
               class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
               [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
             >
-              <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+              <ng-icon
+                [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'"
+                size="20"
+                class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+              />
             </button>
           </div>
         </div>
@@ -154,7 +175,11 @@
               class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80"
               [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
             >
-              <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+              <ng-icon
+                [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'"
+                size="20"
+                class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+              />
             </button>
           </div>
         </div>
@@ -207,24 +232,22 @@
         </div>
       </div>
 
-      <button
-        type="submit"
-        [disabled]="!aceptoTerminos || !aceptoDescargo || cargando"
-        class="disabled:!bg-neutral-muted disabled:cursor-not-allowed"
-        [ngClass]="isAdminMode ? 'rb-btn-secondary' : 'rb-btn-primary'"
-      >
-        <span
-          *ngIf="cargando"
-          class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
-        ></span>
-        {{
-          cargando
-            ? 'Registrando...'
-            : isAdminMode
-              ? 'Crear Administrador'
-              : 'Registrarme ahora'
-        }}
-      </button>
+      <div class="flex justify-center w-full">
+        <button
+          type="submit"
+          [disabled]="!aceptoTerminos || !aceptoDescargo || cargando"
+          class="flex items-center justify-center gap-2 disabled:!bg-neutral-muted disabled:cursor-not-allowed"
+          [ngClass]="isAdminMode ? 'rb-btn-secondary' : 'rb-btn-primary'"
+        >
+          <span
+            *ngIf="cargando"
+            class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+          ></span>
+          <span>
+            {{ cargando ? 'Registrando...' : isAdminMode ? 'Crear Administrador' : 'Registrarme' }}
+          </span>
+        </button>
+      </div>
 
       <p *ngIf="!isAdminMode" class="mt-4 text-center text-xs text-neutral-muted">
         ¿Ya eres parte?
@@ -238,19 +261,25 @@
           class="mx-auto flex h-16 w-16 items-center justify-center rounded-full"
           [ngClass]="isAdminMode ? 'bg-secondary/10' : 'bg-primary/10'"
         >
-          <ng-icon name="heroPaperAirplane" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+          <ng-icon
+            name="heroPaperAirplane"
+            size="48"
+            class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+          />
         </div>
-        <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Activa tu cuenta con Telegram</h3>
+        <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+          Activa tu cuenta con Telegram
+        </h3>
         <p class="mt-2 text-sm text-neutral-strong dark:text-slate-300">
-          Escanea el código QR o abre el bot con el enlace. Usa el mismo número con el que te registraste.
+          Escanea el código QR o abre el bot con el enlace. Usa el mismo número con el que te
+          registraste.
         </p>
       </div>
 
-      <div class="flex flex-col items-center gap-6 sm:gap-8 lg:flex-row lg:items-start lg:justify-center">
-        <div
-          *ngIf="qrTelegramDataUrl() && !codigoExpirado"
-          class="w-full max-w-[240px] shrink-0"
-        >
+      <div
+        class="flex flex-col items-center gap-6 sm:gap-8 lg:flex-row lg:items-start lg:justify-center"
+      >
+        <div *ngIf="qrTelegramDataUrl() && !codigoExpirado" class="w-full max-w-[240px] shrink-0">
           <div
             class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-600 dark:bg-white dark:shadow-none"
           >
@@ -262,15 +291,25 @@
               class="mx-auto block h-auto w-full max-w-[220px]"
             />
           </div>
-          <p class="mt-3 flex items-center justify-center gap-1.5 text-xs text-neutral-muted dark:text-slate-400">
-            <ng-icon name="heroQrCode" size="16" class="shrink-0 text-secondary dark:text-sky-300" />
+          <p
+            class="mt-3 flex items-center justify-center gap-1.5 text-xs text-neutral-muted dark:text-slate-400"
+          >
+            <ng-icon
+              name="heroQrCode"
+              size="16"
+              class="shrink-0 text-secondary dark:text-sky-300"
+            />
             Escanea para abrir el bot
           </p>
         </div>
 
-        <div class="w-full min-w-0 max-w-lg space-y-6 text-center lg:max-w-none lg:flex-1 lg:text-left">
+        <div
+          class="w-full min-w-0 max-w-lg space-y-6 text-center lg:max-w-none lg:flex-1 lg:text-left"
+        >
           <div>
-            <label class="rb-label !mb-1 !text-center !normal-case lg:!text-left">Código de activación</label>
+            <label class="rb-label !mb-1 !text-center !normal-case lg:!text-left"
+              >Código de activación</label
+            >
             <div
               class="flex items-center justify-center gap-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 font-mono text-2xl tracking-wider text-gray-900 dark:border-dark-border dark:bg-slate-900/50 dark:text-dark-text-strong sm:text-3xl lg:justify-start"
             >
@@ -311,7 +350,10 @@
             Solicitar un nuevo código
           </button>
 
-          <p *ngIf="esperandoTelegram && !codigoExpirado" class="text-xs text-neutral-muted dark:text-slate-400">
+          <p
+            *ngIf="esperandoTelegram && !codigoExpirado"
+            class="text-xs text-neutral-muted dark:text-slate-400"
+          >
             Esperando confirmación en Telegram...
           </p>
 
@@ -334,8 +376,23 @@
 
 <div *ngIf="modal.visible" class="rb-modal-backdrop">
   <div class="rb-modal max-w-md border-gray-200">
-    <div *ngIf="modal.tipo === 'error' || modal.tipo === 'exito'" class="rb-modal-icon">
-      <ng-icon [name]="modal.esExpirado ? 'heroExclamationTriangle' : modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'" size="52" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+    <div
+      *ngIf="modal.tipo === 'error' || modal.tipo === 'exito' || modal.tipo === 'cuentaValidada'"
+      class="rb-modal-icon"
+    >
+      <ng-icon
+        [name]="
+          modal.tipo === 'cuentaValidada'
+            ? 'heroCheckCircle'
+            : modal.esExpirado
+              ? 'heroExclamationTriangle'
+              : modal.tipo === 'error'
+                ? 'heroXCircle'
+                : 'heroCheckCircle'
+        "
+        size="52"
+        class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+      />
     </div>
     <div
       *ngIf="modal.tipo === 'terminos' || modal.tipo === 'descargo'"
@@ -350,30 +407,66 @@
       </span>
     </div>
 
-    <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ modal.titulo }}</h3>
+    <h3
+      *ngIf="modal.titulo"
+      class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong"
+    >
+      {{ modal.titulo }}
+    </h3>
 
     <div
       class="mb-6 max-h-40 overflow-y-auto px-1 text-sm text-neutral-strong dark:text-slate-200"
-      [ngClass]="modal.tipo === 'terminos' || modal.tipo === 'descargo' ? 'text-left leading-relaxed' : 'text-center'"
+      [ngClass]="
+        modal.tipo === 'terminos' || modal.tipo === 'descargo'
+          ? 'text-left leading-relaxed'
+          : 'text-center'
+      "
     >
       {{ modal.mensaje }}
     </div>
 
     <div *ngIf="modal.tipo === 'terminos'" class="flex flex-col gap-2 sm:flex-row sm:gap-3">
-      <button type="button" (click)="rechazarTerminos()" class="rb-btn-neutral !shadow-none sm:flex-1">
+      <button
+        type="button"
+        (click)="rechazarTerminos()"
+        class="rb-btn-neutral !shadow-none sm:flex-1"
+      >
         No Acepto
       </button>
-      <button type="button" (click)="aceptarTerminos()" class="rb-btn-success sm:flex-1">Acepto</button>
+      <button type="button" (click)="aceptarTerminos()" class="rb-btn-success sm:flex-1">
+        Acepto
+      </button>
     </div>
 
     <div *ngIf="modal.tipo === 'descargo'" class="flex flex-col gap-2 sm:flex-row sm:gap-3">
-      <button type="button" (click)="rechazarDescargo()" class="rb-btn-neutral !shadow-none sm:flex-1">
+      <button
+        type="button"
+        (click)="rechazarDescargo()"
+        class="rb-btn-neutral !shadow-none sm:flex-1"
+      >
         No Acepto
       </button>
-      <button type="button" (click)="aceptarDescargo()" class="rb-btn-success sm:flex-1">Acepto</button>
+      <button type="button" (click)="aceptarDescargo()" class="rb-btn-success sm:flex-1">
+        Acepto
+      </button>
     </div>
 
-    <div *ngIf="modal.tipo !== 'terminos' && modal.tipo !== 'descargo'" class="flex justify-center">
+    <div *ngIf="modal.tipo === 'cuentaValidada'" class="flex justify-center">
+      <button
+        type="button"
+        (click)="confirmarActivacionYLogin()"
+        class="rb-btn-success w-full sm:w-max"
+      >
+        Aceptar
+      </button>
+    </div>
+
+    <div
+      *ngIf="
+        modal.tipo !== 'terminos' && modal.tipo !== 'descargo' && modal.tipo !== 'cuentaValidada'
+      "
+      class="flex justify-center"
+    >
       <button
         type="button"
         (click)="cerrarModal()"

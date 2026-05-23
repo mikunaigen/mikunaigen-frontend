@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, signal } from '@angular/core';
 import QRCode from 'qrcode';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -95,6 +95,8 @@ export class RegistroComponent implements OnInit, OnDestroy {
     private config: ConfigService,
     private auth: AuthService,
     private websocket: WebsocketService,
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -377,16 +379,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
       this.wsSub = this.websocket
         .subscribeToTopic(`/topic/registro-activacion/${this.userIdRegistro}`)
         .subscribe((body) => {
-          try {
-            const data = JSON.parse(body) as { estado?: string; message?: string };
-            this.procesarEventoActivacion(data.estado, data.message);
-          } catch {
-            if (body.includes('activo')) {
-              this.onCuentaActivada();
-            } else if (body.includes('telefono_no_coincide')) {
-              this.onTelefonoNoCoincide();
-            }
-          }
+          this.ngZone.run(() => this.procesarMensajeActivacionWs(body));
         });
 
       this.pollSub = interval(2000)
@@ -399,6 +392,19 @@ export class RegistroComponent implements OnInit, OnDestroy {
           takeWhile(() => this.paso === 2),
         )
         .subscribe((r) => this.aplicarEstadoActivacion(r));
+    }
+  }
+
+  private procesarMensajeActivacionWs(body: string): void {
+    try {
+      const data = JSON.parse(body) as { estado?: string; message?: string };
+      this.procesarEventoActivacion(data.estado, data.message);
+    } catch {
+      if (body.includes('activo')) {
+        this.onCuentaActivada();
+      } else if (body.includes('telefono_no_coincide')) {
+        this.onTelefonoNoCoincide();
+      }
     }
   }
 
@@ -462,17 +468,21 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.wsSub?.unsubscribe();
     this.pollSub?.unsubscribe();
     this.countdownSub?.unsubscribe();
-    this.abrirModal(
-      'exito',
-      'Cuenta activada',
-      'Tu cuenta fue activada correctamente. Redirigiendo al inicio de sesión...',
-    );
-    setTimeout(() => this.router.navigate(['/login']), 2500);
+    this.abrirModal('cuentaValidada', '', 'Su cuenta ha sido validada correctamente');
+  }
+
+  confirmarActivacionYLogin(): void {
+    if (this.modal.tipo !== 'cuentaValidada') {
+      return;
+    }
+    this.modal.visible = false;
+    this.router.navigate(['/login']);
   }
 
   abrirModal(tipo: string, titulo: string, mensaje: string) {
     const esExpirado = mensaje.toLowerCase().includes('expirado');
     this.modal = { visible: true, tipo, titulo, mensaje, esExpirado };
+    this.cdr.detectChanges();
   }
 
   cerrarModal() {
