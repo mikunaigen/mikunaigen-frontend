@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 import {
@@ -9,10 +9,17 @@ import {
   AlimentoDatasetRow,
   FiltrosMetaDto,
 } from '../../services/alimento-dataset-admin.service';
+import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 import { extraerLineasDatosCsv, leerArchivoCsvComoTexto } from '../../utils/csv-minsa-dataset';
 import { firstValueFrom, timer, switchMap, takeWhile, timeout, catchError, of } from 'rxjs';
 
 type CampoNum = { key: keyof AlimentoDatasetRow; label: string };
+
+type ModalDataset =
+  | { tipo: 'ok' | 'error'; titulo: string; mensaje: string }
+  | { tipo: 'pendientes'; cambios: string[] }
+  | null;
 
 @Component({
   selector: 'app-admin-dataset-alimentos',
@@ -24,6 +31,9 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   @ViewChild('csvReimport') csvReimport?: ElementRef<HTMLInputElement>;
 
   private readonly datasetService = inject(AlimentoDatasetAdminService);
+  private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+  private readonly theme = inject(ThemeService);
 
   readonly columnasCsv =
     'codigo,grupo,nombre_alimento,energia_kcal,agua_g,proteinas_g,grasa_total_g,carbohidratos_totales_g,carbohidratos_disponibles_g,fibra_dietaria_g,cenizas_g,calcio_mg,fosforo_mg,zinc_mg,hierro_mg,beta_caroteno_ug,vitamina_a_ug,tiamina_mg,riboflavina_mg,niacina_mg,vitamina_c_mg,acido_folico_ug,sodio_mg,potasio_mg,costo_kg_soles,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre';
@@ -77,13 +87,15 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   progresoCsv = signal<{ actual: number; total: number } | null>(null);
   alimentos = signal<AlimentoDatasetRow[]>([]);
   metaFiltros = signal<FiltrosMetaDto | null>(null);
-  modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
+  modal = signal<ModalDataset>(null);
   pagina = signal(0);
   tamanoPagina = signal(20);
   totalRegistros = signal(0);
   totalPaginas = signal(0);
 
   private readonly filasDirty = new Map<string, AlimentoDatasetRow>();
+  private readonly filasOriginales = new Map<string, AlimentoDatasetRow>();
+  private accionPendiente: (() => void) | null = null;
 
   filtroNombre = '';
   filtroGrupo = '';
@@ -93,6 +105,19 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarEstado();
+  }
+
+  interceptarCerrarSesion = (): boolean => {
+    if (this.filasDirty.size === 0) {
+      return true;
+    }
+    this.confirmarSiHayCambios(() => this.ejecutarCerrarSesion());
+    return false;
+  };
+
+  solicitarIrPanel(event: Event): void {
+    event.preventDefault();
+    this.confirmarSiHayCambios(() => void this.router.navigate(['/gestion-administrador']));
   }
 
   cargarEstado(): void {
@@ -151,29 +176,39 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     return this.filasDirty.size;
   }
 
+  esModalPendientes(): boolean {
+    return this.modal()?.tipo === 'pendientes';
+  }
+
   cambiarTamanoPagina(tamano: number): void {
     const permitido = this.tamanosPagina.includes(tamano as (typeof this.tamanosPagina)[number])
       ? tamano
       : 20;
-    this.tamanoPagina.set(permitido);
-    this.pagina.set(0);
-    this.cargarTabla();
+    this.confirmarSiHayCambios(() => {
+      this.tamanoPagina.set(permitido);
+      this.pagina.set(0);
+      this.cargarTabla();
+    });
   }
 
   irPaginaAnterior(): void {
     if (this.pagina() <= 0) {
       return;
     }
-    this.pagina.update((p) => p - 1);
-    this.cargarTabla();
+    this.confirmarSiHayCambios(() => {
+      this.pagina.update((p) => p - 1);
+      this.cargarTabla();
+    });
   }
 
   irPaginaSiguiente(): void {
     if (this.pagina() >= this.totalPaginas() - 1) {
       return;
     }
-    this.pagina.update((p) => p + 1);
-    this.cargarTabla();
+    this.confirmarSiHayCambios(() => {
+      this.pagina.update((p) => p + 1);
+      this.cargarTabla();
+    });
   }
 
   onArchivoCsv(event: Event): boolean {
@@ -194,7 +229,7 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   }
 
   importarCsv(): void {
-    void this.ejecutarImportacionCsv();
+    this.confirmarSiHayCambios(() => void this.ejecutarImportacionCsv());
   }
 
   porcentajeProgresoCsv(): number {
@@ -205,77 +240,33 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     return Math.min(100, Math.round((p.actual / p.total) * 100));
   }
 
-  private async ejecutarImportacionCsv(): Promise<void> {
-    const archivo = this.archivoCsv;
-    if (!archivo) {
-      this.mostrarError('Selecciona un archivo CSV.');
-      return;
-    }
-    if (!this.esCsvValido(archivo)) {
-      this.archivoCsv = null;
-      this.mostrarAlertaCsvInvalido();
-      return;
-    }
-    if (archivo.size > 5 * 1024 * 1024) {
-      this.mostrarError('El archivo no puede superar 5 MB.');
-      return;
-    }
-    this.subiendoCsv.set(true);
-    this.progresoCsv.set({ actual: 0, total: 0 });
-    try {
-      const texto = await leerArchivoCsvComoTexto(archivo);
-      const lineasDatos = extraerLineasDatosCsv(texto);
-      const total = lineasDatos.length;
-      if (total === 0) {
-        this.mostrarError('El CSV no contiene filas de datos.');
-        return;
-      }
-      this.progresoCsv.set({ actual: 0, total });
-      const job = await firstValueFrom(this.datasetService.iniciarImportacionCsv(lineasDatos));
-      const resultado = await this.esperarFinImportacion(job.jobId, total);
-      this.progresoCsv.set({ actual: total, total });
-      this.archivoCsv = null;
-      this.vacio.set(false);
-      this.mostrarOk(
-        'Importación completada',
-        `Se importaron ${resultado.registrosProcesados} fila(s). Total en PostgreSQL: ${resultado.totalBd}.`,
-      );
-      this.datasetService.cerrarImportacionCsv(job.jobId).subscribe({ error: () => {} });
-      this.cargarMetaYTabla();
-    } catch (err: unknown) {
-      const httpErr = err as { error?: { message?: string; error?: string }; message?: string };
-      const detalle = httpErr?.error?.message ?? httpErr?.error?.error ?? httpErr?.message;
-      this.mostrarError(detalle || 'Error al importar el CSV.');
-    } finally {
-      this.subiendoCsv.set(false);
-      this.progresoCsv.set(null);
-    }
-  }
-
   aplicarFiltros(): void {
-    this.pagina.set(0);
-    this.cargarTabla();
+    this.confirmarSiHayCambios(() => {
+      this.pagina.set(0);
+      this.cargarTabla();
+    });
   }
 
   limpiarFiltros(): void {
-    this.filtroNombre = '';
-    this.filtroGrupo = '';
-    this.filtroCampo = '';
-    this.filtroRango = 'todos';
-    this.pagina.set(0);
-    this.cargarTabla();
+    this.confirmarSiHayCambios(() => {
+      this.filtroNombre = '';
+      this.filtroGrupo = '';
+      this.filtroCampo = '';
+      this.filtroRango = 'todos';
+      this.pagina.set(0);
+      this.cargarTabla();
+    });
   }
 
   seleccionarRango(id: string): void {
     this.filtroRango = id;
     if (this.filtroCampo) {
-      this.cargarTabla();
+      this.confirmarSiHayCambios(() => this.cargarTabla());
     }
   }
 
   marcarDirty(row: AlimentoDatasetRow): void {
-    row._dirty = true;
-    this.filasDirty.set(this.claveFila(row), row);
+    this.actualizarEstadoFila(row);
   }
 
   mesActivo(row: AlimentoDatasetRow, mes: string): boolean {
@@ -285,23 +276,31 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   toggleMes(row: AlimentoDatasetRow, mes: string): void {
     const actual = this.mesActivo(row, mes);
     (row as Record<string, unknown>)[mes] = !actual;
-    this.marcarDirty(row);
+    this.actualizarEstadoFila(row);
   }
 
   onNumChange(row: AlimentoDatasetRow, key: keyof AlimentoDatasetRow, val: string | number): void {
     const n = val === '' || val === null ? null : Number(val);
     (row as Record<string, unknown>)[key as string] = n;
-    this.marcarDirty(row);
+    this.actualizarEstadoFila(row);
   }
 
   abrirReimportarCsv(): void {
-    this.csvReimport?.nativeElement.click();
+    this.confirmarSiHayCambios(() => this.csvReimport?.nativeElement.click());
+  }
+
+  onReimportarArchivo(event: Event): boolean {
+    if (!this.onArchivoCsv(event)) {
+      return false;
+    }
+    void this.ejecutarImportacionCsv();
+    return true;
   }
 
   agregarAlimento(): void {
     const nuevo: AlimentoDatasetRow = {
       _clave: `nuevo-${Date.now()}`,
-      _dirty: true,
+      _dirty: false,
       codigo_minsa: '',
       nombre: '',
       categoria: this.metaFiltros()?.categoriasPermitidas?.[0] || 'Verduras',
@@ -311,14 +310,19 @@ export class AdminDatasetAlimentosComponent implements OnInit {
     this.meses.forEach((m) => {
       (nuevo as Record<string, unknown>)[m.key] = false;
     });
-    this.filasDirty.set(this.claveFila(nuevo), nuevo);
-    this.alimentos.update((list) => [nuevo, ...list]);
+    this.registrarOriginal(nuevo);
+    this.actualizarEstadoFila(nuevo);
+    if (nuevo._dirty) {
+      this.alimentos.update((list) => [nuevo, ...list]);
+    }
   }
 
-  guardarCambios(): void {
+  guardarCambios(alContinuar?: () => void): void {
     const pendientes = Array.from(this.filasDirty.values());
     if (pendientes.length === 0) {
-      this.mostrarError('No hay cambios pendientes por guardar.');
+      if (!alContinuar) {
+        this.mostrarError('No hay cambios pendientes por guardar.');
+      }
       return;
     }
     for (const fila of pendientes) {
@@ -333,7 +337,11 @@ export class AdminDatasetAlimentosComponent implements OnInit {
       next: (res) => {
         this.guardando.set(false);
         this.filasDirty.clear();
-        this.mostrarOk('Cambios guardados', res.message);
+        if (alContinuar) {
+          alContinuar();
+        } else {
+          this.mostrarOk('Cambios guardados', res.message);
+        }
         this.cargarTabla();
       },
       error: (err) => {
@@ -341,6 +349,37 @@ export class AdminDatasetAlimentosComponent implements OnInit {
         this.mostrarError(err?.error?.message || 'No se pudieron guardar los cambios.');
       },
     });
+  }
+
+  guardarDesdeModalPendientes(): void {
+    const accion = this.accionPendiente;
+    this.accionPendiente = null;
+    this.modal.set(null);
+    this.guardarCambios(() => accion?.());
+  }
+
+  descartarCambiosPendientes(): void {
+    const accion = this.accionPendiente;
+    this.accionPendiente = null;
+    this.filasDirty.clear();
+    this.alimentos.update((list) =>
+      list
+        .filter((row) => row.id != null)
+        .map((row) => {
+          const orig = this.filasOriginales.get(this.claveFila(row));
+          if (orig) {
+            return { ...this.clonarFilaComparacion(orig), _dirty: false };
+          }
+          return { ...row, _dirty: false };
+        }),
+    );
+    this.modal.set(null);
+    accion?.();
+  }
+
+  cancelarModalPendientes(): void {
+    this.accionPendiente = null;
+    this.modal.set(null);
   }
 
   validarFila(row: AlimentoDatasetRow): string | null {
@@ -375,7 +414,186 @@ export class AdminDatasetAlimentosComponent implements OnInit {
   }
 
   cerrarModal(): void {
+    const m = this.modal();
+    if (m?.tipo === 'pendientes') {
+      this.cancelarModalPendientes();
+      return;
+    }
     this.modal.set(null);
+  }
+
+  private confirmarSiHayCambios(accion: () => void): void {
+    if (this.filasDirty.size === 0) {
+      accion();
+      return;
+    }
+    this.accionPendiente = accion;
+    this.modal.set({
+      tipo: 'pendientes',
+      cambios: this.listarResumenCambios(),
+    });
+  }
+
+  private listarResumenCambios(): string[] {
+    return Array.from(this.filasDirty.values()).map((row) => this.resumirCambiosFila(row));
+  }
+
+  private ejecutarCerrarSesion(): void {
+    this.auth.clearSession();
+    this.theme.onLogout();
+    void this.router.navigate(['/presentacion']);
+  }
+
+  private actualizarEstadoFila(row: AlimentoDatasetRow): void {
+    const clave = this.claveFila(row);
+    if (!this.filasOriginales.has(clave)) {
+      this.registrarOriginal(row);
+    }
+    const original = this.filasOriginales.get(clave);
+    if (original && this.filasIguales(row, original)) {
+      row._dirty = false;
+      this.filasDirty.delete(clave);
+      if (row.id == null && this.esFilaNuevaVacia(row, original)) {
+        this.filasOriginales.delete(clave);
+        this.alimentos.update((list) => list.filter((r) => this.claveFila(r) !== clave));
+        return;
+      }
+    } else {
+      row._dirty = true;
+      this.filasDirty.set(clave, row);
+    }
+    this.sincronizarFilaEnLista(row);
+  }
+
+  private sincronizarFilaEnLista(row: AlimentoDatasetRow): void {
+    const clave = this.claveFila(row);
+    this.alimentos.update((list) =>
+      list.map((r) => (this.claveFila(r) === clave ? { ...row } : r)),
+    );
+  }
+
+  private registrarOriginal(row: AlimentoDatasetRow): void {
+    const clave = this.claveFila(row);
+    if (!this.filasOriginales.has(clave)) {
+      this.filasOriginales.set(clave, this.clonarFilaComparacion(row));
+    }
+  }
+
+  private esFilaNuevaVacia(row: AlimentoDatasetRow, original: AlimentoDatasetRow): boolean {
+    return row.id == null && this.filasIguales(row, original);
+  }
+
+  private resumirCambiosFila(row: AlimentoDatasetRow): string {
+    const clave = this.claveFila(row);
+    const etiqueta = row.nombre?.trim() || row.codigo_minsa?.trim() || 'Alimento sin nombre';
+    const original = this.filasOriginales.get(clave);
+    if (!original || row.id == null) {
+      return `${etiqueta} (nuevo)`;
+    }
+    const detalles: string[] = [];
+    if (this.textoDistinto(row.codigo_minsa, original.codigo_minsa)) {
+      detalles.push(`código: ${this.fmt(original.codigo_minsa)} → ${this.fmt(row.codigo_minsa)}`);
+    }
+    if (this.textoDistinto(row.categoria, original.categoria)) {
+      detalles.push(`grupo: ${this.fmt(original.categoria)} → ${this.fmt(row.categoria)}`);
+    }
+    if (this.textoDistinto(row.nombre, original.nombre)) {
+      detalles.push(`nombre: ${this.fmt(original.nombre)} → ${this.fmt(row.nombre)}`);
+    }
+    for (const c of this.camposNumericos) {
+      if (!this.numeroIgual(row[c.key], original[c.key])) {
+        detalles.push(
+          `${c.label}: ${this.fmtNum(original[c.key])} → ${this.fmtNum(row[c.key])}`,
+        );
+      }
+    }
+    for (const m of this.meses) {
+      const actual = this.mesActivo(row, m.key);
+      const prev = this.mesActivo(original, m.key);
+      if (actual !== prev) {
+        detalles.push(`${m.label}: ${prev ? 'sí' : 'no'} → ${actual ? 'sí' : 'no'}`);
+      }
+    }
+    if (detalles.length === 0) {
+      return etiqueta;
+    }
+    return `${etiqueta}: ${detalles.join('; ')}`;
+  }
+
+  private filasIguales(a: AlimentoDatasetRow, b: AlimentoDatasetRow): boolean {
+    if (this.textoDistinto(a.codigo_minsa, b.codigo_minsa)) {
+      return false;
+    }
+    if (this.textoDistinto(a.categoria, b.categoria)) {
+      return false;
+    }
+    if (this.textoDistinto(a.nombre, b.nombre)) {
+      return false;
+    }
+    for (const c of this.camposNumericos) {
+      if (!this.numeroIgual(a[c.key], b[c.key])) {
+        return false;
+      }
+    }
+    for (const m of this.meses) {
+      if (this.mesActivo(a, m.key) !== this.mesActivo(b, m.key)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private clonarFilaComparacion(row: AlimentoDatasetRow): AlimentoDatasetRow {
+    const copia: AlimentoDatasetRow = {
+      id: row.id,
+      _clave: row._clave,
+      codigo_minsa: row.codigo_minsa ?? '',
+      nombre: row.nombre ?? '',
+      categoria: row.categoria ?? '',
+      energia_kcal: row.energia_kcal,
+      costo_kg_soles: row.costo_kg_soles,
+      _dirty: false,
+    };
+    for (const c of this.camposNumericos) {
+      if (c.key !== 'energia_kcal' && c.key !== 'costo_kg_soles') {
+        (copia as Record<string, unknown>)[c.key as string] = row[c.key] ?? null;
+      }
+    }
+    this.meses.forEach((m) => {
+      (copia as Record<string, unknown>)[m.key] = this.mesActivo(row, m.key);
+    });
+    if (row.meses_disponibilidad) {
+      copia.meses_disponibilidad = [...row.meses_disponibilidad];
+    }
+    return copia;
+  }
+
+  private textoDistinto(a?: string | null, b?: string | null): boolean {
+    return (a ?? '').trim() !== (b ?? '').trim();
+  }
+
+  private numeroIgual(a: unknown, b: unknown): boolean {
+    const na = a === null || a === undefined || a === '' ? null : Number(a);
+    const nb = b === null || b === undefined || b === '' ? null : Number(b);
+    if (na === null && nb === null) {
+      return true;
+    }
+    if (na === null || nb === null || Number.isNaN(na) || Number.isNaN(nb)) {
+      return false;
+    }
+    return na === nb;
+  }
+
+  private fmt(val?: string | null): string {
+    const t = (val ?? '').trim();
+    return t || '(vacío)';
+  }
+
+  private fmtNum(val: unknown): string {
+    if (val === null || val === undefined || val === '') {
+      return '(vacío)';
+    }
+    return String(val);
   }
 
   private claveFila(row: AlimentoDatasetRow): string {
@@ -390,6 +608,7 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   private fusionarFilaConCache(a: AlimentoDatasetRow): AlimentoDatasetRow {
     const norm = this.normalizarFila(a);
+    this.registrarOriginal(norm);
     const clave = this.claveFila(norm);
     const enCache = this.filasDirty.get(clave);
     if (enCache) {
@@ -400,7 +619,11 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   private normalizarFila(a: AlimentoDatasetRow): AlimentoDatasetRow {
     const fila = { ...a, _dirty: false };
-    if (Array.isArray(fila.meses_disponibilidad) && fila.meses_disponibilidad.length === 1 && Array.isArray(fila.meses_disponibilidad[0])) {
+    if (
+      Array.isArray(fila.meses_disponibilidad) &&
+      fila.meses_disponibilidad.length === 1 &&
+      Array.isArray(fila.meses_disponibilidad[0])
+    ) {
       fila.meses_disponibilidad = fila.meses_disponibilidad[0] as unknown as number[];
     }
     this.meses.forEach((m, idx) => {
@@ -415,6 +638,55 @@ export class AdminDatasetAlimentosComponent implements OnInit {
 
   private mostrarError(mensaje: string): void {
     this.modal.set({ tipo: 'error', titulo: 'Error', mensaje });
+  }
+
+  private async ejecutarImportacionCsv(): Promise<void> {
+    const archivo = this.archivoCsv;
+    if (!archivo) {
+      this.mostrarError('Selecciona un archivo CSV.');
+      return;
+    }
+    if (!this.esCsvValido(archivo)) {
+      this.archivoCsv = null;
+      this.mostrarAlertaCsvInvalido();
+      return;
+    }
+    if (archivo.size > 5 * 1024 * 1024) {
+      this.mostrarError('El archivo no puede superar 5 MB.');
+      return;
+    }
+    this.filasDirty.clear();
+    this.filasOriginales.clear();
+    this.subiendoCsv.set(true);
+    this.progresoCsv.set({ actual: 0, total: 0 });
+    try {
+      const texto = await leerArchivoCsvComoTexto(archivo);
+      const lineasDatos = extraerLineasDatosCsv(texto);
+      const total = lineasDatos.length;
+      if (total === 0) {
+        this.mostrarError('El CSV no contiene filas de datos.');
+        return;
+      }
+      this.progresoCsv.set({ actual: 0, total });
+      const job = await firstValueFrom(this.datasetService.iniciarImportacionCsv(lineasDatos));
+      const resultado = await this.esperarFinImportacion(job.jobId, total);
+      this.progresoCsv.set({ actual: total, total });
+      this.archivoCsv = null;
+      this.vacio.set(false);
+      this.mostrarOk(
+        'Importación completada',
+        `Se importaron ${resultado.registrosProcesados} fila(s). Total en PostgreSQL: ${resultado.totalBd}.`,
+      );
+      this.datasetService.cerrarImportacionCsv(job.jobId).subscribe({ error: () => {} });
+      this.cargarMetaYTabla();
+    } catch (err: unknown) {
+      const httpErr = err as { error?: { message?: string; error?: string }; message?: string };
+      const detalle = httpErr?.error?.message ?? httpErr?.error?.error ?? httpErr?.message;
+      this.mostrarError(detalle || 'Error al importar el CSV.');
+    } finally {
+      this.subiendoCsv.set(false);
+      this.progresoCsv.set(null);
+    }
   }
 
   private esperarFinImportacion(

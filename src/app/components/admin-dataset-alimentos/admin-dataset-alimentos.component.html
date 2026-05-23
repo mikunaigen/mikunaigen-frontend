@@ -3,7 +3,8 @@
     <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <a
-          routerLink="/gestion-administrador"
+          href="/gestion-administrador"
+          (click)="solicitarIrPanel($event)"
           class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
         >
           <ng-icon name="heroArrowLeft" size="16" />
@@ -12,7 +13,7 @@
         <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Dataset de Entrenamiento MINSA</h1>
         <p class="rb-kicker mt-1">Tablas Peruanas de Composición de Alimentos (TPCA)</p>
       </div>
-      <app-logout-button />
+      <app-logout-button [beforeLogout]="interceptarCerrarSesion" />
     </header>
 
     <section
@@ -156,7 +157,7 @@
             type="file"
             accept=".csv"
             class="hidden"
-            (change)="onArchivoCsv($event) && importarCsv()"
+            (change)="onReimportarArchivo($event)"
           />
         </div>
       </section>
@@ -208,10 +209,16 @@
               <tr
                 *ngFor="let row of alimentos(); trackBy: trackFila"
                 class="border-t border-gray-200 dark:border-dark-border"
-                [class.bg-amber-500]="row._dirty"
-                [class.dark:bg-amber-800]="row._dirty"
+                [class.bg-amber-200]="row._dirty"
+                [class.dark:bg-amber-700]="row._dirty"
               >
-                <td class="sticky left-0 z-10 bg-white px-1 py-1 dark:bg-dark-surface">
+                <td
+                  class="sticky left-0 z-10 px-1 py-1"
+                  [class.bg-white]="!row._dirty"
+                  [class.dark:bg-dark-surface]="!row._dirty"
+                  [class.bg-amber-200]="row._dirty"
+                  [class.dark:bg-amber-700]="row._dirty"
+                >
                   <input
                     type="text"
                     [(ngModel)]="row.codigo_minsa"
@@ -316,17 +323,80 @@
   class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
   (click)="cerrarModal()"
 >
-  <div class="rb-card rb-card-pad max-w-md text-center" (click)="$event.stopPropagation()">
+  <div
+    *ngIf="m.tipo === 'pendientes'"
+    class="rb-card rb-card-pad max-h-[85vh] w-full max-w-lg overflow-hidden text-left dark:border-dark-border"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-start gap-3">
+      <ng-icon
+        name="heroExclamationTriangle"
+        size="32"
+        class="shrink-0 text-amber-600 dark:text-amber-400"
+      />
+      <div class="min-w-0 flex-1">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+          Hay cambios pendientes:
+        </h3>
+        <ul
+          class="mt-3 max-h-48 space-y-2 overflow-y-auto text-sm text-neutral-strong dark:text-dark-text-muted"
+        >
+          <li
+            *ngFor="let cambio of m.cambios"
+            class="rounded-lg border border-amber-200 bg-amber-50/80 px-3 py-2 dark:border-amber-900/50 dark:bg-amber-950/30"
+          >
+            {{ cambio }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+      <button
+        type="button"
+        class="rb-btn rb-btn-primary inline-flex min-h-11 flex-1 items-center justify-center gap-2 sm:min-w-[8rem]"
+        [disabled]="guardando()"
+        (click)="guardarDesdeModalPendientes()"
+      >
+        <ng-icon name="heroCheckCircle" size="18" />
+        {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+      <button
+        type="button"
+        class="rb-btn rb-btn-secondary inline-flex min-h-11 flex-1 items-center justify-center gap-2 sm:min-w-[8rem]"
+        [disabled]="guardando()"
+        (click)="descartarCambiosPendientes()"
+      >
+        <ng-icon name="heroXMark" size="18" />
+        Descartar cambios
+      </button>
+      <button
+        type="button"
+        class="rb-btn rb-btn-secondary inline-flex min-h-11 w-full items-center justify-center gap-2 sm:w-auto sm:min-w-[8rem]"
+        [disabled]="guardando()"
+        (click)="cancelarModalPendientes()"
+      >
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="m.tipo === 'ok' || m.tipo === 'error'"
+    class="rb-card rb-card-pad max-w-md text-center"
+    (click)="$event.stopPropagation()"
+  >
     <ng-icon
       [name]="m.tipo === 'ok' ? 'heroCheckCircle' : 'heroExclamationTriangle'"
       size="40"
       [class.text-green-600]="m.tipo === 'ok'"
+      [class.dark:text-green-400]="m.tipo === 'ok'"
       [class.text-red-600]="m.tipo === 'error'"
+      [class.dark:text-red-400]="m.tipo === 'error'"
       class="mx-auto"
     />
-    <h3 class="mt-3 text-lg font-semibold">{{ m.titulo }}</h3>
-    <p class="mt-2 text-sm text-neutral-muted">{{ m.mensaje }}</p>
-    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full" (click)="cerrarModal()">
+    <h3 class="mt-3 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ m.titulo }}</h3>
+    <p class="mt-2 text-sm text-neutral-muted dark:text-dark-text-muted">{{ m.mensaje }}</p>
+    <button type="button" class="rb-btn rb-btn-primary mt-6 w-full sm:w-auto" (click)="cerrarModal()">
       Aceptar
     </button>
   </div>

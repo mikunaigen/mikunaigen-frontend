@@ -35,6 +35,7 @@ import { ThemeService } from '../../services/theme.service';
 })
 export class LogoutButtonComponent {
   @Input() variant: 'on-dark' | 'on-light' = 'on-light';
+  @Input() beforeLogout: (() => boolean) | null = null;
 
   constructor(
     private auth: AuthService,
@@ -43,6 +44,9 @@ export class LogoutButtonComponent {
   ) {}
 
   cerrarSesion(): void {
+    if (this.beforeLogout && this.beforeLogout() === false) {
+      return;
+    }
     this.auth.clearSession();
     this.theme.onLogout();
     void this.router.navigate(['/presentacion']);
