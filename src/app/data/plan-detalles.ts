@@ -17,8 +17,8 @@ export type PlanDetalle = {
 const ESTUDIANTE: PlanDetalle = {
   codigo: 'estudiante',
   nombre: 'Estudiante',
-  subtitulo: 'Rol por defecto · Gratuito',
-  precioEtiqueta: 'Gratuito',
+  subtitulo: 'Plan Gratuito',
+  precioEtiqueta: 'S/0.00',
   precioNota: 'Se asigna al registrarte o si no renuevas un plan de pago.',
   iconoPrincipal: 'heroAcademicCap',
   caracteristicas: [
@@ -30,7 +30,7 @@ const ESTUDIANTE: PlanDetalle = {
     {
       icon: 'heroAdjustmentsHorizontal',
       titulo: 'Optimización',
-      texto: 'Solo «Alta / Máxima Precisión Nutricional» (1 de las 3 cabezas del modelo).',
+      texto: 'Solo 1 de los 3 modos de optimización del modelo.',
     },
     {
       icon: 'heroBanknotes',
@@ -40,22 +40,22 @@ const ESTUDIANTE: PlanDetalle = {
     {
       icon: 'heroCalendar',
       titulo: 'Ingredientes',
-      texto: 'Sin filtro de estacionalidad (ingredientes de temporada).',
+      texto: 'Sin filtro de estacionalidad por mes.',
     },
     {
       icon: 'heroSignal',
       titulo: 'Semáforo normativo',
-      texto: 'Análisis básico: colores y valor numérico, sin detalle normativo ni límites legales.',
+      texto: 'Análisis básico de colores y valor numérico sin detalle normativo.',
     },
     {
       icon: 'heroLockClosed',
       titulo: 'Exportación',
-      texto: 'Bloqueada. No puedes descargar fichas técnicas.',
+      texto: 'Bloqueado. No puedes descargar fichas técnicas.',
     },
     {
       icon: 'heroQueueList',
-      titulo: 'Historial (Mis recetas)',
-      texto: 'Hasta 2 recetas. Al guardar una tercera, se reemplaza la más antigua automáticamente.',
+      titulo: 'Historial de Recetas',
+      texto: 'Hasta 2 recetas. Al guardar una adicional se reemplaza las anteriores.',
     },
   ],
 };
@@ -63,9 +63,9 @@ const ESTUDIANTE: PlanDetalle = {
 const EMPRENDEDOR: PlanDetalle = {
   codigo: 'emprendedor',
   nombre: 'Emprendedor',
-  subtitulo: 'Enfoque en negocio y costos de producción',
+  subtitulo: 'Enfoque en negocio y costos',
   precioEtiqueta: 'S/ 20.00',
-  precioNota: 'Mensual · válido 30 días calendario.',
+  precioNota: 'Mensual válido 30 días calendarios.',
   iconoPrincipal: 'heroBriefcase',
   caracteristicas: [
     {
@@ -76,12 +76,12 @@ const EMPRENDEDOR: PlanDetalle = {
     {
       icon: 'heroAdjustmentsHorizontal',
       titulo: 'Optimización',
-      texto: 'Hasta 2 de 3 cabezas: Precisión Nutricional, Mínimo Costo y Máxima Biodiversidad.',
+      texto: 'Hasta 2 de 3 modelos de optimización entre Precisión Nutricional, Mínimo Costo y Máxima Biodiversidad.',
     },
     {
       icon: 'heroBanknotes',
       titulo: 'Presupuesto y costos',
-      texto: 'Define presupuesto máximo por kg y visualiza el costo estimado en recetas e historial.',
+      texto: 'Define presupuesto máximo por kg y visualiza el resultado estimado en recetas e historial.',
     },
     {
       icon: 'heroCalendar',
@@ -91,17 +91,17 @@ const EMPRENDEDOR: PlanDetalle = {
     {
       icon: 'heroSignal',
       titulo: 'Semáforo normativo',
-      texto: 'Análisis básico: colores y valores, sin desglose legal específico.',
+      texto: 'Análisis básico colores y valores sin desglose legal.',
     },
     {
       icon: 'heroArrowDownTray',
       titulo: 'Exportación',
-      texto: 'Ficha técnica en Excel (.xlsx).',
+      texto: 'Ficha técnica en Excel.',
     },
     {
       icon: 'heroQueueList',
-      titulo: 'Historial (Mis recetas)',
-      texto: 'Hasta 50 recetas. Al llegar al límite, eliges manualmente cuál reemplazar.',
+      titulo: 'Historial de Recetas',
+      texto: 'Hasta 50 recetas. Al llegar al límite, eliges cuál reemplazar.',
     },
   ],
 };
@@ -111,7 +111,7 @@ const NUTRICIONISTA: PlanDetalle = {
   nombre: 'Nutricionista',
   subtitulo: 'Premium · Análisis legal y normativo completo',
   precioEtiqueta: 'S/ 50.00',
-  precioNota: 'Mensual · válido 30 días calendario.',
+  precioNota: 'Mensual válido 30 días calendarios.',
   iconoPrincipal: 'heroShieldCheck',
   caracteristicas: [
     {
@@ -122,33 +122,33 @@ const NUTRICIONISTA: PlanDetalle = {
     {
       icon: 'heroAdjustmentsHorizontal',
       titulo: 'Optimización',
-      texto: 'Las 3 cabezas a la vez (Precisión, Costo y Biodiversidad) con más alternativas.',
+      texto: 'Los 3 modos de optimización a la vez con más alternativas.',
     },
     {
       icon: 'heroBanknotes',
       titulo: 'Presupuesto y costos',
-      texto: 'Funcionalidad completa: presupuestos y visualización de costos.',
+      texto: 'Funcionalidad completa de presupuestos y visualización de costos.',
     },
     {
       icon: 'heroCalendar',
       titulo: 'Ingredientes',
-      texto: 'Filtro de estacionalidad y restricciones completas.',
+      texto: 'Filtro de estacionalidad y restricciones.',
     },
     {
       icon: 'heroSignal',
       titulo: 'Semáforo normativo',
       texto:
-        'Análisis extendido: límite permitido, referencia Codex Alimentarius y octógonos según Ley N° 30021.',
+        'Análisis extendido de límite permitido, referencia Codex Alimentarius y octógonos según Ley N° 30021.',
     },
     {
       icon: 'heroArrowDownTray',
       titulo: 'Exportación',
-      texto: 'Ficha técnica en Excel (.xlsx) o PDF (.pdf).',
+      texto: 'Ficha técnica en Excel y PDF',
     },
     {
       icon: 'heroQueueList',
-      titulo: 'Historial (Mis recetas)',
-      texto: 'Hasta 100 recetas. Reemplazo manual al llegar al tope.',
+      titulo: 'Historial de Recetas',
+      texto: 'Hasta 100 recetas. Al llegar al límite, eliges cuál reemplazar.',
     },
   ],
 };
