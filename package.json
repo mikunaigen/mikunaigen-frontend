@@ -29,9 +29,11 @@
     "zone.js": "^0.16.1"
   },
   "devDependencies": {
+    "@analogjs/vite-plugin-angular": "^2.5.2",
     "@angular/build": "^21.2.7",
     "@angular/cli": "^21.2.7",
     "@angular/compiler-cli": "^21.2.0",
+    "@angular/platform-browser-dynamic": "^21.2.14",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/qrcode": "^1.5.6",
     "@types/sockjs-client": "^1.5.4",
