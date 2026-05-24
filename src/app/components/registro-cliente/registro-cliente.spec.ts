@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { RegistroClienteComponent } from './registro-cliente';
 
-import { RegistroCliente } from './registro-cliente';
-
-describe('RegistroCliente', () => {
-  let component: RegistroCliente;
-  let fixture: ComponentFixture<RegistroCliente>;
+describe('RegistroClienteComponent', () => {
+  let fixture: ComponentFixture<RegistroClienteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistroCliente],
+      imports: [RegistroClienteComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RegistroCliente);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(RegistroClienteComponent);
     await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('HU-01: crea el componente legacy de registro cliente', () => {
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

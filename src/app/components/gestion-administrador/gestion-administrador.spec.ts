@@ -1,22 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { GestionAdministradorComponent } from './gestion-administrador';
 
-import { GestionAdministrador } from './gestion-administrador';
-
-describe('GestionAdministrador', () => {
-  let component: GestionAdministrador;
-  let fixture: ComponentFixture<GestionAdministrador>;
+describe('GestionAdministradorComponent', () => {
+  let fixture: ComponentFixture<GestionAdministradorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GestionAdministrador],
+      imports: [GestionAdministradorComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GestionAdministrador);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(GestionAdministradorComponent);
     await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('HU-07: crea el panel de administración', () => {
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { ConfirmarCuentaComponent } from './confirmar-cuenta';
+import { ObjetivoNutricionalComponent } from './objetivo-nutricional';
 import { AuthService } from '../../services/auth.service';
 
 @Component({ template: '', standalone: true })
@@ -14,44 +14,39 @@ function tokenValido(): string {
   return `header.${payload}.sig`;
 }
 
-describe('ConfirmarCuentaComponent', () => {
-  let fixture: ComponentFixture<ConfirmarCuentaComponent>;
+describe('ObjetivoNutricionalComponent', () => {
+  let fixture: ComponentFixture<ObjetivoNutricionalComponent>;
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     sessionStorage.setItem(
       'rb_auth',
-      JSON.stringify({
-        token: tokenValido(),
-        email: 'test@gmail.com',
-        role: 'estudiante',
-        firstLogin: true,
-      }),
+      JSON.stringify({ token: tokenValido(), email: 'test@gmail.com', role: 'estudiante' }),
     );
     await TestBed.configureTestingModule({
-      imports: [ConfirmarCuentaComponent],
+      imports: [ObjetivoNutricionalComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([
           { path: 'login', component: DummyComponent },
-          { path: 'confirmar-cuenta', component: DummyComponent },
+          { path: 'objetivo-nutricional', component: DummyComponent },
         ]),
         AuthService,
       ],
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
-    fixture = TestBed.createComponent(ConfirmarCuentaComponent);
+    fixture = TestBed.createComponent(ObjetivoNutricionalComponent);
     fixture.detectChanges();
   });
 
   afterEach(() => {
     sessionStorage.clear();
-    httpMock.match(() => true).forEach((req) => req.flush({}));
+    httpMock.match(() => true).forEach((req) => req.flush({ campos: [], perfilesEjemplo: [] }));
   });
 
-  it('HU-02: crea la pantalla de confirmación de cuenta', () => {
+  it('HU-08: crea el formulario de objetivo nutricional', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 });

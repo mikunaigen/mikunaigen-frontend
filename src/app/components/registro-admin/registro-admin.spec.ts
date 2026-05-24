@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { RegistroAdminComponent } from './registro-admin';
 
-import { RegistroAdmin } from './registro-admin';
-
-describe('RegistroAdmin', () => {
-  let component: RegistroAdmin;
-  let fixture: ComponentFixture<RegistroAdmin>;
+describe('RegistroAdminComponent', () => {
+  let fixture: ComponentFixture<RegistroAdminComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistroAdmin],
+      imports: [RegistroAdminComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RegistroAdmin);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(RegistroAdminComponent);
     await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('HU-01: crea el registro de administrador inicial', () => {
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

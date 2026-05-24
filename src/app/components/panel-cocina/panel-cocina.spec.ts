@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { PanelCocinaComponent } from './panel-cocina';
 
-import { PanelCocina } from './panel-cocina';
-
-describe('PanelCocina', () => {
-  let component: PanelCocina;
-  let fixture: ComponentFixture<PanelCocina>;
+describe('PanelCocinaComponent', () => {
+  let fixture: ComponentFixture<PanelCocinaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PanelCocina],
+      imports: [PanelCocinaComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PanelCocina);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(PanelCocinaComponent);
     await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('crea el panel de cocina legacy', () => {
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

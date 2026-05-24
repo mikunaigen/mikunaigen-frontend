@@ -10,6 +10,7 @@ import { AuthService } from './services/auth.service';
 import { WebsocketService } from './services/websocket.service';
 import { MaintenanceService } from './services/maintenance.service';
 import { ThemeService } from './services/theme.service';
+import { contieneEntradaPeligrosa } from './utils/entrada-segura';
 
 @Component({
   selector: 'app-root',
@@ -133,8 +134,6 @@ export class App implements OnInit, OnDestroy {
     'Tu cuenta ha sido suspendida por el administrador. Debes cerrar sesión para continuar.';
 
   hideThemeFab = false;
-
-  private readonly patroScript = /script/i;
 
   private readonly onDocumentInput = (event: Event) => this.validarEntradaGlobal(event);
 
@@ -273,10 +272,11 @@ export class App implements OnInit, OnDestroy {
     const el = target as HTMLInputElement | HTMLTextAreaElement;
     if (!this.esCampoTexto(el)) return;
     const v = el.value ?? '';
-    if (!this.patroScript.test(v)) return;
-    el.value = '';
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    this.entradaInvalidaModal = true;
+    if (contieneEntradaPeligrosa(v)) {
+      el.value = '';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      this.entradaInvalidaModal = true;
+    }
   }
 
   private esCampoTexto(el: HTMLInputElement | HTMLTextAreaElement): boolean {

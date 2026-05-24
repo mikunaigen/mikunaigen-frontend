@@ -1,24 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { AdminProductosComponent } from './admin-productos';
 
 describe('AdminProductosComponent', () => {
-  let component: AdminProductosComponent;
   let fixture: ComponentFixture<AdminProductosComponent>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminProductosComponent],
-      providers: [provideHttpClient()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(AdminProductosComponent);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    httpMock.match(() => true).forEach((req) => req.flush({}));
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

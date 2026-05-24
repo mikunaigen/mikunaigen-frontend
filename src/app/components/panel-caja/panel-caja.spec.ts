@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { PanelCajaComponent } from './panel-caja';
 
-import { PanelCaja } from './panel-caja';
-
-describe('PanelCaja', () => {
-  let component: PanelCaja;
-  let fixture: ComponentFixture<PanelCaja>;
+describe('PanelCajaComponent', () => {
+  let fixture: ComponentFixture<PanelCajaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PanelCaja],
+      imports: [PanelCajaComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PanelCaja);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(PanelCajaComponent);
     await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('crea el panel de caja legacy', () => {
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });
