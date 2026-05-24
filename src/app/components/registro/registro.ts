@@ -243,6 +243,8 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.cargando = true;
     const payload = {
       fullName: `${this.usuario.nombres} ${this.usuario.apellidos}`.trim(),
+      nombres: this.usuario.nombres.trim(),
+      apellidos: this.usuario.apellidos.trim(),
       dni: this.usuario.dni,
       email: this.usuario.email,
       phone: this.usuario.phone,
