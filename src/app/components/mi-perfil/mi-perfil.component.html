@@ -125,22 +125,6 @@
       </form>
     </div>
 
-    <div *ngIf="esUsuarioFormulacion()" class="rb-card overflow-hidden">
-      <div class="border-b border-gray-200 bg-gray-50 px-4 py-4 dark:border-dark-border dark:bg-slate-900/50 sm:px-6">
-        <h3 class="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
-          <ng-icon name="heroAdjustmentsHorizontal" size="22" />
-          Preferencias de formulación
-        </h3>
-        <p class="mt-1 text-sm text-neutral-muted dark:text-dark-text-muted">
-          Enfoque, presupuesto e ingredientes excluidos por defecto.
-        </p>
-      </div>
-      <div class="p-4 sm:p-6 lg:p-8">
-        <app-preferencias-formulacion [compacto]="true" />
-      </div>
-    </div>
-  </div>
-
   <div *ngIf="modal() as m" class="rb-modal-backdrop">
     <div class="rb-modal max-w-sm text-center shadow-lg dark:shadow-none">
       <div class="rb-modal-icon !mb-4">

@@ -14,7 +14,6 @@ import {
 import { environment } from '@env/environment';
 import { parsePlanWsEvento, topicPlanesUsuario } from '../../services/plan-usuario.service';
 import { WebsocketService } from '../../services/websocket.service';
-import { PreferenciasFormulacionComponent } from '../preferencias-formulacion/preferencias-formulacion';
 
 type PerfilResponse = {
   userId?: string;
@@ -39,7 +38,6 @@ type PerfilResponse = {
     RouterModule,
     LogoutButtonComponent,
     NgIconComponent,
-    PreferenciasFormulacionComponent,
   ],
   templateUrl: './mi-perfil.component.html',
 })
