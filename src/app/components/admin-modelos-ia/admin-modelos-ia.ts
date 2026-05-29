@@ -45,6 +45,8 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
   private wsEntrenamientoSub?: Subscription;
 
   iniciandoEntrenamiento = false;
+  cancelandoEntrenamiento = false;
+
   entrenamiento: EstadoEntrenamiento = {
     estado: 'IDLE',
     epoca: 0,
@@ -130,6 +132,32 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
           'error',
           'Entrenamiento',
           err?.error?.message || 'No se pudo iniciar el pipeline de reentrenamiento.',
+        );
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  cancelarEntrenamiento(): void {
+    if (this.cancelandoEntrenamiento) {
+      return;
+    }
+    this.cancelandoEntrenamiento = true;
+    this.cdr.detectChanges();
+
+    this.http.post<Record<string, unknown>>(`${this.apiIa}/entrenamiento/cancelar`, {}).subscribe({
+      next: (resp) => {
+        this.cancelandoEntrenamiento = false;
+        this.aplicarEstadoEntrenamiento(resp);
+        this.abrirModal('exito', 'Cancelación', 'La solicitud de cancelación fue enviada de forma exitosa.');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.cancelandoEntrenamiento = false;
+        this.abrirModal(
+          'error',
+          'Error',
+          err?.error?.message || 'No se pudo cancelar el entrenamiento en curso.',
         );
         this.cdr.detectChanges();
       },
