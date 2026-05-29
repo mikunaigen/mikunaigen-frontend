@@ -211,8 +211,7 @@ export class App implements OnInit, OnDestroy {
   }
 
   private refreshHideThemeFab(): void {
-    const path = this.router.url.split('#')[0].split('?')[0];
-    this.hideThemeFab = path === '/entregas';
+    this.hideThemeFab = false;
   }
 
   cerrarEntradaInvalida() {

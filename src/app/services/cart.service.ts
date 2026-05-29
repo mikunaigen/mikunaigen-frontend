@@ -226,16 +226,6 @@ export class CartService {
     );
   }
 
-  obtenerSugerenciasCrossSell(): Observable<CartLine[]> {
-    if (!this.puedeSincronizar()) {
-      return of([]);
-    }
-    const uid = this.requireClienteUserId();
-    return this.http
-      .get<CartLine[]>(`${API_CARRITO}/sugerencias-cross-sell`, { params: { userId: uid } })
-      .pipe(catchError(() => of([])));
-  }
-
   verificarPreciosCheckout(opts?: {
     lineasCliente?: { productId: string; precioUnitario: number; cantidad: number }[];
     totalCliente?: number;

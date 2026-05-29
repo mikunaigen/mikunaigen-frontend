@@ -20,10 +20,7 @@ export class MaintenanceService {
   }
 
   message(): string {
-    const s = this.auth.getSession();
-    const role = typeof s?.role === 'string' ? s.role : '';
-    const personal = role === 'CAJERO' || role === 'COCINERO' || role === 'REPARTIDOR' || role === 'ADMIN';
-    return personal
+    return this.auth.esAdministrador()
       ? 'Aplicación pausada temporalmente por el Administrador para restauración de datos. Espere...'
       : 'Estamos realizando tareas de mantenimiento. Regresaremos en unos minutos...';
   }

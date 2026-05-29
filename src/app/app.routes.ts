@@ -4,11 +4,9 @@ import { LoginComponent } from './components/login/login';
 import { RecuperarPasswordComponent } from './components/recuperar-password/recuperar-password';
 import { RegistroComponent } from './components/registro/registro';
 import { GestionAdministradorComponent } from './components/gestion-administrador/gestion-administrador';
-import { CrearPersonalComponent } from './components/crear-personal/crear-personal';
 import { ConfirmarCuentaComponent } from './components/confirmar-cuenta/confirmar-cuenta';
 import { UsuarioHomeComponent } from './components/usuario-home/usuario-home';
 import { AdminSolicitudesPlanComponent } from './components/admin-solicitudes-plan/admin-solicitudes-plan';
-import { AdminProductosComponent } from './components/admin-productos/admin-productos';
 import { AdminDatasetAlimentosComponent } from './components/admin-dataset-alimentos/admin-dataset-alimentos';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 import { AdminRespaldosComponent } from './components/admin-respaldos/admin-respaldos';
@@ -52,11 +50,6 @@ export const routes: Routes = [
     component: GestionAdministradorComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
-  {
-    path: 'crear-personal',
-    component: CrearPersonalComponent,
-    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
-  },
   { path: 'confirmar-cuenta', component: ConfirmarCuentaComponent, canActivate: [ipBlockGuard, configRequiredGuard, authGuard] },
   {
     path: 'usuario-home',
@@ -94,11 +87,6 @@ export const routes: Routes = [
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
   {
-    path: 'admin-productos',
-    component: AdminProductosComponent,
-    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
-  },
-  {
     path: 'admin-dataset-alimentos',
     component: AdminDatasetAlimentosComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
@@ -108,9 +96,6 @@ export const routes: Routes = [
     component: AdminModelosIaComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
-  { path: 'caja', redirectTo: 'gestion-administrador', pathMatch: 'full' },
-  { path: 'cocina', redirectTo: 'gestion-administrador', pathMatch: 'full' },
-  { path: 'entregas', redirectTo: 'gestion-administrador', pathMatch: 'full' },
   { path: '', component: InicioRedirectComponent, canActivate: [ipBlockGuard], pathMatch: 'full' },
   { path: '**', redirectTo: '' },
 ];

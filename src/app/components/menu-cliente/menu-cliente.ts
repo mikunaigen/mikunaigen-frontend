@@ -91,9 +91,6 @@ export class MenuClienteComponent implements OnInit {
 
   productos = signal<MenuProducto[]>([]);
   recomendaciones = signal<MenuProducto[]>([]);
-  sugerenciasCrossSell = signal<
-    { productId: string; name: string; unitPrice: number; thumbSrc: string }[]
-  >([]);
   recomendacionesTitulo = signal('Sugerencias para ti');
   mostrarRecomendaciones = signal(false);
 
@@ -166,9 +163,7 @@ export class MenuClienteComponent implements OnInit {
     const s = this.auth.getSession();
     this.iniciarEscuchaCambiosTiempoReal(s?.userId ?? null);
     if (s?.role === 'CLIENTE' && s.userId) {
-      this.cart.cargarDesdeServidor(s.userId).subscribe({
-        next: () => this.cargarSugerenciasCrossSell(),
-      });
+      this.cart.cargarDesdeServidor(s.userId).subscribe();
     }
   }
 
@@ -463,7 +458,6 @@ export class MenuClienteComponent implements OnInit {
 
   abrirCarrito(): void {
     this.carritoAbierto.set(true);
-    this.cargarSugerenciasCrossSell();
   }
 
   cerrarCarrito(): void {
@@ -482,7 +476,6 @@ export class MenuClienteComponent implements OnInit {
       next: () => {
         this.detalleAgregoCarrito = true;
         this.agregandoProductId.set(null);
-        this.cargarSugerenciasCrossSell();
         if (cerrarModalDetalle) {
           this.cerrarDetalle();
         }
@@ -496,7 +489,6 @@ export class MenuClienteComponent implements OnInit {
       return;
     }
     this.cart.incrementar(productId).subscribe({
-      next: () => this.cargarSugerenciasCrossSell(),
       error: () => {},
     });
   }
@@ -506,7 +498,6 @@ export class MenuClienteComponent implements OnInit {
       return;
     }
     this.cart.decrementar(productId).subscribe({
-      next: () => this.cargarSugerenciasCrossSell(),
       error: () => {},
     });
   }
@@ -516,15 +507,8 @@ export class MenuClienteComponent implements OnInit {
       return;
     }
     this.cart.quitar(productId).subscribe({
-      next: () => this.cargarSugerenciasCrossSell(),
       error: () => {},
     });
-  }
-
-  agregarSugerenciaCrossSell(productId: string): void {
-    const prod = this.productos().find((p) => p.id === productId);
-    if (!prod) return;
-    this.agregarAlCarrito(prod);
   }
 
   continuarAlPago(): void {
@@ -612,30 +596,5 @@ export class MenuClienteComponent implements OnInit {
 
   esRecomendado(productId: string): boolean {
     return this.recomendaciones().some((p) => p.id === productId);
-  }
-
-  private cargarSugerenciasCrossSell(): void {
-    if (
-      !this.iaConfig.slot2Activo() ||
-      !this.esClienteConCarrito() ||
-      this.cart.items().length === 0
-    ) {
-      this.sugerenciasCrossSell.set([]);
-      return;
-    }
-    this.cart.obtenerSugerenciasCrossSell().subscribe({
-      next: (items) => {
-        const normalized = (items ?? [])
-          .map((x) => ({
-            productId: String(x.productId ?? ''),
-            name: String(x.name ?? ''),
-            unitPrice: Number(x.unitPrice) || 0,
-            thumbSrc: String(x.thumbSrc ?? ''),
-          }))
-          .filter((x) => !!x.productId && !!x.name);
-        this.sugerenciasCrossSell.set(normalized.slice(0, 3));
-      },
-      error: () => this.sugerenciasCrossSell.set([]),
-    });
   }
 }
