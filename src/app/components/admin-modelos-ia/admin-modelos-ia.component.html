@@ -18,10 +18,10 @@
     </header>
 
     <section
-      class="mb-8 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-dark-border dark:bg-dark-surface sm:p-6"
+      class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-dark-border dark:bg-dark-surface sm:p-6"
     >
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div class="min-w-0 flex-1">
+      <div class="mb-6 flex flex-col gap-4 border-b border-gray-200 pb-6 dark:border-dark-border sm:flex-row sm:items-center sm:justify-between">
+        <div>
           <div class="flex items-center gap-2">
             <span class="rb-logo-chip !p-1">
               <ng-icon name="heroBolt" size="20" class="text-secondary dark:text-blue-400" />
@@ -33,9 +33,29 @@
           <p class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted">
             Exporta el catálogo MINSA, entrena en Kaggle y despliega el modelo en Backblaze B2.
           </p>
+        </div>
+        <label
+          class="inline-flex min-h-11 shrink-0 items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 dark:border-dark-border dark:bg-slate-900"
+        >
+          <span class="rb-logo-chip !p-1">
+            <ng-icon name="heroCog6Tooth" size="18" class="text-secondary dark:text-blue-400" />
+          </span>
+          <span class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Activar IA</span>
+          <input
+            type="checkbox"
+            [(ngModel)]="iaActiva"
+            (change)="actualizarSwitchIa()"
+            [disabled]="guardandoIa || cargandoIa"
+            class="h-5 w-5 accent-secondary"
+          />
+        </label>
+      </div>
+
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div class="min-w-0 flex-1">
           <p
             *ngIf="entrenamiento.mensaje"
-            class="mt-3 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-800 dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-muted"
+            class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-800 dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-muted"
           >
             {{ entrenamiento.mensaje }}
           </p>
@@ -158,325 +178,17 @@
         </div>
       </div>
     </section>
-
-    <div>
-        <div class="mb-6 rounded-2xl border border-secondary/20 bg-secondary/5 p-4 dark:border-blue-400/30 dark:bg-slate-800/60 sm:p-6">
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
-                Gestión del Slot
-              </h3>
-              <p class="mt-1 text-sm text-neutral-strong dark:text-dark-text-muted">
-                Administra versiones del modelo
-              </p>
-            </div>
-            <label
-              class="inline-flex min-h-11 items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-2 dark:border-dark-border dark:bg-slate-900"
-            >
-              <span class="rb-logo-chip !p-1">
-                <ng-icon name="heroCog6Tooth" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-              </span>
-              <span class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Activar IA</span>
-              <input
-                type="checkbox"
-                [(ngModel)]="iaActiva"
-                (change)="actualizarSwitchIa()"
-                [disabled]="guardandoIa || cargandoIa"
-                class="h-5 w-5 accent-secondary"
-              />
-            </label>
-          </div>
-        </div>
-
-        <p
-          *ngIf="cargandoIa"
-          class="mb-6 rounded-xl border border-dashed border-gray-200 p-5 text-sm text-neutral-muted dark:border-dark-border dark:text-dark-text-muted"
-        >
-          Cargando configuraciÃ³n de modelos IA...
-        </p>
-
-        <div *ngIf="!cargandoIa" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          <article
-            *ngFor="let slot of slotsIa"
-            class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-dark-border dark:bg-dark-surface dark:shadow-none sm:p-5"
-          >
-            <div class="mb-3 flex items-start justify-between gap-2">
-              <h4 class="text-sm font-semibold text-gray-900 sm:text-base dark:text-dark-text-strong">
-                {{ slot.titulo }}
-              </h4>
-              <div class="flex items-center gap-2">
-                <span
-                  [ngClass]="claseEstadoSlot(slot.status)"
-                  class="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-wide"
-                >
-                  {{ textoEstadoSlot(slot.status) }}
-                </span>
-                <label
-                  *ngIf="slot.slotNumber === 1 || slot.slotNumber === 2 || slot.slotNumber === 3"
-                  class="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-semibold dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-muted"
-                >
-                  <span>On</span>
-                  <input
-                    type="checkbox"
-                    [ngModel]="slot.slotEnabled"
-                    (ngModelChange)="actualizarSwitchSlot(slot.slotNumber, !!$event)"
-                    [disabled]="guardandoIa || cargandoIa"
-                    class="h-3.5 w-3.5 accent-secondary"
-                  />
-                </label>
-              </div>
-            </div>
-
-            <button
-              *ngIf="slot.slotNumber === 1 || slot.slotNumber === 2 || slot.slotNumber === 3"
-              type="button"
-              (click)="descargarDataset(slot.slotNumber)"
-              [disabled]="descargandoDataset === slot.slotNumber || guardandoIa || cargandoIa"
-              class="mb-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-dark-border dark:bg-slate-900 dark:text-dark-text-strong dark:shadow-none dark:hover:bg-slate-800"
-            >
-              <span class="rb-logo-chip !p-1">
-                <ng-icon name="heroInformationCircle" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-              </span>
-              {{
-                descargandoDataset === slot.slotNumber
-                  ? 'Generando dataset...'
-                  : 'Descargar dataset de entrenamiento'
-              }}
-            </button>
-
-            <p *ngIf="slot.slotNumber === 2" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              Rules:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.rulesFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p *ngIf="slot.slotNumber === 2" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              Frequency:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.frequencyFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p *ngIf="slot.slotNumber === 2" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              Config:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.configFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p *ngIf="slot.slotNumber === 3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              Modelo:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.modelFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p *ngIf="slot.slotNumber === 3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              feat_scaler:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.featScalerFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p *ngIf="slot.slotNumber === 3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              y_scaler:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.yScalerFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p *ngIf="slot.slotNumber === 3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              meta:
-              <strong class="text-gray-800 dark:text-slate-200">{{ slot.metaModeloFileName || 'Sin archivo' }}</strong>
-            </p>
-            <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-              Ãšltima versiÃ³n:
-              <strong class="text-gray-800 dark:text-slate-200">{{
-                slot.uploadedAt ? (slot.uploadedAt | date: 'dd/MM/yyyy HH:mm') : 'No registrada'
-              }}</strong>
-            </p>
-
-            <div *ngIf="slot.slotNumber === 1" class="mt-4 space-y-3">
-              <div>
-                <label class="rb-label !normal-case !mb-1">Modelo (.keras)</label>
-                <input
-                  type="file"
-                  accept=".keras"
-                  (change)="onArchivoModeloIaSelected($event)"
-                  class="rb-input py-2 text-sm"
-                />
-                <p *ngIf="archivoModeloIa" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoModeloIa.name }}
-                </p>
-              </div>
-              <div>
-                <label class="rb-label !normal-case !mb-1">Encoders (.json)</label>
-                <input
-                  type="file"
-                  accept=".json"
-                  (change)="onArchivoEncodersIaSelected($event)"
-                  class="rb-input py-2 text-sm"
-                />
-                <p *ngIf="archivoEncodersIa" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoEncodersIa.name }}
-                </p>
-              </div>
-              <button
-                type="button"
-                (click)="guardarModeloIaSlot1()"
-                [disabled]="guardandoIa"
-                class="rb-btn-secondary w-full border-0 bg-secondary text-white dark:bg-blue-600"
-              >
-                {{ guardandoIa ? 'Cargando...' : 'Subir versiÃ³n al Slot 1' }}
-              </button>
-            </div>
-            <div *ngIf="slot.slotNumber === 2" class="mt-4 space-y-3">
-              <div>
-                <label class="rb-label !normal-case !mb-1">rules.json</label>
-                <input
-                  type="file"
-                  accept=".json"
-                  (change)="onArchivoRulesSlot2Selected($event)"
-                  class="rb-input py-2 text-sm"
-                />
-                <p *ngIf="archivoRulesSlot2" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoRulesSlot2.name }}
-                </p>
-              </div>
-              <div>
-                <label class="rb-label !normal-case !mb-1">frequency.json</label>
-                <input
-                  type="file"
-                  accept=".json"
-                  (change)="onArchivoFrequencySlot2Selected($event)"
-                  class="rb-input py-2 text-sm"
-                />
-                <p *ngIf="archivoFrequencySlot2" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoFrequencySlot2.name }}
-                </p>
-              </div>
-              <div>
-                <label class="rb-label !normal-case !mb-1">config.json</label>
-                <input
-                  type="file"
-                  accept=".json"
-                  (change)="onArchivoConfigSlot2Selected($event)"
-                  class="rb-input py-2 text-sm"
-                />
-                <p *ngIf="archivoConfigSlot2" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoConfigSlot2.name }}
-                </p>
-              </div>
-              <button
-                type="button"
-                (click)="guardarPaqueteSlot2()"
-                [disabled]="guardandoIa"
-                class="rb-btn-secondary w-full border-0 bg-secondary text-white dark:bg-blue-600"
-              >
-                {{ guardandoIa ? 'Cargando...' : 'Subir paquete Slot 2' }}
-              </button>
-            </div>
-            <div *ngIf="slot.slotNumber === 3" class="mt-4 space-y-3">
-              <div>
-                <label class="rb-label !normal-case !mb-1">Modelo (.keras)</label>
-                <input
-                  type="file"
-                  accept=".keras"
-                  (change)="onArchivoModeloSlot3($event)"
-                  class="rb-input py-2 text-sm"
-                />
-                <p *ngIf="archivoModeloSlot3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoModeloSlot3.name }}
-                </p>
-              </div>
-              <div>
-                <label class="rb-label !normal-case !mb-1">feat_scaler.pkl</label>
-                <input type="file" accept=".pkl" (change)="onArchivoFeatScalerSlot3($event)" class="rb-input py-2 text-sm" />
-                <p *ngIf="archivoFeatScalerSlot3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoFeatScalerSlot3.name }}
-                </p>
-              </div>
-              <div>
-                <label class="rb-label !normal-case !mb-1">y_scaler.pkl</label>
-                <input type="file" accept=".pkl" (change)="onArchivoYScalerSlot3($event)" class="rb-input py-2 text-sm" />
-                <p *ngIf="archivoYScalerSlot3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoYScalerSlot3.name }}
-                </p>
-              </div>
-              <div>
-                <label class="rb-label !normal-case !mb-1">meta_modelo.json</label>
-                <input type="file" accept=".json" (change)="onArchivoMetaSlot3($event)" class="rb-input py-2 text-sm" />
-                <p *ngIf="archivoMetaSlot3" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
-                  {{ archivoMetaSlot3.name }}
-                </p>
-              </div>
-              <p class="text-xs text-neutral-muted dark:text-dark-text-muted">
-                meta_modelo.json debe incluir feat_data_min, feat_data_max, y_data_min y y_data_max exportados del
-                entrenamiento.
-              </p>
-              <button
-                type="button"
-                (click)="guardarSlot3()"
-                [disabled]="guardandoIa"
-                class="rb-btn-secondary w-full border-0 bg-secondary text-white dark:bg-blue-600"
-              >
-                {{ guardandoIa ? 'Cargando...' : 'Subir paquete Slot 3' }}
-              </button>
-            </div>
-          </article>
-        </div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="modalDataset.visible" class="rb-modal-backdrop z-[85]">
-  <div class="rb-modal max-w-md !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
-    <div class="rb-modal-icon !mb-6 !text-3xl">
-      <ng-icon [name]="
-          modalDataset.fase === 'listo'
-            ? 'heroCheckCircle'
-            : modalDataset.fase === 'error'
-              ? 'heroXCircle'
-              : 'heroInformationCircle'
-        " size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
-    </div>
-    <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
-      {{
-        modalDataset.fase === 'listo'
-          ? 'Dataset generado'
-          : modalDataset.fase === 'error'
-            ? 'Error en dataset'
-            : 'Generando dataset'
-      }}
-    </h3>
-    <p
-      class="mb-2 text-sm lg:text-base"
-      [ngClass]="
-        modalDataset.fase === 'error'
-          ? 'font-medium text-danger dark:text-red-200'
-          : 'text-neutral-strong dark:text-dark-text-muted'
-      "
-    >
-      {{ modalDataset.mensaje }}
-    </p>
-    <p class="mb-6 text-xs text-neutral-muted dark:text-dark-text-muted">
-      Slot {{ modalDataset.slot }} Â· {{ modalDataset.fileName }}
-    </p>
-    <div class="flex flex-col gap-3 sm:flex-row sm:justify-center mb-4" *ngIf="modalDataset.fase === 'listo'">
-      <a
-        [href]="modalDataset.downloadUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border-0 bg-secondary px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 dark:bg-blue-600 sm:w-max"
-      >
-        <span class="rb-logo-chip !p-1">
-          <ng-icon name="heroInformationCircle" size="18" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
-        </span>
-        Haz clic aquÃ­ para descargar
-      </a>
-    </div>
-    <div class="flex justify-center">
-      <button
-        type="button"
-        (click)="cerrarModalDataset()"
-        class="w-full sm:w-max"
-        [ngClass]="modalDataset.fase === 'error' ? 'rb-btn-danger' : 'rb-btn-secondary'"
-      >
-        {{ modalDataset.fase === 'pendiente' ? 'Entendido' : 'Entendido' }}
-      </button>
-    </div>
   </div>
 </div>
 
 <div *ngIf="modal.visible" class="rb-modal-backdrop z-[80]">
   <div class="rb-modal max-w-sm !p-5 text-center sm:!p-8" (click)="$event.stopPropagation()">
     <div class="rb-modal-icon !mb-6 !text-3xl">
-      <ng-icon [name]="
-          modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'
-        " size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
+      <ng-icon
+        [name]="modal.tipo === 'error' ? 'heroXCircle' : 'heroCheckCircle'"
+        size="48"
+        class="h-12 w-12 object-contain text-secondary dark:text-blue-400"
+      />
     </div>
     <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
       {{ modal.titulo }}
