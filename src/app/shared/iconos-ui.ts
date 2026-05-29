@@ -14,11 +14,37 @@ export function iconoEstadoRespaldo(t: string): string {
   return 'heroExclamationTriangle';
 }
 
+/** Grupos alimentarios MINSA (alineados con AdminAlimentoDatasetService.CATEGORIAS). */
+export const GRUPOS_ALIMENTO_MINSA = [
+  'Cereales',
+  'Verduras',
+  'Frutas',
+  'Grasas',
+  'Pescados',
+  'Carnes',
+  'Leche',
+  'Bebidas',
+  'Huevos',
+  'Azucarados',
+  'Preparados',
+  'Leguminosas',
+  'Tubérculos',
+] as const;
+
 export const ICONO_CATEGORIA_PRODUCTO: Record<string, string> = {
-  Entrada: 'heroQueueList',
-  'Plato Principal': 'heroBeaker',
-  Postres: 'heroCake',
+  Cereales: 'heroQueueList',
+  Verduras: 'heroSparkles',
+  Frutas: 'heroSparkles',
+  Grasas: 'heroFire',
+  Pescados: 'heroBeaker',
+  Carnes: 'heroFire',
+  Leche: 'heroBeaker',
   Bebidas: 'heroBeaker',
+  Huevos: 'heroCircleStack',
+  Azucarados: 'heroCake',
+  Preparados: 'heroQueueList',
+  Leguminosas: 'heroCircleStack',
+  'Tubérculos': 'heroCircleStack',
 };
 
 export const ICONO_CATEGORIA_INGREDIENTE: Record<string, string> = {

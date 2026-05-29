@@ -19,6 +19,7 @@ import { UserInteractionsService } from '../../services/user-interactions.servic
 import { WebsocketService } from '../../services/websocket.service';
 import { environment } from '@env/environment';
 import { IaConfigService } from '../../services/ia-config.service';
+import { GRUPOS_ALIMENTO_MINSA, iconoCategoriaProducto } from '../../shared/iconos-ui';
 
 export interface CatOpcion {
   value: string;
@@ -73,16 +74,11 @@ export class MenuClienteComponent implements OnInit {
 
   private readonly apiCatalogo = environment.apiUrl + '/catalogo';
 
-  readonly categoriasProducto: CatOpcion[] = [
-    { value: 'Entrada', label: 'Entradas', img: 'heroQueueList' },
-    {
-      value: 'Plato Principal',
-      label: 'Platos Principales',
-      img: 'heroBeaker',
-    },
-    { value: 'Postres', label: 'Postres', img: 'heroCake' },
-    { value: 'Bebidas', label: 'Bebidas', img: 'heroBeaker' },
-  ];
+  readonly categoriasProducto: CatOpcion[] = GRUPOS_ALIMENTO_MINSA.map((grupo) => ({
+    value: grupo,
+    label: grupo,
+    img: iconoCategoriaProducto(grupo),
+  }));
 
   readonly maxPorProducto = MAX_UNIDADES_POR_PRODUCTO;
 
@@ -394,7 +390,7 @@ export class MenuClienteComponent implements OnInit {
   }
 
   imgIconoProducto(categoria: string): string {
-    return this.categoriasProducto.find((x) => x.value === categoria)?.img ?? 'heroMagnifyingGlass';
+    return iconoCategoriaProducto(categoria);
   }
 
   formatoMoneda(valor: number): string {
