@@ -163,6 +163,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
       },
     });
   }
+  
 
   cargarEstadoEntrenamiento(): void {
     this.http.get<Record<string, unknown>>(`${this.apiIa}/entrenamiento/estado`).subscribe({
