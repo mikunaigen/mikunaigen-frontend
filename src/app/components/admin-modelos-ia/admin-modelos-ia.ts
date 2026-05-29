@@ -167,7 +167,10 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
 
   cargarEstadoEntrenamiento(): void {
     this.http.get<Record<string, unknown>>(`${this.apiIa}/entrenamiento/estado`).subscribe({
-      next: (resp) => this.aplicarEstadoEntrenamiento(resp),
+      next: (resp) => {
+        this.estadoEntrenamientoPrevio = String(resp['estado'] || 'IDLE').toUpperCase();
+        this.aplicarEstadoEntrenamiento(resp);
+      },
       error: () => {},
     });
   }
@@ -264,13 +267,6 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
       curva,
     };
     this.puntosCurvaSvg = curva;
-    if (
-      estadoNuevo === 'ERROR' &&
-      this.estadoEntrenamientoPrevio !== 'ERROR' &&
-      this.entrenamiento.mensaje
-    ) {
-      this.abrirModal('error', 'Entrenamiento', this.entrenamiento.mensaje);
-    }
     if (estadoNuevo === 'COMPLETADO' && this.estadoEntrenamientoPrevio !== 'COMPLETADO') {
       this.abrirModal('exito', 'Entrenamiento', 'El modelo se desplegó correctamente en Backblaze B2.');
     }
