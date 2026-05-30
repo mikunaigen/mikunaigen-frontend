@@ -83,19 +83,46 @@ export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChan
   }
 
   abrirModal(tipo: TipoGraficoExpandido): void {
+    if (this.modalVisible) {
+      return;
+    }
+    this.depurarPadre('abrir modal', tipo);
     this.modalTipo = tipo;
     this.modalVisible = true;
   }
 
   cerrarModal(): void {
+    this.depurarPadre('cerrar modal');
     this.modalVisible = false;
+  }
+
+  private depurarPadre(mensaje: string, datos?: unknown): void {
+    const activo =
+      typeof ngDevMode !== 'undefined' && ngDevMode
+        ? true
+        : typeof localStorage !== 'undefined' && localStorage.getItem('debugGraficoModal') === '1';
+    if (!activo) {
+      return;
+    }
+    if (datos !== undefined) {
+      console.log(`[GraficosReceta] ${mensaje}`, datos);
+    } else {
+      console.log(`[GraficosReceta] ${mensaje}`);
+    }
   }
 
   onTeclaTarjeta(event: KeyboardEvent, tipo: TipoGraficoExpandido): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
+      event.stopPropagation();
       this.abrirModal(tipo);
     }
+  }
+
+  onClickTarjeta(event: Event, tipo: TipoGraficoExpandido): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.abrirModal(tipo);
   }
 
   private renderizarGraficos(): void {

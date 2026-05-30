@@ -1,21 +1,25 @@
 <div
-  *ngIf="visible"
-  class="fixed inset-0 z-[200] flex flex-col bg-black/60 p-3 sm:p-4"
+  class="fixed inset-0 z-[200] flex flex-col p-3 sm:p-4"
   role="dialog"
   aria-modal="true"
-  [attr.aria-label]="tituloModal()"
-  (click)="onCerrar()"
+  [attr.aria-label]="tituloModalTexto"
 >
+  <button
+    type="button"
+    class="absolute inset-0 bg-black/60"
+    aria-label="Cerrar vista ampliada"
+    (click)="onCerrar()"
+  ></button>
+
   <div
-    class="rb-card mx-auto flex h-full max-h-[96vh] w-full max-w-6xl flex-col overflow-hidden dark:border-dark-border"
-    (click)="$event.stopPropagation()"
+    class="rb-card relative z-10 mx-auto flex h-full max-h-[96vh] w-full max-w-6xl flex-col overflow-hidden dark:border-dark-border"
   >
     <header
       class="flex shrink-0 flex-col gap-3 border-b border-gray-200 px-4 py-4 dark:border-dark-border sm:flex-row sm:items-center sm:justify-between sm:px-6"
     >
       <div class="min-w-0">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong sm:text-xl">
-          {{ tituloModal() }}
+          {{ tituloModalTexto }}
         </h2>
         <p class="rb-kicker mt-1 text-xs sm:text-sm">{{ alternativa.tituloModo }}</p>
         <p *ngIf="alternativa.mae != null" class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">
@@ -32,7 +36,7 @@
               ? 'Exportación de gráficos disponible en Plan Emprendedor y Nutricionista'
               : 'Descargar gráfico en JPG'
           "
-          (click)="descargarJpg()"
+          (click)="descargarJpg(); $event.stopPropagation()"
         >
           <ng-icon name="heroArrowDownTray" size="18" />
           Descargar JPG
@@ -40,7 +44,7 @@
         <button
           type="button"
           class="rb-btn rb-btn-secondary inline-flex min-h-10 items-center gap-2"
-          (click)="onCerrar()"
+          (click)="onCerrar(); $event.stopPropagation()"
         >
           <ng-icon name="heroXMark" size="18" />
           Cerrar
@@ -60,7 +64,7 @@
           <ng-container *ngIf="tipo === 'semaforo'">
             <div class="space-y-4">
               <div
-                *ngFor="let fila of filasSemaforoGrafico()"
+                *ngFor="let fila of filasSemaforoCache"
                 class="rounded-xl border border-gray-200 bg-white p-3 dark:border-dark-border dark:bg-slate-900/50"
               >
                 <p class="mb-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
@@ -95,7 +99,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    *ngFor="let fila of filasComposicion()"
+                    *ngFor="let fila of filasComposicionCache; trackBy: trackFilaComposicion"
                     class="border-t border-gray-200 dark:border-dark-border"
                   >
                     <td class="px-3 py-2 font-medium">{{ fila.nombre }}</td>
@@ -133,7 +137,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    *ngFor="let fila of filasPrecision()"
+                    *ngFor="let fila of filasPrecisionCache; trackBy: trackFilaPrecision"
                     class="border-t border-gray-200 dark:border-dark-border"
                   >
                     <td class="px-3 py-2">{{ fila.etiqueta }}</td>
@@ -179,7 +183,7 @@
               *ngIf="esNutricionista()"
               type="button"
               class="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-secondary/30 bg-secondary/5 px-3 text-sm font-semibold text-secondary dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300 sm:w-auto"
-              (click)="alternarPanelNormativo()"
+              (click)="alternarPanelNormativo(); $event.stopPropagation()"
             >
               <ng-icon name="heroDocumentMagnifyingGlass" size="16" />
               {{

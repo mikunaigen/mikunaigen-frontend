@@ -2,7 +2,7 @@
   <button
     type="button"
     class="group rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
-    (click)="abrirModal('composicion')"
+    (click)="onClickTarjeta($event, 'composicion')"
     (keydown)="onTeclaTarjeta($event, 'composicion')"
   >
     <div class="mb-3 flex items-center justify-between gap-2">
@@ -25,7 +25,7 @@
   <button
     type="button"
     class="group rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
-    (click)="abrirModal('precision')"
+    (click)="onClickTarjeta($event, 'precision')"
     (keydown)="onTeclaTarjeta($event, 'precision')"
   >
     <div class="mb-3 flex items-center justify-between gap-2">
@@ -48,7 +48,7 @@
   <button
     type="button"
     class="group rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
-    (click)="abrirModal('semaforo')"
+    (click)="onClickTarjeta($event, 'semaforo')"
     (keydown)="onTeclaTarjeta($event, 'semaforo')"
   >
     <div class="mb-3 flex items-center justify-between gap-2">
@@ -70,8 +70,9 @@
 </div>
 
 <app-detalle-grafico-receta-modal
+  *ngIf="modalVisible"
   [alternativa]="alternativa"
   [tipo]="modalTipo"
-  [visible]="modalVisible"
+  [visible]="true"
   (cerrar)="cerrarModal()"
 />
