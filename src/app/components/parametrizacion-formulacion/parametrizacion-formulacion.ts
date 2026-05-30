@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -12,6 +12,7 @@ import {
   ComposicionAlimento,
   IngredienteRestriccion,
   ParametrizacionContextoDto,
+  ParametrizacionDto,
   ParametrizacionFormulacionService,
 } from '../../services/parametrizacion-formulacion.service';
 import {
@@ -35,6 +36,9 @@ import { LogoutButtonComponent } from '../logout-button/logout-button';
   templateUrl: './parametrizacion-formulacion.component.html',
 })
 export class ParametrizacionFormulacionComponent implements OnInit {
+  @Input() modoEmbebido = false;
+  @Output() parametrizacionGuardada = new EventEmitter<void>();
+
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly parametrizacionService = inject(ParametrizacionFormulacionService);
@@ -64,17 +68,19 @@ export class ParametrizacionFormulacionComponent implements OnInit {
   composicionTitulo = signal('');
 
   ngOnInit(): void {
-    if (!this.auth.isLoggedIn()) {
-      void this.router.navigate(['/login'], { queryParams: { returnUrl: '/parametrizacion' } });
-      return;
-    }
-    if (this.auth.esAdministrador()) {
-      void this.router.navigate(['/gestion-administrador']);
-      return;
-    }
-    if (!this.auth.esUsuarioFormulacion()) {
-      void this.router.navigate(['/login']);
-      return;
+    if (!this.modoEmbebido) {
+      if (!this.auth.isLoggedIn()) {
+        void this.router.navigate(['/login'], { queryParams: { returnUrl: '/formular' } });
+        return;
+      }
+      if (this.auth.esAdministrador()) {
+        void this.router.navigate(['/gestion-administrador']);
+        return;
+      }
+      if (!this.auth.esUsuarioFormulacion()) {
+        void this.router.navigate(['/login']);
+        return;
+      }
     }
 
     this.busqueda$
@@ -280,7 +286,26 @@ export class ParametrizacionFormulacionComponent implements OnInit {
     this.composicionModal.set(null);
   }
 
-  guardar(): void {
+  guardarParaContinuar(): void {
+    this.guardar(true);
+  }
+
+  aplicarParametrizacion(p: ParametrizacionDto): void {
+    this.cabezasSeleccionadas = [...(p.cabezasOptimizacion || ['maxima_precision_nutricional'])];
+    if (this.contexto()?.rol === 'estudiante') {
+      this.cabezasSeleccionadas = ['maxima_precision_nutricional'];
+    }
+    this.presupuestoMaximo =
+      p.presupuestoMaximo != null && p.presupuestoMaximo !== undefined
+        ? Number(p.presupuestoMaximo)
+        : null;
+    this.filtroEstacionalidadActivo = !!p.filtroEstacionalidadActivo;
+    this.exclusiones = [...(p.ingredientesExcluidos || [])];
+    this.priorizados = [...(p.ingredientesPriorizados || [])];
+    this.errores.set({});
+  }
+
+  guardar(continuarFlujo = false): void {
     this.validarPresupuesto();
     if (Object.keys(this.errores()).length > 0) {
       this.modal.set({
@@ -321,11 +346,16 @@ export class ParametrizacionFormulacionComponent implements OnInit {
         if (res.parametrizacion) {
           this.parametrizacionService.guardarSesion(res.parametrizacion);
         }
-        this.modal.set({
-          tipo: 'ok',
-          titulo: 'Parametrización guardada',
-          mensaje: res.message || 'Los parámetros se guardaron para futuras sesiones.',
-        });
+        if (continuarFlujo || this.modoEmbebido) {
+          this.parametrizacionGuardada.emit();
+        }
+        if (!continuarFlujo) {
+          this.modal.set({
+            tipo: 'ok',
+            titulo: 'Parametrización guardada',
+            mensaje: res.message || 'Los parámetros se guardaron para futuras sesiones.',
+          });
+        }
       },
       error: (err) => {
         this.guardando.set(false);

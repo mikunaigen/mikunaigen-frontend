@@ -94,6 +94,14 @@ export type EvaluarGuardadoHistorialDto = {
   opcionesReemplazo?: HistorialRecetaDto[];
 };
 
+export type UltimaConfiguracionFormulacionDto = {
+  disponible: boolean;
+  message?: string;
+  fechaUltimaFormulacion?: string;
+  objetivo?: ObjetivoNutricionalValores;
+  parametrizacion?: Record<string, unknown>;
+};
+
 export type GuardarHistorialPayload = {
   nombre: string;
   reemplazarId?: string;
@@ -120,6 +128,10 @@ export class FormulacionInferenciaService {
 
   aceptarDescargo(): Observable<{ message: string; descargoAceptado: boolean }> {
     return this.http.post<{ message: string; descargoAceptado: boolean }>(`${base}/descargo/aceptar`, {});
+  }
+
+  ultimaConfiguracion(): Observable<UltimaConfiguracionFormulacionDto> {
+    return this.http.get<UltimaConfiguracionFormulacionDto>(`${base}/ultima-configuracion`);
   }
 
   calificarReceta(

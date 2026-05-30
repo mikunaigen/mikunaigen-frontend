@@ -19,6 +19,7 @@ import { MiPerfilComponent } from './components/mi-perfil/mi-perfil';
 import { ObjetivoNutricionalComponent } from './components/objetivo-nutricional/objetivo-nutricional';
 import { ParametrizacionFormulacionComponent } from './components/parametrizacion-formulacion/parametrizacion-formulacion';
 import { FormularRecetaComponent } from './components/formular-receta/formular-receta';
+import { FormulacionFlujoComponent } from './components/formulacion-flujo/formulacion-flujo';
 import { MisRecetasComponent } from './components/mis-recetas/mis-recetas';
 import { MantenimientoComponent } from './components/mantenimiento/mantenimiento';
 import { MenuClienteComponent } from './components/menu-cliente/menu-cliente';
@@ -61,17 +62,17 @@ export const routes: Routes = [
   },
   {
     path: 'objetivo-nutricional',
-    component: ObjetivoNutricionalComponent,
+    component: FormulacionFlujoComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
   },
   {
     path: 'parametrizacion',
-    component: ParametrizacionFormulacionComponent,
+    component: FormulacionFlujoComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
   },
   {
     path: 'formular',
-    component: FormularRecetaComponent,
+    component: FormulacionFlujoComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, clienteGuard],
   },
   {

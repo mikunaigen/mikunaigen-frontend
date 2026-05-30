@@ -1,5 +1,6 @@
-<div class="rb-page">
+<div [class.rb-page]="!modoEmbebido">
   <nav
+    *ngIf="!modoEmbebido"
     class="rb-nav sticky top-0 z-50 flex flex-col items-stretch gap-3 bg-primary text-white shadow-sm dark:shadow-none sm:flex-row sm:items-center sm:justify-between"
   >
     <h1 class="rb-nav-title text-center text-white sm:text-left">Objetivo nutricional</h1>
@@ -9,10 +10,17 @@
     </div>
   </nav>
 
-  <div class="rb-container mx-auto max-w-5xl py-8 sm:py-10">
-    <header class="mb-8 text-center sm:text-left">
+  <div [class.rb-container]="!modoEmbebido" [class.mx-auto]="!modoEmbebido" [class.max-w-5xl]="!modoEmbebido" [class.py-8]="!modoEmbebido" [class.sm:py-10]="!modoEmbebido">
+    <header *ngIf="!modoEmbebido" class="mb-8 text-center sm:text-left">
       <h2 class="rb-heading text-2xl sm:text-3xl">Definir objetivo nutricional</h2>
       <p class="rb-kicker mt-2 max-w-2xl">
+        Ingresa los 21 parámetros que el modelo de IA debe alcanzar en tu receta de superalimento.
+      </p>
+    </header>
+
+    <header *ngIf="modoEmbebido" class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Paso 1 — Objetivo nutricional</h3>
+      <p class="rb-kicker mt-1">
         Ingresa los 21 parámetros que el modelo de IA debe alcanzar en tu receta de superalimento.
       </p>
     </header>
@@ -59,7 +67,7 @@
       </ul>
     </section>
 
-    <form (ngSubmit)="enviarObjetivo()" class="rb-card rb-card-pad" novalidate>
+    <form (ngSubmit)="enviarObjetivo(false); $event.preventDefault()" class="rb-card rb-card-pad" novalidate>
       <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div *ngFor="let campo of campos" class="min-w-0">
           <div class="mb-1 flex items-start justify-between gap-2">
@@ -108,6 +116,7 @@
       </div>
 
       <div
+        *ngIf="!modoEmbebido"
         class="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 dark:border-dark-border sm:flex-row sm:items-center sm:justify-between"
       >
         <a
@@ -125,7 +134,8 @@
           Volver al inicio
         </a>
         <button
-          type="submit"
+          type="button"
+          (click)="enviarObjetivo(false)"
           [disabled]="validando()"
           class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
         >

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -29,6 +29,9 @@ import { LogoutButtonComponent } from '../logout-button/logout-button';
   templateUrl: './objetivo-nutricional.component.html',
 })
 export class ObjetivoNutricionalComponent implements OnInit {
+  @Input() modoEmbebido = false;
+  @Output() objetivoGuardado = new EventEmitter<void>();
+
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly objetivoService = inject(ObjetivoNutricionalService);
@@ -43,18 +46,24 @@ export class ObjetivoNutricionalComponent implements OnInit {
   modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
 
   ngOnInit(): void {
-    if (!this.auth.isLoggedIn()) {
-      void this.router.navigate(['/login'], { queryParams: { returnUrl: '/objetivo-nutricional' } });
-      return;
+    if (!this.modoEmbebido) {
+      if (!this.auth.isLoggedIn()) {
+        void this.router.navigate(['/login'], { queryParams: { returnUrl: '/formular' } });
+        return;
+      }
+      if (this.auth.esAdministrador()) {
+        void this.router.navigate(['/gestion-administrador']);
+        return;
+      }
+      if (!this.auth.esUsuarioFormulacion()) {
+        void this.router.navigate(['/login']);
+        return;
+      }
     }
-    if (this.auth.esAdministrador()) {
-      void this.router.navigate(['/gestion-administrador']);
-      return;
-    }
-    if (!this.auth.esUsuarioFormulacion()) {
-      void this.router.navigate(['/login']);
-      return;
-    }
+    this.recargarDesdeSesion();
+  }
+
+  recargarDesdeSesion(): void {
     const guardado = this.objetivoService.leerSesion();
     if (guardado) {
       this.valores = { ...objetivoVacio(), ...guardado };
@@ -95,7 +104,11 @@ export class ObjetivoNutricionalComponent implements OnInit {
     });
   }
 
-  enviarObjetivo(): void {
+  guardarParaContinuar(): void {
+    this.enviarObjetivo(true);
+  }
+
+  enviarObjetivo(continuarFlujo = false): void {
     const erroresLocales: Record<string, string> = {};
     for (const campo of this.campos) {
       const err = this.validarValor(campo, this.valores[campo.key]);
@@ -128,11 +141,16 @@ export class ObjetivoNutricionalComponent implements OnInit {
         }
         this.errores.set({});
         this.objetivoService.guardarSesion(this.valores);
-        this.modal.set({
-          tipo: 'ok',
-          titulo: 'Objetivo registrado',
-          mensaje: res.message || 'El objetivo nutricional es válido y está listo para la formulación.',
-        });
+        if (continuarFlujo || this.modoEmbebido) {
+          this.objetivoGuardado.emit();
+        }
+        if (!continuarFlujo) {
+          this.modal.set({
+            tipo: 'ok',
+            titulo: 'Objetivo registrado',
+            mensaje: res.message || 'El objetivo nutricional es válido y está listo para la formulación.',
+          });
+        }
       },
       error: (err) => {
         this.validando.set(false);

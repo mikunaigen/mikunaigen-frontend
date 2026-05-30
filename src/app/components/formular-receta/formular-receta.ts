@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -36,6 +36,8 @@ import { TEXTO_DESCARGO_RESPONSABILIDAD } from '../../utils/form-validators';
   templateUrl: './formular-receta.component.html',
 })
 export class FormularRecetaComponent implements OnInit {
+  @Input() modoEmbebido = false;
+
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);

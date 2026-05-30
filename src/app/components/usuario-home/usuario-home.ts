@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import {
   PlanContextoDto,
@@ -24,8 +23,6 @@ import {
   precioMostrarPlan,
   type PlanDetalle,
 } from '../../data/plan-detalles';
-import { ObjetivoNutricionalService } from '../../services/objetivo-nutricional.service';
-import { ParametrizacionFormulacionService } from '../../services/parametrizacion-formulacion.service';
 @Component({
   selector: 'app-usuario-home',
   standalone: true,
@@ -45,16 +42,11 @@ export class UsuarioHomeComponent implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly websocket = inject(WebsocketService);
-  private readonly objetivoService = inject(ObjetivoNutricionalService);
-  private readonly parametrizacionService = inject(ParametrizacionFormulacionService);
   private wsSub?: Subscription;
-  private routerSub?: Subscription;
 
   cargando = signal(true);
   enviando = signal(false);
   contexto = signal<PlanContextoDto | null>(null);
-  tieneObjetivoNutricional = signal(false);
-  tieneParametrizacion = signal(false);
 
   planSeleccionado = signal<PlanDisponible | null>(null);
   justificacion = '';
@@ -76,65 +68,10 @@ export class UsuarioHomeComponent implements OnInit, OnDestroy {
     }
     this.cargarContexto();
     this.iniciarEscuchaPlanes();
-    if (this.auth.esUsuarioFormulacion()) {
-      this.evaluarPreparacionFormulacion();
-      this.routerSub = this.router.events
-        .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-        .subscribe((e) => {
-          if (e.urlAfterRedirects.startsWith('/usuario-home')) {
-            this.evaluarPreparacionFormulacion();
-          }
-        });
-    }
-  }
-
-  listoParaFormular(): boolean {
-    return this.tieneObjetivoNutricional() && this.tieneParametrizacion();
-  }
-
-  intentarFormular(): void {
-    if (this.listoParaFormular()) {
-      void this.router.navigate(['/formular']);
-      return;
-    }
-    const faltantes: string[] = [];
-    if (!this.tieneParametrizacion()) {
-      faltantes.push('Parametrización');
-    }
-    if (!this.tieneObjetivoNutricional()) {
-      faltantes.push('Objetivo nutricional');
-    }
-    const detalle =
-      faltantes.length === 2
-        ? 'Para formular una receta debes completar y guardar Parametrización y Objetivo nutricional.'
-        : `Para formular una receta debes completar y guardar ${faltantes[0]}.`;
-    this.modal.set({
-      tipo: 'error',
-      titulo: 'Formulación no disponible',
-      mensaje: detalle,
-    });
-  }
-
-  private evaluarPreparacionFormulacion(): void {
-    this.tieneObjetivoNutricional.set(this.objetivoService.leerSesion() !== null);
-    this.parametrizacionService.obtenerContexto().subscribe({
-      next: (ctx) => {
-        const sesion = this.parametrizacionService.leerSesion();
-        const completada = !!ctx.parametrizacion?.parametrizacionCompletada;
-        if (completada && ctx.parametrizacion) {
-          this.parametrizacionService.guardarSesion(ctx.parametrizacion);
-        }
-        this.tieneParametrizacion.set(sesion !== null || completada);
-      },
-      error: () => {
-        this.tieneParametrizacion.set(this.parametrizacionService.leerSesion() !== null);
-      },
-    });
   }
 
   ngOnDestroy(): void {
     this.wsSub?.unsubscribe();
-    this.routerSub?.unsubscribe();
   }
 
   cargarContexto(silencioso = false): void {

@@ -1,6 +1,6 @@
-<div class="rb-page">
-  <div class="rb-container" [class.pointer-events-none]="mostrarModalDescargo()" [class.opacity-60]="mostrarModalDescargo()">
-    <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+<div [class.rb-page]="!modoEmbebido">
+  <div [class.rb-container]="!modoEmbebido" [class.pointer-events-none]="mostrarModalDescargo()" [class.opacity-60]="mostrarModalDescargo()">
+    <header *ngIf="!modoEmbebido" class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <div class="flex items-center gap-2 text-secondary dark:text-sky-300">
           <ng-icon name="heroSparkles" size="22" />
@@ -14,6 +14,11 @@
         <app-comprador-nav variant="primary" />
         <app-logout-button />
       </div>
+    </header>
+
+    <header *ngIf="modoEmbebido" class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Paso 3 — Formular receta</h3>
+      <p class="rb-kicker mt-1">Ejecuta el modelo de IA con tu objetivo y parametrización definidos.</p>
     </header>
 
     <div *ngIf="cargando()" class="rb-card rb-card-pad flex min-h-40 items-center justify-center">
@@ -47,11 +52,7 @@
               {{ mensajeModelo() }}
             </p>
           </div>
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <a routerLink="/parametrizacion" class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center justify-center gap-2">
-              <ng-icon name="heroAdjustmentsHorizontal" size="18" />
-              Parametrización
-            </a>
+          <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
             <button
               type="button"
               class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
