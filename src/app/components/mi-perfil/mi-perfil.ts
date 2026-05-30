@@ -8,9 +8,13 @@ import { Router, RouterModule } from '@angular/router';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 import { AuthService } from '../../services/auth.service';
 import {
+  bloquearTeclasNoNumericas,
+  errorCodigo6,
   errorNombreApellidoHistoria,
+  filtrarSoloDigitos,
   filtrarSoloLetrasYEspacios,
 } from '../../utils/form-validators';
+import { MfaService } from '../../services/mfa.service';
 import { environment } from '@env/environment';
 import { parsePlanWsEvento, topicPlanesUsuario } from '../../services/plan-usuario.service';
 import { WebsocketService } from '../../services/websocket.service';
@@ -26,6 +30,7 @@ type PerfilResponse = {
   role?: string;
   solicitudPlanEnRevision?: boolean;
   solicitudPlanRol?: string;
+  mfaEnabled?: boolean;
   message?: string;
 };
 
@@ -46,6 +51,7 @@ export class MiPerfilComponent implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly websocket = inject(WebsocketService);
+  private readonly mfaService = inject(MfaService);
   private readonly apiPerfil = environment.apiUrl + '/perfil';
 
   private wsSub?: Subscription;
@@ -66,6 +72,16 @@ export class MiPerfilComponent implements OnInit, OnDestroy {
   modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
   solicitudPlanEnRevision = signal(false);
   solicitudRolSolicitado = signal('');
+
+  mfaEnabled = signal(false);
+  mfaUi = signal<'idle' | 'qr' | 'backup' | 'disable'>('idle');
+  mfaCargando = signal(false);
+  mfaQrDataUrl = signal('');
+  mfaSecretPlain = signal('');
+  mfaConfirmCode = signal('');
+  mfaBackupCodes = signal<string[]>([]);
+  mfaDisablePassword = '';
+  mfaDisableCode = '';
 
   ngOnInit(): void {
     if (!this.auth.isLoggedIn()) {
@@ -181,6 +197,155 @@ export class MiPerfilComponent implements OnInit, OnDestroy {
     this.modal.set(null);
   }
 
+  iniciarMfa(): void {
+    this.mfaCargando.set(true);
+    this.mfaService.iniciar().subscribe({
+      next: async (resp) => {
+        this.mfaCargando.set(false);
+        this.mfaSecretPlain.set(resp.secretPlain || '');
+        try {
+          const QRCode = (await import('qrcode')).default;
+          const dataUrl = await QRCode.toDataURL(resp.otpAuthUri, {
+            width: 220,
+            margin: 1,
+            color: { dark: '#0f172a', light: '#ffffff' },
+          });
+          this.mfaQrDataUrl.set(dataUrl);
+        } catch {
+          this.mfaQrDataUrl.set('');
+        }
+        this.mfaConfirmCode.set('');
+        this.mfaUi.set('qr');
+      },
+      error: (err) => {
+        this.mfaCargando.set(false);
+        this.modal.set({
+          tipo: 'error',
+          titulo: 'Doble factor',
+          mensaje: err?.error?.message || 'No se pudo iniciar la configuración.',
+        });
+      },
+    });
+  }
+
+  soloNumerosMfa(event: Event): void {
+    this.mfaConfirmCode.set(filtrarSoloDigitos(event, 6));
+  }
+
+  bloquearNoNumericoMfa(event: KeyboardEvent): void {
+    bloquearTeclasNoNumericas(event);
+  }
+
+  soloNumerosDesactivarMfa(event: Event): void {
+    this.mfaDisableCode = filtrarSoloDigitos(event, 6);
+  }
+
+  confirmarMfa(): void {
+    const codErr = errorCodigo6(this.mfaConfirmCode());
+    if (codErr) {
+      this.modal.set({ tipo: 'error', titulo: 'Doble factor', mensaje: codErr });
+      return;
+    }
+    this.mfaCargando.set(true);
+    this.mfaService.confirmar(this.mfaConfirmCode()).subscribe({
+      next: (resp) => {
+        this.mfaCargando.set(false);
+        this.mfaEnabled.set(true);
+        this.mfaBackupCodes.set(resp.backupCodes || []);
+        this.mfaUi.set('backup');
+        this.mfaSecretPlain.set('');
+        this.mfaQrDataUrl.set('');
+      },
+      error: (err) => {
+        this.mfaCargando.set(false);
+        this.modal.set({
+          tipo: 'error',
+          titulo: 'Doble factor',
+          mensaje: err?.error?.message || 'Código inválido o expirado.',
+        });
+      },
+    });
+  }
+
+  cerrarMfaSetup(): void {
+    this.mfaUi.set('idle');
+    this.mfaBackupCodes.set([]);
+    this.mfaConfirmCode.set('');
+    this.mfaQrDataUrl.set('');
+    this.mfaSecretPlain.set('');
+    this.mfaDisablePassword = '';
+    this.mfaDisableCode = '';
+  }
+
+  descargarCodigosRespaldo(): void {
+    const codes = this.mfaBackupCodes();
+    if (!codes.length) {
+      return;
+    }
+    const contenido = [
+      'Mikunaigen - Códigos de respaldo MFA',
+      `Cuenta: ${this.form.email}`,
+      '',
+      ...codes.map((c, i) => `${i + 1}. ${c}`),
+      '',
+      'Cada código solo puede usarse una vez.',
+    ].join('\n');
+    const blob = new Blob([contenido], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mikunaigen-codigos-respaldo-mfa.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.cerrarMfaSetup();
+    this.modal.set({
+      tipo: 'ok',
+      titulo: 'Doble factor activado',
+      mensaje: 'La autenticación de doble factor quedó habilitada en tu cuenta.',
+    });
+  }
+
+  abrirDesactivarMfa(): void {
+    this.mfaDisablePassword = '';
+    this.mfaDisableCode = '';
+    this.mfaUi.set('disable');
+  }
+
+  desactivarMfa(): void {
+    if (!this.mfaDisablePassword.trim()) {
+      this.modal.set({ tipo: 'error', titulo: 'Doble factor', mensaje: 'Ingresa tu contraseña actual.' });
+      return;
+    }
+    const codErr = errorCodigo6(this.mfaDisableCode);
+    if (codErr) {
+      this.modal.set({ tipo: 'error', titulo: 'Doble factor', mensaje: codErr });
+      return;
+    }
+    this.mfaCargando.set(true);
+    this.mfaService
+      .desactivar({ password: this.mfaDisablePassword, code: this.mfaDisableCode })
+      .subscribe({
+        next: () => {
+          this.mfaCargando.set(false);
+          this.mfaEnabled.set(false);
+          this.mfaUi.set('idle');
+          this.modal.set({
+            tipo: 'ok',
+            titulo: 'Doble factor',
+            mensaje: 'La autenticación de doble factor fue desactivada.',
+          });
+        },
+        error: (err) => {
+          this.mfaCargando.set(false);
+          this.modal.set({
+            tipo: 'error',
+            titulo: 'Doble factor',
+            mensaje: err?.error?.message || 'No se pudo desactivar.',
+          });
+        },
+      });
+  }
+
   private cargarPerfil(): void {
     this.cargando.set(true);
     this.http.get<PerfilResponse>(`${this.apiPerfil}/me`).subscribe({
@@ -217,6 +382,7 @@ export class MiPerfilComponent implements OnInit, OnDestroy {
     this.form.role = String(resp?.role || '');
     this.solicitudPlanEnRevision.set(!!resp?.solicitudPlanEnRevision);
     this.solicitudRolSolicitado.set(String(resp?.solicitudPlanRol || ''));
+    this.mfaEnabled.set(!!resp?.mfaEnabled);
   }
 
   private iniciarEscuchaPlanes(): void {

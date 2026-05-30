@@ -14,7 +14,7 @@
       <p class="rb-kicker mt-2">Bienvenido de nuevo, por favor inicia sesión.</p>
     </div>
 
-    <form (ngSubmit)="onLogin()" class="space-y-5">
+    <form *ngIf="paso === 'credenciales'" (ngSubmit)="onLogin()" class="space-y-5">
       <div>
         <label class="rb-label ml-0.5">Email</label>
         <input
@@ -42,7 +42,11 @@
             class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-muted transition hover:opacity-80 dark:text-slate-400"
             [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
           >
-            <ng-icon [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'" size="20" class="h-5 w-5 object-contain text-secondary dark:text-blue-400" />
+            <ng-icon
+              [name]="mostrarPassword ? 'heroEye' : 'heroEyeSlash'"
+              size="20"
+              class="h-5 w-5 object-contain text-secondary dark:text-blue-400"
+            />
           </button>
         </div>
       </div>
@@ -63,19 +67,85 @@
       </div>
 
       <div class="flex justify-center">
-        <button type="submit" [disabled]="cargando" class="rb-btn-primary">
+        <button type="submit" [disabled]="cargando" class="rb-btn-primary inline-flex min-h-11 items-center gap-2">
           <span
             *ngIf="cargando"
-            class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+            class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
           ></span>
           {{ cargando ? 'Verificando...' : 'Iniciar Sesión' }}
         </button>
       </div>
     </form>
+
+    <div *ngIf="paso === 'mfa'" class="space-y-5">
+      <div
+        class="rounded-xl border border-gray-200 bg-gray-50/90 px-4 py-4 text-center dark:border-dark-border dark:bg-slate-900/50"
+      >
+        <ng-icon name="heroShieldCheck" size="40" class="mx-auto mb-3 text-secondary dark:text-blue-400" />
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">Verificación en dos pasos</h2>
+        <p class="mt-2 text-sm text-neutral-muted dark:text-dark-text-muted">
+          Ingresa el código de 6 dígitos de Google Authenticator para
+          <span class="font-medium text-gray-900 dark:text-dark-text-strong">{{ mfaEmail }}</span>
+        </p>
+      </div>
+
+      <div *ngIf="!usarCodigoRespaldo">
+        <label class="rb-label ml-0.5">Código de seguridad</label>
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="6"
+          [value]="mfaCode"
+          name="mfaCode"
+          class="rb-input rb-focus-primary text-center text-lg tracking-[0.35em]"
+          (keydown)="bloquearNoNumericoMfa($event)"
+          (input)="soloNumerosMfa($event)"
+          autocomplete="one-time-code"
+        />
+      </div>
+
+      <div *ngIf="usarCodigoRespaldo">
+        <label class="rb-label ml-0.5">Código de respaldo</label>
+        <input
+          type="text"
+          [(ngModel)]="mfaBackupCode"
+          name="mfaBackupCode"
+          class="rb-input rb-focus-primary uppercase"
+          placeholder="XXXX-XXXX"
+          autocomplete="off"
+        />
+      </div>
+
+      <button
+        type="button"
+        (click)="usarCodigoRespaldo = !usarCodigoRespaldo"
+        class="text-sm font-medium text-secondary underline-offset-2 hover:underline dark:text-sky-300"
+      >
+        {{ usarCodigoRespaldo ? 'Usar código de Google Authenticator' : 'Usar código de respaldo' }}
+      </button>
+
+      <div class="flex flex-col gap-3">
+        <button
+          type="button"
+          (click)="onVerificarMfa()"
+          [disabled]="cargando"
+          class="rb-btn-primary inline-flex min-h-11 w-full items-center justify-center gap-2"
+        >
+          <span
+            *ngIf="cargando"
+            class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+          ></span>
+          {{ cargando ? 'Verificando...' : 'Verificar' }}
+        </button>
+        <button type="button" (click)="volverCredenciales()" [disabled]="cargando" class="rb-btn-secondary w-full">
+          Volver al inicio de sesión
+        </button>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="modal.visible" class="rb-modal-backdrop">
-    <div class="rb-modal border-gray-200">
+    <div class="rb-modal border-gray-200 dark:border-dark-border">
       <div
         class="rb-modal-icon"
         [ngClass]="
@@ -84,7 +154,11 @@
             : 'bg-amber-50 text-amber-700 ring-amber-200/80 dark:bg-amber-950/40 dark:text-amber-200 dark:ring-amber-800/40'
         "
       >
-        <ng-icon [name]="modal.esError ? 'heroXCircle' : 'heroExclamationTriangle'" size="42" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
+        <ng-icon
+          [name]="modal.esError ? 'heroXCircle' : 'heroExclamationTriangle'"
+          size="42"
+          class="h-10 w-10 object-contain text-secondary dark:text-blue-400"
+        />
       </div>
       <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">{{ modal.titulo }}</h3>
       <p
