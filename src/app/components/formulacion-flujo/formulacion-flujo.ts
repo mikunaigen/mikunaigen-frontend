@@ -59,7 +59,7 @@ export class FormulacionFlujoComponent implements OnInit {
       void this.router.navigate(['/login'], { queryParams: { returnUrl: '/formular' } });
       return;
     }
-    if (this.auth.esAdministrador() || !this.auth.esUsuarioFormulacion()) {
+    if (!this.auth.puedeFormular()) {
       void this.router.navigate(['/login']);
       return;
     }

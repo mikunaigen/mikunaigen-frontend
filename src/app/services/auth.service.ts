@@ -82,6 +82,15 @@ export class AuthService {
     return !!r && (ROLES_USUARIO.includes(r) || r === 'CLIENTE');
   }
 
+  puedeFormular(role?: string): boolean {
+    return this.esUsuarioFormulacion(role) || this.esAdministrador(role);
+  }
+
+  esPrivilegiosNutricionista(role?: string): boolean {
+    const r = role ?? this.getSession()?.role;
+    return r === 'nutricionista' || this.esAdministrador(r);
+  }
+
   getPostLoginPath(): string {
     const s = this.getSession();
     if (!s) return '/login';

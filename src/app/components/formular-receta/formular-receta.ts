@@ -86,7 +86,7 @@ export class FormularRecetaComponent implements OnInit {
       void this.router.navigate(['/login'], { queryParams: { returnUrl: '/formular' } });
       return;
     }
-    if (this.auth.esAdministrador() || !this.auth.esUsuarioFormulacion()) {
+    if (!this.auth.puedeFormular()) {
       void this.router.navigate(['/login']);
       return;
     }
@@ -131,7 +131,26 @@ export class FormularRecetaComponent implements OnInit {
   }
 
   cuotaAgotada(): boolean {
+    if (this.preparacion()?.cuota?.cuotaIlimitada) {
+      return false;
+    }
     return !!this.preparacion()?.cuota?.cuotaAgotada;
+  }
+
+  textoLimiteInferencias(): string {
+    const cuota = this.preparacion()?.cuota;
+    if (cuota?.cuotaIlimitada || cuota?.limiteInferencias === -1) {
+      return 'Ilimitado';
+    }
+    return String(cuota?.limiteInferencias ?? '—');
+  }
+
+  textoLimiteHistorial(): string {
+    const cuota = this.preparacion()?.cuota;
+    if (cuota?.cuotaIlimitada || cuota?.limiteHistorial === -1) {
+      return 'Ilimitado';
+    }
+    return String(cuota?.limiteHistorial ?? '—');
   }
 
   aceptarDescargo(): void {
@@ -375,6 +394,9 @@ export class FormularRecetaComponent implements OnInit {
   }
 
   historialBloqueado(): boolean {
+    if (this.preparacion()?.cuota?.cuotaIlimitada) {
+      return false;
+    }
     return !!this.preparacion()?.cuota?.historialBloqueadoPorPlan;
   }
 

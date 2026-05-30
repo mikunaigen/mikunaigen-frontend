@@ -32,14 +32,14 @@
             <p class="text-sm text-neutral-muted">
               Cuota mensual:
               <span class="font-semibold text-gray-900 dark:text-dark-text-strong">
-                {{ preparacion()?.cuota?.inferenciasUsadas }}/{{ preparacion()?.cuota?.limiteInferencias }}
+                {{ preparacion()?.cuota?.inferenciasUsadas }}/{{ textoLimiteInferencias() }}
               </span>
               inferencias · Reinicio {{ preparacion()?.cuota?.fechaReinicioCuota }}
             </p>
             <p class="mt-1 text-sm text-neutral-muted">
               Historial:
               <span class="font-semibold text-gray-900 dark:text-dark-text-strong">
-                {{ preparacion()?.cuota?.historialUsado }}/{{ preparacion()?.cuota?.limiteHistorial }}
+                {{ preparacion()?.cuota?.historialUsado }}/{{ textoLimiteHistorial() }}
               </span>
               recetas guardadas
             </p>

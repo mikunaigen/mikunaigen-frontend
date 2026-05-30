@@ -50,9 +50,10 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
   private actualizarVisibilidad(): void {
     const actual = this.router.url.split('?')[0];
     this.esAdmin = this.auth.esAdministrador();
+    const puedeFormular = this.auth.puedeFormular();
     this.mostrarInicio = !this.esAdmin && actual !== '/usuario-home';
-    this.mostrarFormular = this.auth.esUsuarioFormulacion() && !actual.startsWith('/formular');
-    this.mostrarMisRecetas = this.auth.esUsuarioFormulacion() && actual !== '/mis-recetas';
+    this.mostrarFormular = puedeFormular && !actual.startsWith('/formular');
+    this.mostrarMisRecetas = puedeFormular && actual !== '/mis-recetas';
     this.mostrarMiPerfil = actual !== '/mi-perfil';
     this.mostrarPanelTrabajo =
       !!this.rutaPanelTrabajo && actual !== this.rutaPanelTrabajo;

@@ -43,14 +43,14 @@ export class MisRecetasComponent implements OnInit {
       void this.router.navigate(['/login'], { queryParams: { returnUrl: '/mis-recetas' } });
       return;
     }
-    if (this.auth.esAdministrador() || !this.auth.esUsuarioFormulacion()) {
+    if (!this.auth.puedeFormular()) {
       void this.router.navigate(['/login']);
       return;
     }
     this.cargar();
     this.inferenciaService.preparacion().subscribe({
       next: (p) => {
-        this.historialBloqueadoPorPlan = !!p.cuota?.historialBloqueadoPorPlan;
+        this.historialBloqueadoPorPlan = !!p.cuota?.historialBloqueadoPorPlan && !p.cuota?.cuotaIlimitada;
         this.limiteHistorial = p.cuota?.limiteHistorial ?? 0;
         this.historialUsado = p.cuota?.historialUsado ?? 0;
       },
@@ -58,7 +58,14 @@ export class MisRecetasComponent implements OnInit {
   }
 
   historialBloqueado(): boolean {
+    if (this.limiteHistorial === -1) {
+      return false;
+    }
     return this.historialBloqueadoPorPlan;
+  }
+
+  textoLimiteHistorial(): string {
+    return this.limiteHistorial === -1 ? 'Ilimitado' : String(this.limiteHistorial);
   }
 
   cargar(): void {

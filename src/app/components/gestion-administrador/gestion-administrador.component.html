@@ -1,7 +1,7 @@
 <div class="rb-page">
   <div class="rb-container">
     <header
-      class="mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-center sm:justify-between"
+      class="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between"
     >
       <div class="text-center sm:text-left">
         <h1 class="rb-heading">Panel de Administración</h1>
@@ -13,135 +13,77 @@
       </div>
     </header>
 
+    <section
+      class="mb-8 rounded-xl border border-secondary/25 bg-secondary/5 p-4 dark:border-sky-500/25 dark:bg-sky-500/10 sm:p-5"
+    >
+      <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div class="flex items-center gap-2 text-secondary dark:text-sky-300">
+            <ng-icon name="heroSparkles" size="20" />
+            <span class="text-xs font-semibold uppercase tracking-wide sm:text-sm">Formulación con IA</span>
+          </div>
+          <p class="mt-1 text-sm text-neutral-muted dark:text-dark-text-muted">
+            Cuota y historial ilimitados · privilegios de Plan Nutricionista
+          </p>
+        </div>
+        <a
+          routerLink="/mis-recetas"
+          class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center justify-center gap-2 self-center sm:self-auto"
+        >
+          <ng-icon name="heroQueueList" size="18" />
+          Historial de recetas
+        </a>
+      </div>
+
+      <nav
+        class="grid grid-cols-1 gap-2 sm:grid-cols-3"
+        aria-label="Pasos de formulación para administrador"
+      >
+        <a
+          routerLink="/formular"
+          [queryParams]="{ tab: 'objetivo' }"
+          class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 transition hover:border-secondary/40 hover:shadow-md dark:border-dark-border dark:bg-slate-900/50 dark:hover:border-sky-500/40"
+        >
+          <span class="rb-feature-icon !mb-0 !h-10 !w-10 shrink-0">
+            <ng-icon name="heroBeaker" size="22" />
+          </span>
+          <span class="min-w-0">
+            <span class="block text-xs font-medium uppercase tracking-wide text-neutral-muted">Paso 1</span>
+            <span class="block text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Objetivo nutricional</span>
+          </span>
+          <ng-icon name="heroChevronRight" size="18" class="ml-auto shrink-0 text-neutral-muted" />
+        </a>
+
+        <a
+          routerLink="/formular"
+          [queryParams]="{ tab: 'parametrizacion' }"
+          class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 transition hover:border-secondary/40 hover:shadow-md dark:border-dark-border dark:bg-slate-900/50 dark:hover:border-sky-500/40"
+        >
+          <span class="rb-feature-icon !mb-0 !h-10 !w-10 shrink-0">
+            <ng-icon name="heroAdjustmentsHorizontal" size="22" />
+          </span>
+          <span class="min-w-0">
+            <span class="block text-xs font-medium uppercase tracking-wide text-neutral-muted">Paso 2</span>
+            <span class="block text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Parametrización</span>
+          </span>
+          <ng-icon name="heroChevronRight" size="18" class="ml-auto shrink-0 text-neutral-muted" />
+        </a>
+
+        <a
+          routerLink="/formular"
+          [queryParams]="{ tab: 'formular' }"
+          class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 transition hover:border-secondary/40 hover:shadow-md dark:border-dark-border dark:bg-slate-900/50 dark:hover:border-sky-500/40"
+        >
+          <span class="rb-feature-icon !mb-0 !h-10 !w-10 shrink-0">
+            <ng-icon name="heroSparkles" size="22" />
+          </span>
+          <span class="min-w-0">
+            <span class="block text-xs font-medium uppercase tracking-wide text-neutral-muted">Paso 3</span>
+            <span class="block text-sm font-semibold text-gray-900 dark:text-dark-text-strong">Formular receta</span>
+          </span>
+          <ng-icon name="heroChevronRight" size="18" class="ml-auto shrink-0 text-neutral-muted" />
+        </a>
+      </nav>
+    </section>
+
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-      <a
-        routerLink="/dashboard"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div class="rb-feature-icon">
-          <ng-icon name="heroChartPie" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Dashboard y KPIs
-        </h2>
-        <p class="rb-kicker mt-2">
-          Visualiza KPIs del sistema, precisión del modelo y satisfacción de los usuarios.
-        </p>
-      </a>
-
-      <a
-        [routerLink]="['/setup']"
-        [queryParams]="{ editar: '1', seccion: 'plataforma' }"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div
-          class="rb-feature-icon"
-        >
-          <ng-icon name="heroCog6Tooth" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Configuración de la Plataforma
-        </h2>
-        <p class="rb-kicker mt-2">
-          Nombre, logo, teléfono de contacto y medios de pago para cambios de plan.
-        </p>
-      </a>
-
-      <a
-        routerLink="/admin-dataset-alimentos"
-        class="rb-card rb-card-pad group transition hover:border-primary/35 dark:hover:border-primary/50 dark:hover:shadow-none"
-      >
-        <div class="rb-feature-icon rb-feature-icon--primary">
-          <ng-icon name="heroBeaker" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Dataset de Alimentos MINSA
-        </h2>
-        <p class="rb-kicker mt-2">
-          Administra el dataset de alimentos que será usado como entrada del entrenamiento.
-        </p>
-      </a>
-
-      <a
-        routerLink="/admin-modelos-ia"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div
-          class="rb-feature-icon"
-        >
-          <ng-icon name="heroBolt" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Entrenamiento del Modelo
-        </h2>
-        <p class="rb-kicker mt-2">
-          Realiza entrenamientos y despliegues del modelo de formulación de alimentos a partir del dataset
-        </p>
-      </a>
-
-      <a
-        routerLink="/admin-solicitudes-plan"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div
-          class="rb-feature-icon"
-        >
-          <ng-icon name="heroArrowTrendingUp" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Gestión de Usuarios
-        </h2>
-        <p class="rb-kicker mt-2">
-          Usuarios, suscripciones, renovaciones y solicitudes de cambio de plan.
-        </p>
-      </a>
-
-      <a
-        routerLink="/admin-auditoria-seguridad"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div class="rb-feature-icon">
-          <ng-icon name="heroShieldCheck" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Auditoría de Seguridad
-        </h2>
-        <p class="rb-kicker mt-2">
-          Revisa recetas descartadas por el filtro de seguridad y detecta patrones de mal uso.
-        </p>
-      </a>
-
-      <a
-        routerLink="/admin-limites-normativos"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div class="rb-feature-icon">
-          <ng-icon name="heroScale" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Límites Normativos
-        </h2>
-        <p class="rb-kicker mt-2">
-          Codex Alimentarius y umbrales Ley N° 30021 para validación y semáforo nutricional.
-        </p>
-      </a>
-
-      <a
-        routerLink="/admin-respaldos"
-        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
-      >
-        <div
-          class="rb-feature-icon"
-        >
-          <ng-icon name="heroCircleStack" size="32" />
-        </div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
-          Respaldos de Base de Datos
-        </h2>
-        <p class="rb-kicker mt-2">
-          Genera, restaura y elimina respaldos cifrados de PostgreSQL en almacenamiento cloud.
-        </p>
-      </a>
-    </div>
-  </div>
-</div>

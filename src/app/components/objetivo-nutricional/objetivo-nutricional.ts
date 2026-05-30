@@ -51,11 +51,7 @@ export class ObjetivoNutricionalComponent implements OnInit {
         void this.router.navigate(['/login'], { queryParams: { returnUrl: '/formular' } });
         return;
       }
-      if (this.auth.esAdministrador()) {
-        void this.router.navigate(['/gestion-administrador']);
-        return;
-      }
-      if (!this.auth.esUsuarioFormulacion()) {
+      if (!this.auth.puedeFormular()) {
         void this.router.navigate(['/login']);
         return;
       }

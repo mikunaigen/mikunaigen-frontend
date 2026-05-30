@@ -8,6 +8,7 @@ const base = `${environment.apiUrl}/formulacion/inferencia`;
 
 export type CuotaInferenciaDto = {
   rol: string;
+  cuotaIlimitada?: boolean;
   limiteInferencias: number;
   inferenciasUsadas: number;
   inferenciasDisponibles: number;
@@ -25,6 +26,7 @@ export type PreparacionInferenciaDto = {
   mensajeModelo: string | null;
   cuota: CuotaInferenciaDto;
   rol: string;
+  esAdministrador?: boolean;
   descargoAceptado?: boolean;
 };
 
