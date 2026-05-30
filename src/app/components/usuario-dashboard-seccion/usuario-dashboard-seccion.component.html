@@ -61,7 +61,6 @@
     </div>
 
     <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      
       <article class="rb-card rb-card-pad">
         <div class="flex items-start gap-3">
           <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary/10 dark:bg-blue-950/40">
@@ -136,7 +135,9 @@
           </div>
         </div>
       </article>
+    </div>
 
+    <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
       <article class="rb-card rb-card-pad">
         <app-contenido-bloqueado-plan
           [bloqueado]="!!d.kpis.costoPromedioKgBloqueado"
@@ -165,7 +166,7 @@
         </app-contenido-bloqueado-plan>
       </article>
 
-      <article class="rb-card rb-card-pad">
+      <article class="rb-card rb-card-pad sm:col-span-2 xl:col-span-1">
         <app-contenido-bloqueado-plan
           [bloqueado]="!!d.kpis.sesionesEstacionalidadBloqueado"
           [planRequerido]="d.kpis.sesionesEstacionalidadPlanRequerido ?? 'emprendedor'"
@@ -182,7 +183,6 @@
           <p class="mt-1 text-xs text-neutral-muted dark:text-dark-text-muted">Sesiones con filtro activo</p>
         </app-contenido-bloqueado-plan>
       </article>
-
     </div>
 
     <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
