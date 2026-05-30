@@ -63,6 +63,7 @@ export class FormularRecetaComponent implements OnInit {
 
   calificandoId = signal<string | null>(null);
   estrellasSeleccionadas = signal(0);
+  hoverEstrella = signal(0);
   comentarioCalificacion = '';
   enviandoCalificacion = signal(false);
   mensajeCalificacionEnviada = signal<string | null>(null);
@@ -151,6 +152,7 @@ export class FormularRecetaComponent implements OnInit {
   abrirCalificacion(id: string): void {
     this.calificandoId.set(id);
     this.estrellasSeleccionadas.set(0);
+    this.hoverEstrella.set(0);
     this.comentarioCalificacion = '';
     this.mensajeCalificacionEnviada.set(null);
   }
@@ -158,11 +160,29 @@ export class FormularRecetaComponent implements OnInit {
   cerrarCalificacion(): void {
     this.calificandoId.set(null);
     this.estrellasSeleccionadas.set(0);
+    this.hoverEstrella.set(0);
     this.comentarioCalificacion = '';
   }
 
   seleccionarEstrella(valor: number): void {
     this.estrellasSeleccionadas.set(valor);
+    this.hoverEstrella.set(0);
+  }
+
+  marcarHoverEstrella(valor: number): void {
+    this.hoverEstrella.set(valor);
+  }
+
+  limpiarHoverEstrella(): void {
+    this.hoverEstrella.set(0);
+  }
+
+  estrellasVisibles(): number {
+    return Math.max(this.estrellasSeleccionadas(), this.hoverEstrella());
+  }
+
+  estrellaActiva(posicion: number, valor: number): boolean {
+    return posicion <= valor;
   }
 
   enviarCalificacion(id: string): void {

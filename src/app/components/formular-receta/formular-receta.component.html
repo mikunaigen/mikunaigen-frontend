@@ -209,11 +209,13 @@
               <div class="flex items-center gap-1">
                 <ng-icon
                   *ngFor="let n of estrellasOpciones"
-                  name="heroStar"
+                  [name]="estrellaActiva(n, alt.calificacionEstrellas || 0) ? 'heroStarSolid' : 'heroStar'"
                   size="20"
-                  [class.text-amber-400]="n <= (alt.calificacionEstrellas || 0)"
-                  [class.text-gray-300]="n > (alt.calificacionEstrellas || 0)"
-                  [class.dark:text-slate-600]="n > (alt.calificacionEstrellas || 0)"
+                  [ngClass]="
+                    estrellaActiva(n, alt.calificacionEstrellas || 0)
+                      ? 'text-amber-400'
+                      : 'text-gray-300 dark:text-slate-600'
+                  "
                 />
               </div>
               <p *ngIf="alt.calificacionComentario" class="text-sm text-neutral-muted">{{ alt.calificacionComentario }}</p>
@@ -235,20 +237,29 @@
                 <p class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
                   ¿Qué tan viable te parece esta receta?
                 </p>
-                <div class="flex items-center justify-start gap-1.5 sm:gap-2" role="group" aria-label="Calificación en estrellas">
+                <div
+                  class="flex items-center justify-start gap-1.5 sm:gap-2"
+                  role="group"
+                  aria-label="Calificación en estrellas"
+                  (mouseleave)="limpiarHoverEstrella()"
+                >
                   <button
                     *ngFor="let n of estrellasOpciones"
                     type="button"
                     class="rounded-lg p-1 transition hover:scale-105"
                     (click)="seleccionarEstrella(n)"
+                    (mouseenter)="marcarHoverEstrella(n)"
+                    [attr.aria-label]="'Calificar con ' + n + ' estrellas'"
                     [attr.aria-pressed]="estrellasSeleccionadas() >= n"
                   >
                     <ng-icon
-                      name="heroStar"
+                      [name]="estrellaActiva(n, estrellasVisibles()) ? 'heroStarSolid' : 'heroStar'"
                       size="28"
-                      [class.text-amber-400]="n <= estrellasSeleccionadas()"
-                      [class.text-gray-300]="n > estrellasSeleccionadas()"
-                      [class.dark:text-slate-600]="n > estrellasSeleccionadas()"
+                      [ngClass]="
+                        estrellaActiva(n, estrellasVisibles())
+                          ? 'text-amber-400'
+                          : 'text-gray-300 dark:text-slate-600'
+                      "
                     />
                   </button>
                 </div>

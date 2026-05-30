@@ -76,6 +76,7 @@ import {
   heroXCircle,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
+import { heroStarSolid } from '@ng-icons/heroicons/solid';
 
 function initThemeFactory(theme: ThemeService) {
   return () => {
@@ -155,6 +156,7 @@ export const appConfig: ApplicationConfig = {
       heroSignal,
       heroSparkles,
       heroStar,
+      heroStarSolid,
       heroSun,
       heroSwatch,
       heroTrash,
