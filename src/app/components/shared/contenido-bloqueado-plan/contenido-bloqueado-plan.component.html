@@ -1,0 +1,32 @@
+<div class="relative min-h-[12rem]">
+  <div
+    class="h-full transition"
+    [class.blur-sm]="bloqueado"
+    [class.pointer-events-none]="bloqueado"
+    [class.select-none]="bloqueado"
+    [class.opacity-80]="bloqueado"
+  >
+    <ng-content />
+  </div>
+  <div
+    *ngIf="bloqueado"
+    class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-xl bg-black/25 p-4 backdrop-blur-[2px] dark:bg-black/45"
+  >
+    <span
+      class="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 dark:bg-slate-900/90"
+    >
+      <ng-icon name="heroLockClosed" size="22" class="text-secondary dark:text-blue-400" />
+    </span>
+    <p class="max-w-xs text-center text-sm font-semibold text-white drop-shadow-sm">
+      {{ textoOverlay() }}
+    </p>
+    <button
+      type="button"
+      class="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-secondary shadow-sm transition hover:bg-gray-50 dark:bg-slate-900 dark:text-blue-300 dark:hover:bg-slate-800"
+      (click)="irACambiarPlan()"
+    >
+      <ng-icon name="heroArrowTrendingUp" size="16" />
+      Ver planes
+    </button>
+  </div>
+</div>
