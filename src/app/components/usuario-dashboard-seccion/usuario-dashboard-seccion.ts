@@ -170,7 +170,11 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
       'bar',
       (c) => (this.chartInferencias = c),
     );
-    this.renderizarDona(this.canvasModos, d.graficos.modosOptimizacion, (c) => (this.chartModos = c));
+    this.renderizarDona(
+      this.canvasModos,
+      d.graficos.modosOptimizacion,
+      (c) => (this.chartModos = c),
+    );
     this.renderizarLineaBarras(
       this.canvasCosto,
       d.graficos.costoHistorial,
@@ -203,15 +207,19 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
       etiquetasLength: grafico?.etiquetas?.length,
       valoresLength: grafico?.valores?.length,
       etiquetas: grafico?.etiquetas,
-      valores: grafico?.valores
+      valores: grafico?.valores,
     });
 
     if (!canvas) {
-      console.warn(`[renderizarLineaBarras] Cancelado: El elemento Canvas no está listo en el DOM.`);
+      console.warn(
+        `[renderizarLineaBarras] Cancelado: El elemento Canvas no está listo en el DOM.`,
+      );
       return;
     }
     if (!grafico?.etiquetas?.length) {
-      console.warn(`[renderizarLineaBarras] Cancelado: No se encontraron etiquetas o valores para graficar.`);
+      console.warn(
+        `[renderizarLineaBarras] Cancelado: No se encontraron etiquetas o valores para graficar.`,
+      );
       return;
     }
     const ctx = canvas.getContext('2d');
@@ -253,7 +261,7 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
       etiquetasLength: grafico?.etiquetas?.length,
       valoresLength: grafico?.valores?.length,
       etiquetas: grafico?.etiquetas,
-      valores: grafico?.valores
+      valores: grafico?.valores,
     });
 
     if (!canvas) {
@@ -261,14 +269,41 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
       return;
     }
     if (!grafico?.etiquetas?.length) {
-      console.warn(`[renderizarDona] Cancelado: No se encontraron etiquetas o valores para graficar.`);
+      console.warn(
+        `[renderizarDona] Cancelado: No se encontraron etiquetas o valores para graficar.`,
+      );
       return;
     }
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       return;
     }
-    const colores = paletaIngredientes();
+
+    const esSemaforo = grafico.etiquetas.some((e) => {
+      const norm = e
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      return norm === 'verde' || norm === 'ambar' || norm === 'rojo' || norm === 'amarillo';
+    });
+
+    let colores: string[];
+    if (esSemaforo) {
+      colores = grafico.etiquetas.map((e) => {
+        const norm = e
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+        if (norm === 'verde') return '#28A745'; 
+        if (norm === 'ambar' || norm === 'amarillo') return '#D48806'; 
+        if (norm === 'rojo') return '#DC3545'; 
+        return '#9CA3AF';
+      });
+    } else {
+      const paleta = paletaIngredientes();
+      colores = grafico.etiquetas.map((_, i) => paleta[i % paleta.length]);
+    }
+
     const chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
@@ -276,7 +311,7 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
         datasets: [
           {
             data: grafico.valores,
-            backgroundColor: grafico.etiquetas.map((_, i) => colores[i % colores.length]),
+            backgroundColor: colores,
           },
         ],
       },
