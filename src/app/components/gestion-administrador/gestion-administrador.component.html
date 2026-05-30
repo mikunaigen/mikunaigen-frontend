@@ -87,3 +87,126 @@
     </section>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+      <a
+        routerLink="/dashboard"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroChartPie" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Dashboard y KPIs
+        </h2>
+        <p class="rb-kicker mt-2">
+          Visualiza KPIs del sistema, precisión del modelo y satisfacción de los usuarios.
+        </p>
+      </a>
+
+      <a
+        [routerLink]="['/setup']"
+        [queryParams]="{ editar: '1', seccion: 'plataforma' }"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroCog6Tooth" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Configuración de la Plataforma
+        </h2>
+        <p class="rb-kicker mt-2">
+          Nombre, logo, teléfono de contacto, SMTP y medios de pago para cambios de plan.
+        </p>
+      </a>
+
+      <a
+        routerLink="/admin-dataset-alimentos"
+        class="rb-card rb-card-pad group transition hover:border-primary/35 dark:hover:border-primary/50 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon rb-feature-icon--primary">
+          <ng-icon name="heroBeaker" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Dataset de Alimentos MINSA
+        </h2>
+        <p class="rb-kicker mt-2">
+          Administra el dataset de alimentos que alimenta el entrenamiento del modelo.
+        </p>
+      </a>
+
+      <a
+        routerLink="/admin-modelos-ia"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroBolt" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Entrenamiento del Modelo
+        </h2>
+        <p class="rb-kicker mt-2">
+          Realiza entrenamientos y despliegues del modelo de formulación de superalimentos.
+        </p>
+      </a>
+
+      <a
+        routerLink="/admin-solicitudes-plan"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroArrowTrendingUp" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Gestión de Usuarios
+        </h2>
+        <p class="rb-kicker mt-2">
+          Usuarios, suscripciones, renovaciones y solicitudes de cambio de plan.
+        </p>
+      </a>
+
+      <a
+        routerLink="/admin-auditoria-seguridad"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroShieldCheck" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Auditoría de Seguridad
+        </h2>
+        <p class="rb-kicker mt-2">
+          Recetas descartadas por el filtro normativo y patrones de mal uso.
+        </p>
+      </a>
+
+      <a
+        routerLink="/admin-limites-normativos"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroScale" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Límites Normativos
+        </h2>
+        <p class="rb-kicker mt-2">
+          Codex Alimentarius y umbrales Ley N° 30021 para validación y semáforo nutricional.
+        </p>
+      </a>
+
+      <a
+        routerLink="/admin-respaldos"
+        class="rb-card rb-card-pad group transition hover:border-secondary/30 dark:hover:border-blue-400/40 dark:hover:shadow-none"
+      >
+        <div class="rb-feature-icon">
+          <ng-icon name="heroCircleStack" size="32" />
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-dark-text-strong sm:text-lg">
+          Respaldos de Base de Datos
+        </h2>
+        <p class="rb-kicker mt-2">
+          Genera, restaura y elimina respaldos cifrados de PostgreSQL en almacenamiento cloud.
+        </p>
+      </a>
+    </div>
+  </div>
+</div>

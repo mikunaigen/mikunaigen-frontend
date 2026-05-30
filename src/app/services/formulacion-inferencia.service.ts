@@ -172,8 +172,22 @@ export class FormulacionInferenciaService {
     return this.http.post<{ message: string; id: string; recetaReemplazada?: string }>(`${base}/historial/${id}`, payload);
   }
 
-  listarHistorial(q?: string): Observable<HistorialRecetaDto[]> {
-    const params = q ? `?q=${encodeURIComponent(q)}` : '';
+  listarHistorial(
+    q?: string,
+    fechaDesde?: string,
+    fechaHasta?: string,
+  ): Observable<HistorialRecetaDto[]> {
+    const partes: string[] = [];
+    if (q?.trim()) {
+      partes.push(`q=${encodeURIComponent(q.trim())}`);
+    }
+    if (fechaDesde?.trim()) {
+      partes.push(`fechaDesde=${encodeURIComponent(fechaDesde.trim())}`);
+    }
+    if (fechaHasta?.trim()) {
+      partes.push(`fechaHasta=${encodeURIComponent(fechaHasta.trim())}`);
+    }
+    const params = partes.length ? `?${partes.join('&')}` : '';
     return this.http.get<HistorialRecetaDto[]>(`${base}/historial${params}`);
   }
 

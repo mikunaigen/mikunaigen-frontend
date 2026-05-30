@@ -110,11 +110,19 @@
             <tbody>
               <tr class="border-b border-gray-100 dark:border-dark-border">
                 <td class="py-2 pr-4 font-medium">MAE</td>
-                <td *ngFor="let alt of alternativas()" class="py-2 px-2">{{ alt.mae ?? '—' }}</td>
+                <td
+                  *ngFor="let alt of alternativas(); let i = index"
+                  [ngClass]="claseCeldaComparacion('mae', i)"
+                >
+                  {{ alt.mae ?? '—' }}
+                </td>
               </tr>
               <tr class="border-b border-gray-100 dark:border-dark-border">
                 <td class="py-2 pr-4 font-medium">Costo S/kg</td>
-                <td *ngFor="let alt of alternativas()" class="py-2 px-2">
+                <td
+                  *ngFor="let alt of alternativas(); let i = index"
+                  [ngClass]="claseCeldaComparacion('costo', i)"
+                >
                   <span *ngIf="alt.mostrarCosto">{{ alt.costoEstimadoKg ?? '—' }}</span>
                   <span *ngIf="!alt.mostrarCosto" class="text-xs text-neutral-muted">Plan Emprendedor y Nutricionista</span>
                 </td>
@@ -123,7 +131,14 @@
                 <td class="py-2 pr-4 align-top font-medium">Ingredientes</td>
                 <td *ngFor="let alt of alternativas()" class="py-2 px-2 align-top">
                   <ul class="space-y-1 text-xs">
-                    <li *ngFor="let ing of alt.ingredientes">{{ ing.nombre }} — {{ ing.porcentaje | number:'1.1-1' }}%</li>
+                    <li
+                      *ngFor="let ing of alt.ingredientes"
+                      [class.font-semibold]="porcentajeDestacadoEnComparacion(ing.nombre, ing.porcentaje)"
+                      [class.text-secondary]="porcentajeDestacadoEnComparacion(ing.nombre, ing.porcentaje)"
+                      [class.dark:text-sky-300]="porcentajeDestacadoEnComparacion(ing.nombre, ing.porcentaje)"
+                    >
+                      {{ ing.nombre }} — {{ ing.porcentaje | number:'1.1-1' }}%
+                    </li>
                   </ul>
                 </td>
               </tr>

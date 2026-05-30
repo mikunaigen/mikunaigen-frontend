@@ -68,7 +68,7 @@
     </section>
 
     <form (ngSubmit)="enviarObjetivo(false); $event.preventDefault()" class="rb-card rb-card-pad" novalidate>
-      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <div *ngFor="let campo of campos" class="min-w-0">
           <div class="mb-1 flex items-start justify-between gap-2">
             <label [for]="campo.key" class="rb-label !normal-case !mb-0">

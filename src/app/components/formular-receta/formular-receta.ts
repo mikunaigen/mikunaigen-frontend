@@ -327,6 +327,69 @@ export class FormularRecetaComponent implements OnInit {
     this.vistaComparar.update((v) => !v);
   }
 
+  indiceMejorMae(): number | null {
+    const alts = this.alternativas();
+    const valores = alts.map((a) => a.mae).filter((v): v is number => v != null && !Number.isNaN(Number(v)));
+    if (valores.length < 2) {
+      return null;
+    }
+    const minimo = Math.min(...valores.map(Number));
+    return alts.findIndex((a) => a.mae != null && Number(a.mae) === minimo);
+  }
+
+  indiceMejorCosto(): number | null {
+    const alts = this.alternativas().filter((a) => a.mostrarCosto && a.costoEstimadoKg != null);
+    if (alts.length < 2) {
+      return null;
+    }
+    const minimo = Math.min(...alts.map((a) => Number(a.costoEstimadoKg)));
+    return this.alternativas().findIndex(
+      (a) => a.mostrarCosto && a.costoEstimadoKg != null && Number(a.costoEstimadoKg) === minimo,
+    );
+  }
+
+  claseCeldaComparacion(tipo: 'mae' | 'costo', indice: number): string {
+    const base = 'py-2 px-2 transition-colors';
+    if (tipo === 'mae') {
+      const mejor = this.indiceMejorMae();
+      if (mejor === indice) {
+        return `${base} bg-green-50 font-semibold text-green-800 ring-1 ring-inset ring-green-300 dark:bg-green-950/50 dark:text-green-200 dark:ring-green-600`;
+      }
+      if (mejor !== null && mejor !== indice) {
+        return `${base} bg-amber-50/90 dark:bg-amber-950/35`;
+      }
+    }
+    if (tipo === 'costo') {
+      const mejor = this.indiceMejorCosto();
+      if (mejor === indice) {
+        return `${base} bg-green-50 font-semibold text-green-800 ring-1 ring-inset ring-green-300 dark:bg-green-950/50 dark:text-green-200 dark:ring-green-600`;
+      }
+      if (mejor !== null && mejor !== indice) {
+        return `${base} bg-amber-50/90 dark:bg-amber-950/35`;
+      }
+    }
+    return base;
+  }
+
+  porcentajeDestacadoEnComparacion(nombreIngrediente: string | undefined, porcentaje: number | undefined): boolean {
+    if (!nombreIngrediente || porcentaje == null) {
+      return false;
+    }
+    const alts = this.alternativas();
+    if (alts.length < 2) {
+      return false;
+    }
+    const valores = alts
+      .flatMap((a) => (a.ingredientes || []).filter((i) => i.nombre === nombreIngrediente))
+      .map((i) => Number(i.porcentaje));
+    if (valores.length < 2) {
+      return false;
+    }
+    const max = Math.max(...valores);
+    const min = Math.min(...valores);
+    return max !== min && (porcentaje === max || porcentaje === min);
+  }
+
   seleccionarPrincipal(id: string): void {
     this.recetaPrincipalId.set(id);
     this.modal.set({ tipo: 'ok', titulo: 'Receta principal', mensaje: 'Alternativa seleccionada como receta principal.' });

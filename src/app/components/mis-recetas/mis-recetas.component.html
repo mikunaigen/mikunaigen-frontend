@@ -31,17 +31,38 @@
         </span>
         recetas guardadas
       </p>
-      <div class="mt-4 flex flex-col gap-3 sm:flex-row">
-        <input
-          type="search"
-          class="rb-input flex-1"
-          placeholder="Buscar por nombre..."
-          [(ngModel)]="busquedaTexto"
-          (keyup.enter)="buscar()"
-        />
+      <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="sm:col-span-2">
+          <label class="rb-label !normal-case">Buscar por nombre</label>
+          <input
+            type="search"
+            class="rb-input w-full"
+            placeholder="Nombre de la receta..."
+            [(ngModel)]="busquedaTexto"
+            (keyup.enter)="buscar()"
+          />
+        </div>
+        <div>
+          <label class="rb-label !normal-case">Desde</label>
+          <input type="date" class="rb-input w-full" [(ngModel)]="fechaDesde" (change)="buscar()" />
+        </div>
+        <div>
+          <label class="rb-label !normal-case">Hasta</label>
+          <input type="date" class="rb-input w-full" [(ngModel)]="fechaHasta" (change)="buscar()" />
+        </div>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-2">
         <button type="button" class="rb-btn rb-btn-primary inline-flex min-h-11 items-center gap-2" (click)="buscar()">
           <ng-icon name="heroMagnifyingGlass" size="18" />
           Buscar
+        </button>
+        <button
+          type="button"
+          class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center gap-2"
+          (click)="fechaDesde = ''; fechaHasta = ''; busquedaTexto = ''; buscar()"
+        >
+          <ng-icon name="heroXMark" size="18" />
+          Limpiar filtros
         </button>
       </div>
     </section>

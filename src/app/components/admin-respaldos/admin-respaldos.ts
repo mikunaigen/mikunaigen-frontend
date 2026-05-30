@@ -9,18 +9,29 @@ import { environment } from '@env/environment';
 import { AuthService } from '../../services/auth.service';
 
 const API = environment.apiUrl + '/admin/backups';
+const API_MANTENIMIENTO = environment.apiUrl + '/admin/mantenimiento';
 
 interface RespaldoItem {
   resumenId: string;
   postgresKey: string;
   sizeBytes: number;
   lastModified: string | null;
+  origenGeneracion: string | null;
+  generadoPorNombre: string | null;
 }
 
 interface BackupItemApi {
   key: string;
   sizeBytes: number;
   lastModified: string | null;
+  origenGeneracion?: string | null;
+  generadoPorNombre?: string | null;
+}
+
+interface EstadoMantenimientoDto {
+  activo: boolean;
+  restauracionEnCurso: boolean;
+  iniciadoEn: string | null;
 }
 
 type Freq = 'DAILY' | 'WEEKLY' | 'MONTHLY';
@@ -64,8 +75,12 @@ export class AdminRespaldosComponent implements OnInit {
   autoNotifyEmail = false;
   automationView: BackupAutomationDto | null = null;
 
+  mantenimientoActivo = false;
+  restauracionEnCurso = false;
+  procesandoMantenimiento = false;
+
   ngOnInit(): void {
-    void Promise.all([this.cargarAutomation(), this.refrescarTodo()]);
+    void Promise.all([this.cargarAutomation(), this.cargarEstadoMantenimiento(), this.refrescarTodo()]);
   }
 
   private async cargarAutomation(): Promise<void> {
@@ -83,6 +98,85 @@ export class AdminRespaldosComponent implements OnInit {
         error: () => resolve(),
       });
     });
+  }
+
+  private cargarEstadoMantenimiento(): Promise<void> {
+    return new Promise((resolve) => {
+      this.http.get<EstadoMantenimientoDto>(`${API_MANTENIMIENTO}/estado`).subscribe({
+        next: (estado) => {
+          this.mantenimientoActivo = !!estado.activo;
+          this.restauracionEnCurso = !!estado.restauracionEnCurso;
+          this.cdr.markForCheck();
+          resolve();
+        },
+        error: () => resolve(),
+      });
+    });
+  }
+
+  etiquetaOrigen(origen: string | null): string {
+    if (origen === 'automatico') {
+      return 'Automático';
+    }
+    if (origen === 'manual') {
+      return 'Manual';
+    }
+    return '—';
+  }
+
+  activarMantenimientoManual(): void {
+    this.abrirConfirmacion(
+      'Activar modo mantenimiento',
+      'Los usuarios verán la pantalla de mantenimiento y no podrán usar la plataforma. ¿Continuar?',
+      async () => {
+        await this.ejecutarToggleMantenimiento(true);
+      },
+    );
+  }
+
+  desactivarMantenimientoManual(): void {
+    if (this.restauracionEnCurso) {
+      this.abrirModal(
+        'error',
+        'Restauración en curso',
+        'No puedes desactivar el modo mantenimiento hasta que finalice la restauración.',
+      );
+      return;
+    }
+    this.abrirConfirmacion(
+      'Desactivar modo mantenimiento',
+      'Los usuarios podrán acceder nuevamente al sistema. ¿Continuar?',
+      async () => {
+        await this.ejecutarToggleMantenimiento(false);
+      },
+    );
+  }
+
+  private async ejecutarToggleMantenimiento(activar: boolean): Promise<void> {
+    this.procesandoMantenimiento = true;
+    this.cdr.detectChanges();
+    try {
+      const ruta = activar ? `${API_MANTENIMIENTO}/activar` : `${API_MANTENIMIENTO}/desactivar`;
+      await new Promise<void>((resolve, reject) => {
+        this.http.post<{ message?: string }>(ruta, null).subscribe({
+          next: () => resolve(),
+          error: (e) => reject(e),
+        });
+      });
+      await this.cargarEstadoMantenimiento();
+      this.abrirModal(
+        'ok',
+        activar ? 'Mantenimiento activado' : 'Mantenimiento desactivado',
+        activar
+          ? 'El modo mantenimiento está activo para todos los usuarios.'
+          : 'El servicio quedó disponible para los usuarios.',
+      );
+    } catch (e) {
+      this.abrirModal('error', 'Error', this.mensajeError(e) || 'No se pudo cambiar el modo mantenimiento.');
+    } finally {
+      this.procesandoMantenimiento = false;
+      this.cdr.detectChanges();
+    }
   }
 
   async guardarAutomatizacion(): Promise<void> {
@@ -235,6 +329,7 @@ export class AdminRespaldosComponent implements OnInit {
             error: () => reject(),
           });
       });
+      await this.cargarEstadoMantenimiento();
     } catch (e) {
       this.restaurandoAhora = false;
       this.abrirModal('error', 'Error', this.mensajeError(e) || 'No se pudo iniciar el mantenimiento.');
@@ -323,6 +418,8 @@ export class AdminRespaldosComponent implements OnInit {
       postgresKey: fila.key,
       sizeBytes: Number(fila.sizeBytes || 0),
       lastModified: fila.lastModified,
+      origenGeneracion: fila.origenGeneracion ?? null,
+      generadoPorNombre: fila.generadoPorNombre ?? null,
     };
   }
 

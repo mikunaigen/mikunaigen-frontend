@@ -32,6 +32,8 @@ export class MisRecetasComponent implements OnInit {
   lista = signal<HistorialRecetaDto[]>([]);
   cargando = signal(true);
   busquedaTexto = '';
+  fechaDesde = '';
+  fechaHasta = '';
   historialBloqueadoPorPlan = false;
   limiteHistorial = 0;
   historialUsado = 0;
@@ -70,7 +72,7 @@ export class MisRecetasComponent implements OnInit {
 
   cargar(): void {
     this.cargando.set(true);
-    this.inferenciaService.listarHistorial(this.busquedaTexto).subscribe({
+    this.inferenciaService.listarHistorial(this.busquedaTexto, this.fechaDesde, this.fechaHasta).subscribe({
       next: (items) => {
         this.lista.set(items);
         this.cargando.set(false);
