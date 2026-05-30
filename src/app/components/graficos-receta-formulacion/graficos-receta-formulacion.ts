@@ -21,17 +21,22 @@ import {
   opcionesBaseChart,
   paletaIngredientes,
 } from '../../shared/chart-tema.util';
+import { TipoGraficoExpandido } from '../../utils/grafico-formulacion.util';
+import { DetalleGraficoRecetaModalComponent } from '../detalle-grafico-receta-modal/detalle-grafico-receta-modal';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-graficos-receta-formulacion',
   standalone: true,
-  imports: [CommonModule, NgIconComponent],
+  imports: [CommonModule, NgIconComponent, DetalleGraficoRecetaModalComponent],
   templateUrl: './graficos-receta-formulacion.component.html',
 })
 export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) alternativa!: AlternativaRecetaDto;
+
+  modalVisible = false;
+  modalTipo: TipoGraficoExpandido = 'composicion';
 
   @ViewChild('canvasComposicion') canvasComposicion?: ElementRef<HTMLCanvasElement>;
   @ViewChild('canvasPrecision') canvasPrecision?: ElementRef<HTMLCanvasElement>;
@@ -75,6 +80,22 @@ export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChan
       .replace(/_mg|_g|_kcal|_ug/g, '')
       .replace(/_/g, ' ')
       .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  abrirModal(tipo: TipoGraficoExpandido): void {
+    this.modalTipo = tipo;
+    this.modalVisible = true;
+  }
+
+  cerrarModal(): void {
+    this.modalVisible = false;
+  }
+
+  onTeclaTarjeta(event: KeyboardEvent, tipo: TipoGraficoExpandido): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.abrirModal(tipo);
+    }
   }
 
   private renderizarGraficos(): void {
