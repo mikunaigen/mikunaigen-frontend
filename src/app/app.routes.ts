@@ -12,6 +12,7 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { AdminRespaldosComponent } from './components/admin-respaldos/admin-respaldos';
 import { AdminModelosIaComponent } from './components/admin-modelos-ia/admin-modelos-ia';
 import { AdminAuditoriaSeguridadComponent } from './components/admin-auditoria-seguridad/admin-auditoria-seguridad';
+import { AdminLimitesNormativosComponent } from './components/admin-limites-normativos/admin-limites-normativos';
 import { InicioRedirectComponent } from './components/inicio-redirect/inicio-redirect';
 import { PresentacionComponent } from './components/presentacion/presentacion';
 import { RetenidoComponent } from './components/retenido/retenido';
@@ -113,6 +114,11 @@ export const routes: Routes = [
   {
     path: 'admin-auditoria-seguridad',
     component: AdminAuditoriaSeguridadComponent,
+    canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
+  },
+  {
+    path: 'admin-limites-normativos',
+    component: AdminLimitesNormativosComponent,
     canActivate: [ipBlockGuard, configRequiredGuard, authGuard, adminGuard],
   },
   { path: '', component: InicioRedirectComponent, canActivate: [ipBlockGuard], pathMatch: 'full' },
