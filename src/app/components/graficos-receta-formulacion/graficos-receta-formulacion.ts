@@ -165,6 +165,7 @@ export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChan
       },
       options: {
         ...opcionesBaseChart(),
+        interaction: { mode: 'nearest', intersect: true },
         plugins: {
           ...opcionesBaseChart().plugins,
           legend: { position: 'bottom', labels: { color: coloresChartOscuro() ? '#e2e8f0' : '#374151' } },
@@ -199,6 +200,7 @@ export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChan
       },
       options: {
         ...opcionesBaseChart(),
+        interaction: { mode: 'index', intersect: false },
         scales: {
           x: { ...(opcionesBaseChart().scales?.['x'] ?? {}), stacked: false },
           y: { ...(opcionesBaseChart().scales?.['y'] ?? {}), beginAtZero: true },
@@ -244,6 +246,7 @@ export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChan
       },
       options: {
         ...opcionesBaseChart(),
+        interaction: { mode: 'index', intersect: false },
         indexAxis: 'y',
         scales: {
           x: { ...(opcionesBaseChart().scales?.['x'] ?? {}), beginAtZero: true },

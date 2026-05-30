@@ -33,7 +33,10 @@ import {
 } from '../../utils/grafico-formulacion.util';
 import { nombreGrupoAlimento } from '../../utils/grupos-alimentos.util';
 import {
+  BloqueExportacionGrafico,
+  chartInstanciaAJpeg,
   coloresChartOscuro,
+  combinarCanvasesAJpeg,
   destruirChart,
   opcionesBaseChart,
   paletaIngredientes,
@@ -216,9 +219,20 @@ export class DetalleGraficoRecetaModalComponent implements OnInit, OnChanges, On
     }
     let dataUrl: string | undefined;
     if (this.tipo === 'semaforo') {
-      dataUrl = this.chartsSemaforo[0]?.toBase64Image('image/jpeg', 0.92);
+      const bloques: BloqueExportacionGrafico[] = [];
+      for (let idx = 0; idx < this.filasSemaforoCache.length; idx++) {
+        const canvas = this.chartsSemaforo[idx]?.canvas;
+        if (!canvas) {
+          continue;
+        }
+        bloques.push({
+          canvas,
+          titulo: this.tituloExportacionSemaforo(this.filasSemaforoCache[idx]),
+        });
+      }
+      dataUrl = combinarCanvasesAJpeg(bloques, { tituloGeneral: this.tituloModalTexto });
     } else {
-      dataUrl = this.chartPrincipal?.toBase64Image('image/jpeg', 0.92);
+      dataUrl = chartInstanciaAJpeg(this.chartPrincipal);
     }
     if (!dataUrl) {
       return;
@@ -227,6 +241,17 @@ export class DetalleGraficoRecetaModalComponent implements OnInit, OnChanges, On
     enlace.href = dataUrl;
     enlace.download = `${this.tipo}-receta-${this.alternativa.id}.jpg`;
     enlace.click();
+  }
+
+  private tituloExportacionSemaforo(fila: FilaSemaforoGrafico): string {
+    const unidad = fila.unidad?.trim();
+    if (!unidad) {
+      return fila.etiqueta;
+    }
+    if (fila.etiqueta.includes(`(${unidad})`) || fila.etiqueta.endsWith(` ${unidad}`)) {
+      return fila.etiqueta;
+    }
+    return `${fila.etiqueta} (${unidad})`;
   }
 
   onCerrar(): void {

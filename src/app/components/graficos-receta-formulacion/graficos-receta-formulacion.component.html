@@ -1,7 +1,8 @@
 <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-  <button
-    type="button"
-    class="group rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
+  <div
+    role="button"
+    tabindex="0"
+    class="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
     (click)="onClickTarjeta($event, 'composicion')"
     (keydown)="onTeclaTarjeta($event, 'composicion')"
   >
@@ -17,14 +18,15 @@
         Ampliar
       </span>
     </div>
-    <div class="relative h-56 sm:h-64 pointer-events-none">
+    <div class="relative h-56 sm:h-64">
       <canvas #canvasComposicion></canvas>
     </div>
-  </button>
+  </div>
 
-  <button
-    type="button"
-    class="group rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
+  <div
+    role="button"
+    tabindex="0"
+    class="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
     (click)="onClickTarjeta($event, 'precision')"
     (keydown)="onTeclaTarjeta($event, 'precision')"
   >
@@ -40,14 +42,15 @@
         Ampliar
       </span>
     </div>
-    <div class="relative h-56 sm:h-64 pointer-events-none">
+    <div class="relative h-56 sm:h-64">
       <canvas #canvasPrecision></canvas>
     </div>
-  </button>
+  </div>
 
-  <button
-    type="button"
-    class="group rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
+  <div
+    role="button"
+    tabindex="0"
+    class="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-secondary/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary dark:border-dark-border dark:bg-slate-900/40 dark:hover:border-blue-500/40"
     (click)="onClickTarjeta($event, 'semaforo')"
     (keydown)="onTeclaTarjeta($event, 'semaforo')"
   >
@@ -63,10 +66,10 @@
         Ampliar
       </span>
     </div>
-    <div class="relative h-56 sm:h-64 pointer-events-none">
+    <div class="relative h-56 sm:h-64">
       <canvas #canvasSemaforo></canvas>
     </div>
-  </button>
+  </div>
 </div>
 
 <app-detalle-grafico-receta-modal
