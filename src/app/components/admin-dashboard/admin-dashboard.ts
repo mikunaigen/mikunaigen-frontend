@@ -144,7 +144,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
           this.fechaMinima = d.fechaMinima.substring(0, 10);
         }
         this.cargando = false;
-        setTimeout(() => this.renderizarGraficos(), 0);
+        setTimeout(() => this.renderizarGraficos(), 100);
       },
       error: () => {
         this.errorMsg = 'No se pudieron cargar los indicadores.';

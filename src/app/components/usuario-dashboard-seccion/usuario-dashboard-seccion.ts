@@ -70,9 +70,10 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
     this.error.set('');
     this.dashboardService.obtenerDashboard().subscribe({
       next: (d) => {
+        console.log('DATOS DEL DASHBOARD RECIBIDOS: ', d);
         this.datos.set(d);
         this.cargando.set(false);
-        setTimeout(() => this.renderizarGraficos(), 0);
+        setTimeout(() => this.renderizarGraficos(), 100);
       },
       error: (err) => {
         this.cargando.set(false);
@@ -196,7 +197,21 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
     asignar: (c: Chart) => void,
   ): void {
     const canvas = ref?.nativeElement;
-    if (!canvas || !grafico?.etiquetas?.length) {
+    console.log(`[renderizarLineaBarras] Tipo: ${tipo}`, {
+      canvasExistente: !!canvas,
+      bloqueado: grafico?.bloqueado,
+      etiquetasLength: grafico?.etiquetas?.length,
+      valoresLength: grafico?.valores?.length,
+      etiquetas: grafico?.etiquetas,
+      valores: grafico?.valores
+    });
+
+    if (!canvas) {
+      console.warn(`[renderizarLineaBarras] Cancelado: El elemento Canvas no está listo en el DOM.`);
+      return;
+    }
+    if (!grafico?.etiquetas?.length) {
+      console.warn(`[renderizarLineaBarras] Cancelado: No se encontraron etiquetas o valores para graficar.`);
       return;
     }
     const ctx = canvas.getContext('2d');
@@ -232,7 +247,21 @@ export class UsuarioDashboardSeccionComponent implements OnInit, AfterViewInit, 
     asignar: (c: Chart) => void,
   ): void {
     const canvas = ref?.nativeElement;
-    if (!canvas || !grafico?.etiquetas?.length) {
+    console.log(`[renderizarDona]`, {
+      canvasExistente: !!canvas,
+      bloqueado: grafico?.bloqueado,
+      etiquetasLength: grafico?.etiquetas?.length,
+      valoresLength: grafico?.valores?.length,
+      etiquetas: grafico?.etiquetas,
+      valores: grafico?.valores
+    });
+
+    if (!canvas) {
+      console.warn(`[renderizarDona] Cancelado: El elemento Canvas no está listo en el DOM.`);
+      return;
+    }
+    if (!grafico?.etiquetas?.length) {
+      console.warn(`[renderizarDona] Cancelado: No se encontraron etiquetas o valores para graficar.`);
       return;
     }
     const ctx = canvas.getContext('2d');
