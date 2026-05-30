@@ -168,7 +168,11 @@ export class GraficosRecetaFormulacionComponent implements AfterViewInit, OnChan
         interaction: { mode: 'nearest', intersect: true },
         plugins: {
           ...opcionesBaseChart().plugins,
-          legend: { position: 'bottom', labels: { color: coloresChartOscuro() ? '#e2e8f0' : '#374151' } },
+          legend: {
+            position: 'bottom',
+            align: 'center',
+            labels: { color: coloresChartOscuro() ? '#e2e8f0' : '#374151', boxWidth: 12 },
+          },
         },
       },
     });

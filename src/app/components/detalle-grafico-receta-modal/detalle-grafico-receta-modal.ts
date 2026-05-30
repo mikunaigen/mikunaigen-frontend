@@ -418,7 +418,8 @@ export class DetalleGraficoRecetaModalComponent implements OnInit, OnChanges, On
           plugins: {
             ...this.opcionesSinAnimacion().plugins,
             legend: {
-              position: 'right',
+              position: 'bottom',
+              align: 'center',
               labels: { color: coloresChartOscuro() ? '#e2e8f0' : '#374151', boxWidth: 12 },
             },
           },
