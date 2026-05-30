@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 export class MaintenanceService {
   readonly active = signal(false);
 
-  constructor(private auth: AuthService) {}
+  constructor(private readonly auth: AuthService) {}
 
   start(): void {
     this.active.set(true);
@@ -16,13 +16,17 @@ export class MaintenanceService {
   }
 
   title(): string {
-    return 'En mantenimiento';
+    return this.esAdministradorRestaurando() ? 'Restaurando base de datos' : 'En mantenimiento';
   }
 
   message(): string {
-    return this.auth.esAdministrador()
-      ? 'Aplicación pausada temporalmente por el Administrador para restauración de datos. Espere...'
-      : 'Estamos realizando tareas de mantenimiento. Regresaremos en unos minutos...';
+    if (this.esAdministradorRestaurando()) {
+      return 'La restauración de PostgreSQL está en curso. No cierre esta ventana hasta que finalice.';
+    }
+    return 'Estamos realizando tareas de mantenimiento. Regresaremos en unos minutos.';
+  }
+
+  esAdministradorRestaurando(): boolean {
+    return this.active() && this.auth.esAdministrador();
   }
 }
-

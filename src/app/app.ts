@@ -78,8 +78,15 @@ import { contieneEntradaPeligrosa } from './utils/entrada-segura';
     </div>
     <div *ngIf="maintenance.active()" class="rb-modal-backdrop z-[110] cursor-wait">
       <div class="rb-modal max-w-md border-gray-200 dark:border-dark-border">
-        <div class="rb-modal-icon !mb-6 animate-pulse">
-          <ng-icon name="heroCog6Tooth" size="48" class="text-secondary dark:text-blue-400" />
+        <div class="mb-4 flex items-center justify-center gap-3">
+          <span
+            *ngIf="maintenance.esAdministradorRestaurando()"
+            class="inline-block h-10 w-10 animate-spin rounded-full border-2 border-secondary border-t-transparent dark:border-blue-400 dark:border-t-transparent"
+            aria-hidden="true"
+          ></span>
+          <div class="rb-modal-icon !mb-0" [class.animate-pulse]="!maintenance.esAdministradorRestaurando()">
+            <ng-icon name="heroCog6Tooth" size="48" class="text-secondary dark:text-blue-400" />
+          </div>
         </div>
         <h3 class="mb-3 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
           {{ maintenance.title() }}

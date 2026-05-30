@@ -10,18 +10,15 @@ import { AuthService } from '../../services/auth.service';
 
 const API = environment.apiUrl + '/admin/backups';
 
-type DbKind = 'postgresql' | 'mongodb';
-
-interface BackupItem {
-  key: string;
+interface RespaldoItem {
+  resumenId: string;
+  postgresKey: string;
   sizeBytes: number;
   lastModified: string | null;
 }
 
-interface BackupPairItem {
-  pairId: string;
-  postgresKey: string;
-  mongoKey: string;
+interface BackupItemApi {
+  key: string;
   sizeBytes: number;
   lastModified: string | null;
 }
@@ -51,15 +48,14 @@ export class AdminRespaldosComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly auth = inject(AuthService);
-  errorMsg = '';
 
   cargando = false;
   guardandoAuto = false;
-  items: BackupPairItem[] = [];
-  private pendingAction: null | (() => Promise<void>) = null;
+  items: RespaldoItem[] = [];
+  private accionPendiente: null | (() => Promise<void>) = null;
 
   modal = { visible: false, tipo: 'info', titulo: '', mensaje: '' };
-  modalMantenimiento = { visible: false, notify: true, item: null as BackupPairItem | null };
+  modalMantenimiento = { visible: false, notify: true, item: null as RespaldoItem | null };
   restaurandoAhora = false;
 
   autoEnabled = false;
@@ -156,7 +152,7 @@ export class AdminRespaldosComponent implements OnInit {
   async refrescarTodo(): Promise<void> {
     this.setCargando(true);
     try {
-      await Promise.all([this.recargarPares(), this.cargarAutomation()]);
+      await Promise.all([this.recargarLista(), this.cargarAutomation()]);
     } catch {
       this.abrirModal('error', 'Error', 'No se pudo cargar la lista de respaldos.');
     } finally {
@@ -164,64 +160,40 @@ export class AdminRespaldosComponent implements OnInit {
     }
   }
 
-  private listar(db: DbKind): Promise<BackupItem[]> {
-    const params = new HttpParams().set('db', db);
-    return new Promise((resolve, reject) => {
-      this.http.get<BackupItem[]>(`${API}/list`, { params }).subscribe({
-        next: (rows) => resolve(rows ?? []),
-        error: () => reject(),
-      });
-    });
-  }
-
   async generar(): Promise<void> {
     this.setCargando(true);
-    this.errorMsg = '';
-
     try {
-      const { pgKey, mgKey } = await this.generarPar();
-
+      const clave = await this.generarRespaldo();
       const inicio = Date.now();
       const timeoutMs = 80000;
       const intervaloMs = 5000;
       let encontrado = false;
 
       while (Date.now() - inicio < timeoutMs) {
-        await this.sleep(intervaloMs);
-
-        const [listPg, listMg] = await Promise.all([
-          this.listar('postgresql'),
-          this.listar('mongodb'),
-        ]);
-
-        const existePg = listPg.some((x) => x.key === pgKey);
-        const existeMg = listMg.some((x) => x.key === mgKey);
-
-        if (existePg && existeMg) {
+        await this.esperar(intervaloMs);
+        const lista = await this.listarPostgresql();
+        if (lista.some((x) => x.key === clave)) {
           encontrado = true;
           break;
         }
-
-        console.log(`Verificando... PG: ${existePg}, MG: ${existeMg}`);
       }
 
       if (encontrado) {
-        await this.recargarPares();
+        await this.recargarLista();
         await this.cargarAutomation();
         this.abrirModal(
           'ok',
           'Respaldo exitoso',
-          'Los archivos de PostgreSQL y MongoDB se han verificado correctamente en Backblaze B2.',
+          'El archivo cifrado de PostgreSQL se verificó correctamente en Backblaze B2.',
         );
       } else {
         this.abrirModal(
           'error',
           'Tiempo excedido',
-          'El proceso de GitHub Actions está tardando más de lo esperado. Por favor, actualiza la lista manualmente en unos momentos.',
+          'El proceso de GitHub Actions está tardando más de lo esperado. Actualiza la lista manualmente en unos momentos.',
         );
       }
-    } catch (e) {
-      console.error('Error en proceso de backup:', e);
+    } catch {
       this.abrirModal(
         'error',
         'Error de comunicación',
@@ -232,28 +204,7 @@ export class AdminRespaldosComponent implements OnInit {
     }
   }
 
-  private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  private async generarPar(): Promise<{ pgKey: string; mgKey: string }> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post<{ ok: boolean; postgresKey?: string; mongoKey?: string }>(`${API}/generate-pair`, null)
-        .subscribe({
-          next: (res) => {
-            if (res?.postgresKey && res?.mongoKey) {
-              resolve({ pgKey: res.postgresKey, mgKey: res.mongoKey });
-            } else {
-              reject(new Error('Sin claves emparejadas'));
-            }
-          },
-          error: (e) => reject(e),
-        });
-    });
-  }
-
-  restaurar(item: BackupPairItem): void {
+  restaurar(item: RespaldoItem): void {
     this.modalMantenimiento = { visible: true, notify: true, item };
     this.cdr.detectChanges();
   }
@@ -266,6 +217,7 @@ export class AdminRespaldosComponent implements OnInit {
   async confirmarMantenimiento(): Promise<void> {
     if (!this.modalMantenimiento.item || this.cargando) return;
     const item = this.modalMantenimiento.item;
+    const notificar = this.modalMantenimiento.notify;
     this.modalMantenimiento.visible = false;
     this.restaurandoAhora = true;
     this.cdr.detectChanges();
@@ -275,8 +227,7 @@ export class AdminRespaldosComponent implements OnInit {
         this.http
           .post<{ ok: boolean }>(`${API}/restore-pair`, {
             postgresKey: item.postgresKey,
-            mongoKey: item.mongoKey,
-            notifyWhenDone: this.modalMantenimiento.notify,
+            notifyWhenDone: notificar,
             notifyEmail: typeof s?.email === 'string' ? s.email : undefined,
           })
           .subscribe({
@@ -286,181 +237,50 @@ export class AdminRespaldosComponent implements OnInit {
       });
     } catch (e) {
       this.restaurandoAhora = false;
-      this.abrirModal('error', 'Error', this.msg(e) || 'No se pudo iniciar el mantenimiento.');
+      this.abrirModal('error', 'Error', this.mensajeError(e) || 'No se pudo iniciar el mantenimiento.');
     } finally {
       this.cdr.detectChanges();
     }
   }
 
-  private async restaurarConfirmado(item: BackupPairItem): Promise<void> {
-    this.setCargando(true);
-    try {
-      await Promise.all([
-        this.restaurarDb('postgresql', item.postgresKey),
-        this.restaurarDb('mongodb', item.mongoKey),
-      ]);
-      this.abrirModal(
-        'ok',
-        'Restauración iniciada',
-        'Se inició la restauración conjunta de PostgreSQL y MongoDB.',
-      );
-    } catch (e) {
-      this.abrirModal('error', 'Error', this.msg(e) || 'No se pudo restaurar el backup conjunto.');
-    } finally {
-      this.setCargando(false);
-    }
-  }
-
-  private restaurarDb(db: DbKind, key: string): Promise<void> {
-    const params = new HttpParams().set('db', db).set('key', key);
-    return new Promise((resolve, reject) => {
-      this.http.post<{ ok: boolean }>(`${API}/restore`, null, { params }).subscribe({
-        next: () => resolve(),
-        error: (e) => reject(e),
-      });
+  eliminar(item: RespaldoItem): void {
+    this.abrirConfirmacion('Eliminar backup', '¿Deseas eliminar este respaldo de PostgreSQL?', async () => {
+      await this.eliminarConfirmado(item);
     });
   }
 
-  eliminar(item: BackupPairItem): void {
-    this.abrirConfirmacion(
-      'Eliminar backup',
-      '¿Deseas eliminar este backup conjunto?',
-      async () => {
-        await this.eliminarConfirmado(item);
-      },
-    );
-  }
-
-  private async eliminarConfirmado(item: BackupPairItem): Promise<void> {
+  private async eliminarConfirmado(item: RespaldoItem): Promise<void> {
     this.setCargando(true);
     try {
-      await Promise.all([this.eliminarDb(item.postgresKey), this.eliminarDb(item.mongoKey)]);
+      await this.eliminarClave(item.postgresKey);
       await this.refrescarTodo();
-      this.abrirModal('ok', 'Eliminado', 'El backup conjunto fue eliminado.');
+      this.abrirModal('ok', 'Eliminado', 'El respaldo fue eliminado.');
     } catch (e) {
-      this.abrirModal('error', 'Error', this.msg(e) || 'No se pudo eliminar el backup conjunto.');
+      this.abrirModal('error', 'Error', this.mensajeError(e) || 'No se pudo eliminar el respaldo.');
     } finally {
       this.setCargando(false);
     }
-  }
-
-  private eliminarDb(key: string): Promise<void> {
-    const params = new HttpParams().set('key', key);
-    return new Promise((resolve, reject) => {
-      this.http.delete<{ ok: boolean }>(`${API}/delete`, { params }).subscribe({
-        next: () => resolve(),
-        error: (e) => reject(e),
-      });
-    });
   }
 
   cerrarModal(): void {
     this.modal.visible = false;
-    this.pendingAction = null;
+    this.accionPendiente = null;
     this.cdr.detectChanges();
   }
 
   cancelarConfirmacion(): void {
     this.modal.visible = false;
-    this.pendingAction = null;
+    this.accionPendiente = null;
     this.cdr.detectChanges();
   }
 
   async confirmarModal(): Promise<void> {
-    if (!this.pendingAction || this.cargando) return;
-    const action = this.pendingAction;
-    this.pendingAction = null;
+    if (!this.accionPendiente || this.cargando) return;
+    const action = this.accionPendiente;
+    this.accionPendiente = null;
     this.modal.visible = false;
     this.cdr.detectChanges();
     await action();
-  }
-
-  private abrirModal(tipo: 'ok' | 'error' | 'info', titulo: string, mensaje: string): void {
-    this.modal = { visible: true, tipo, titulo, mensaje };
-    this.pendingAction = null;
-    this.cdr.detectChanges();
-  }
-
-  private abrirConfirmacion(titulo: string, mensaje: string, action: () => Promise<void>): void {
-    this.pendingAction = action;
-    this.modal = { visible: true, tipo: 'confirm', titulo, mensaje };
-    this.cdr.detectChanges();
-  }
-
-  private msg(e: any): string {
-    return e?.error?.message || e?.error?.error || e?.message || '';
-  }
-
-  private async recargarPares(): Promise<void> {
-    const [itemsPg, itemsMg] = await Promise.all([
-      this.listar('postgresql'),
-      this.listar('mongodb'),
-    ]);
-    this.items = this.unirPares(itemsPg, itemsMg);
-  }
-
-  private async esperarBackups(
-    pgKey: string,
-    mgKey: string,
-    timeoutMs: number,
-    intervalMs: number,
-  ): Promise<boolean> {
-    const inicio = Date.now();
-    while (Date.now() - inicio <= timeoutMs) {
-      try {
-        await this.recargarPares();
-        const existe = this.items.some((x) => x.postgresKey === pgKey && x.mongoKey === mgKey);
-        if (existe) {
-          return true;
-        }
-      } catch {}
-      await this.sleep(intervalMs);
-    }
-    return false;
-  }
-
-  private unirPares(pg: BackupItem[], mg: BackupItem[]): BackupPairItem[] {
-    const mgById = new Map<string, BackupItem>();
-    for (const item of mg) {
-      const id = this.extraerPairId(item.key);
-      if (!id) continue;
-      mgById.set(id, item);
-    }
-    const out: BackupPairItem[] = [];
-    for (const p of pg) {
-      const id = this.extraerPairId(p.key);
-      if (!id) continue;
-      const m = mgById.get(id);
-      if (!m) continue;
-      out.push({
-        pairId: id,
-        postgresKey: p.key,
-        mongoKey: m.key,
-        sizeBytes: Number(p.sizeBytes || 0) + Number(m.sizeBytes || 0),
-        lastModified: this.maxDate(p.lastModified, m.lastModified),
-      });
-    }
-    out.sort((a, b) => this.sortDateDesc(a.lastModified, b.lastModified));
-    return out;
-  }
-
-  private extraerPairId(key: string): string | null {
-    const m = key?.match(/^backup_(postgresql|mongodb)_(\d{8}_\d{4})/i);
-    return m?.[2] ?? null;
-  }
-
-  private maxDate(a: string | null, b: string | null): string | null {
-    if (!a) return b ?? null;
-    if (!b) return a;
-    const da = new Date(a).getTime();
-    const db = new Date(b).getTime();
-    return da >= db ? a : b;
-  }
-
-  private sortDateDesc(a: string | null, b: string | null): number {
-    const ta = a ? new Date(a).getTime() : 0;
-    const tb = b ? new Date(b).getTime() : 0;
-    return tb - ta;
   }
 
   formatBytes(n: number): string {
@@ -472,6 +292,90 @@ export class AdminRespaldosComponent implements OnInit {
     if (mb < 1024) return `${mb.toFixed(1)} MB`;
     const gb = mb / 1024;
     return `${gb.toFixed(2)} GB`;
+  }
+
+  private abrirModal(tipo: 'ok' | 'error' | 'info', titulo: string, mensaje: string): void {
+    this.modal = { visible: true, tipo, titulo, mensaje };
+    this.accionPendiente = null;
+    this.cdr.detectChanges();
+  }
+
+  private abrirConfirmacion(titulo: string, mensaje: string, action: () => Promise<void>): void {
+    this.accionPendiente = action;
+    this.modal = { visible: true, tipo: 'confirm', titulo, mensaje };
+    this.cdr.detectChanges();
+  }
+
+  private mensajeError(e: unknown): string {
+    const err = e as { error?: { message?: string; error?: string }; message?: string };
+    return err?.error?.message || err?.error?.error || err?.message || '';
+  }
+
+  private async recargarLista(): Promise<void> {
+    const filas = await this.listarPostgresql();
+    this.items = filas.map((f) => this.mapearItem(f));
+    this.items.sort((a, b) => this.ordenarFechaDesc(a.lastModified, b.lastModified));
+  }
+
+  private mapearItem(fila: BackupItemApi): RespaldoItem {
+    return {
+      resumenId: this.extraerResumenId(fila.key) ?? fila.key,
+      postgresKey: fila.key,
+      sizeBytes: Number(fila.sizeBytes || 0),
+      lastModified: fila.lastModified,
+    };
+  }
+
+  private listarPostgresql(): Promise<BackupItemApi[]> {
+    const params = new HttpParams().set('db', 'postgresql');
+    return new Promise((resolve, reject) => {
+      this.http.get<BackupItemApi[]>(`${API}/list`, { params }).subscribe({
+        next: (rows) => resolve(rows ?? []),
+        error: () => reject(),
+      });
+    });
+  }
+
+  private generarRespaldo(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post<{ ok: boolean; postgresKey?: string }>(`${API}/generate-pair`, null)
+        .subscribe({
+          next: (res) => {
+            if (res?.postgresKey) {
+              resolve(res.postgresKey);
+            } else {
+              reject(new Error('Sin clave de respaldo'));
+            }
+          },
+          error: (e) => reject(e),
+        });
+    });
+  }
+
+  private eliminarClave(key: string): Promise<void> {
+    const params = new HttpParams().set('key', key);
+    return new Promise((resolve, reject) => {
+      this.http.delete<{ ok: boolean }>(`${API}/delete`, { params }).subscribe({
+        next: () => resolve(),
+        error: (e) => reject(e),
+      });
+    });
+  }
+
+  private extraerResumenId(key: string): string | null {
+    const m = key?.match(/^backup_postgresql_(\d{8}_\d{4})/i);
+    return m?.[1] ?? null;
+  }
+
+  private ordenarFechaDesc(a: string | null, b: string | null): number {
+    const ta = a ? new Date(a).getTime() : 0;
+    const tb = b ? new Date(b).getTime() : 0;
+    return tb - ta;
+  }
+
+  private esperar(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private setCargando(on: boolean): void {

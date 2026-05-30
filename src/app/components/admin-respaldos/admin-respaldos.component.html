@@ -25,7 +25,7 @@
               <div>
                 <h3 class="rb-heading-accent mb-1 text-base sm:text-lg">Configuración de Backup Automático</h3>
                 <p class="text-xs font-medium text-neutral-strong dark:text-dark-text-muted sm:text-sm">
-                  Zona horaria del servidor configurado como América/Lima.
+                  Semanal: lunes a la hora indicada. Mensual: día 1 de cada mes. Zona horaria América/Lima.
                 </p>
               </div>
             </div>
@@ -169,7 +169,7 @@
                   *ngFor="let r of items"
                   class="border-b border-gray-100 last:border-b-0 dark:border-slate-700/80"
                 >
-                  <td class="px-4 py-3 font-mono text-xs">{{ r.pairId }}</td>
+                  <td class="px-4 py-3 font-mono text-xs">{{ r.resumenId }}</td>
                   <td class="px-4 py-3 font-mono text-xs">{{ r.postgresKey }}</td>
                   <td class="px-4 py-3">{{ formatBytes(r.sizeBytes) }}</td>
                   <td class="px-4 py-3 text-xs text-neutral-strong dark:text-dark-text-muted">
@@ -189,7 +189,7 @@
                   </td>
                 </tr>
                 <tr *ngIf="!items.length">
-                  <td colspan="6" class="px-4 py-6 text-center text-sm text-neutral-strong dark:text-dark-text-muted">
+                  <td colspan="5" class="px-4 py-6 text-center text-sm text-neutral-strong dark:text-dark-text-muted">
                     No hay respaldos disponibles.
                   </td>
                 </tr>
@@ -206,11 +206,17 @@
     <div class="rb-modal-icon !mb-6 animate-pulse">
       <ng-icon name="heroCog6Tooth" size="48" class="h-12 w-12 object-contain text-secondary dark:text-blue-400" />
     </div>
-    <h3 class="mb-3 text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
-      Restaurando bases de datos...
-    </h3>
+    <div class="mb-4 flex items-center justify-center gap-3">
+      <span
+        class="inline-block h-10 w-10 animate-spin rounded-full border-2 border-secondary border-t-transparent dark:border-blue-400 dark:border-t-transparent"
+        aria-hidden="true"
+      ></span>
+      <h3 class="text-lg font-semibold text-gray-900 sm:text-xl dark:text-dark-text-strong">
+        Restaurando base de datos...
+      </h3>
+    </div>
     <p class="text-sm font-medium text-neutral-strong dark:text-dark-text-muted lg:text-base">
-      El sistema está en modo mantenimiento. Espere a que finalice la restauración.
+      El sistema está en modo mantenimiento. Espere a que finalice la restauración de PostgreSQL.
     </p>
   </div>
 </div>
@@ -225,7 +231,7 @@
     </h3>
     <p class="mb-6 text-sm font-medium text-danger dark:text-red-200 lg:text-base">
       Al confirmar, el sistema entrará en Modo Mantenimiento. Se bloqueará el acceso temporalmente a la aplicación hasta
-      que finalice la restauración. Las órdenes no guardadas se perderán.
+      que finalice la restauración de PostgreSQL. Los datos no guardados se perderán.
     </p>
     <label
       class="mb-6 flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 text-left dark:border-dark-border dark:bg-slate-900/70"
