@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
+import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -48,6 +49,7 @@ export class FormularRecetaComponent implements OnInit {
   sesion = signal<SesionInferenciaDto | null>(null);
   cargando = signal(true);
   inferiendo = signal(false);
+  exportando = signal<{ id: string; formato: 'xlsx' | 'pdf' } | null>(null);
   modal = signal<{ tipo: 'ok' | 'error' | 'warn'; titulo: string; mensaje: string } | null>(null);
 
   vistaComparar = signal(false);
@@ -491,25 +493,40 @@ export class FormularRecetaComponent implements OnInit {
 
   exportar(id: string, formato: 'xlsx' | 'pdf'): void {
     const rol = this.rol();
-    if (rol === 'estudiante') return;
-    this.inferenciaService.exportarReceta(id, formato).subscribe({
-      next: (blob) => {
-        const ext = formato === 'pdf' ? 'pdf' : 'xlsx';
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `receta_superalimento.${ext}`;
-        a.click();
-        URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        this.modal.set({
-          tipo: 'error',
-          titulo: 'Exportación',
-          mensaje: err?.error?.message || 'No se pudo exportar la ficha técnica.',
-        });
-      },
-    });
+    if (rol === 'estudiante' || this.exportando()) {
+      return;
+    }
+    this.exportando.set({ id, formato });
+    this.inferenciaService
+      .exportarReceta(id, formato)
+      .pipe(finalize(() => this.exportando.set(null)))
+      .subscribe({
+        next: (blob) => {
+          const ext = formato === 'pdf' ? 'pdf' : 'xlsx';
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `receta_superalimento.${ext}`;
+          a.click();
+          URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          this.modal.set({
+            tipo: 'error',
+            titulo: 'Exportación',
+            mensaje: err?.error?.message || 'No se pudo exportar la ficha técnica.',
+          });
+        },
+      });
+  }
+
+  estaExportando(id: string, formato: 'xlsx' | 'pdf'): boolean {
+    const actual = this.exportando();
+    return actual?.id === id && actual.formato === formato;
+  }
+
+  exportacionEnCurso(): boolean {
+    return this.exportando() !== null;
   }
 
   cerrarModal(): void {

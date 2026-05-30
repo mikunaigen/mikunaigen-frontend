@@ -176,21 +176,32 @@
               </button>
               <button
                 type="button"
-                class="rb-btn rb-btn-secondary text-xs"
-                [disabled]="!puedeExportar()"
-                [title]="!puedeExportar() ? 'Exportación disponible en Plan Emprendedor y Nutricionista' : ''"
+                class="rb-btn rb-btn-secondary inline-flex min-h-9 items-center gap-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-60"
+                [disabled]="!puedeExportar() || exportacionEnCurso()"
+                [title]="!puedeExportar() ? 'Exportación disponible en Plan Emprendedor y Nutricionista' : exportacionEnCurso() ? 'Generando archivo…' : 'Descargar ficha en Excel'"
                 (click)="exportar(alt.id, 'xlsx')"
               >
-                <ng-icon name="heroArrowDownTray" size="16" />
-                Excel
+                <ng-icon
+                  [name]="estaExportando(alt.id, 'xlsx') ? 'heroArrowPath' : 'heroArrowDownTray'"
+                  size="16"
+                  [class.animate-spin]="estaExportando(alt.id, 'xlsx')"
+                />
+                {{ estaExportando(alt.id, 'xlsx') ? 'Generando…' : 'Excel' }}
               </button>
               <button
                 *ngIf="puedeExportarPdf()"
                 type="button"
-                class="rb-btn rb-btn-secondary text-xs"
+                class="rb-btn rb-btn-secondary inline-flex min-h-9 items-center gap-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-60"
+                [disabled]="exportacionEnCurso()"
+                [title]="exportacionEnCurso() ? 'Generando archivo…' : 'Descargar ficha en PDF'"
                 (click)="exportar(alt.id, 'pdf')"
               >
-                PDF
+                <ng-icon
+                  [name]="estaExportando(alt.id, 'pdf') ? 'heroArrowPath' : 'heroDocument'"
+                  size="16"
+                  [class.animate-spin]="estaExportando(alt.id, 'pdf')"
+                />
+                {{ estaExportando(alt.id, 'pdf') ? 'Generando…' : 'PDF' }}
               </button>
             </div>
           </div>
