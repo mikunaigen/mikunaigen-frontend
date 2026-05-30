@@ -1,0 +1,308 @@
+<div class="rb-page">
+  <div class="rb-container">
+    <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <div class="flex items-center gap-2 text-secondary dark:text-sky-300">
+          <ng-icon name="heroSparkles" size="22" />
+          <span class="text-sm font-semibold uppercase tracking-wide">Formulación con IA</span>
+        </div>
+        <h1 class="mt-1 text-2xl font-semibold text-gray-900 dark:text-dark-text-strong sm:text-3xl">
+          Formular receta
+        </h1>
+      </div>
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <app-comprador-nav variant="primary" />
+        <app-logout-button />
+      </div>
+    </header>
+
+    <div *ngIf="cargando()" class="rb-card rb-card-pad flex min-h-40 items-center justify-center">
+      <span class="h-10 w-10 animate-spin rounded-full border-2 border-secondary border-t-transparent"></span>
+    </div>
+
+    <ng-container *ngIf="!cargando()">
+      <section class="rb-card rb-card-pad mb-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="min-w-0">
+            <p class="text-sm text-neutral-muted">
+              Cuota mensual:
+              <span class="font-semibold text-gray-900 dark:text-dark-text-strong">
+                {{ preparacion()?.cuota?.inferenciasUsadas }}/{{ preparacion()?.cuota?.limiteInferencias }}
+              </span>
+              inferencias · Reinicio {{ preparacion()?.cuota?.fechaReinicioCuota }}
+            </p>
+            <p class="mt-1 text-sm text-neutral-muted">
+              Historial:
+              <span class="font-semibold text-gray-900 dark:text-dark-text-strong">
+                {{ preparacion()?.cuota?.historialUsado }}/{{ preparacion()?.cuota?.limiteHistorial }}
+              </span>
+              recetas guardadas
+            </p>
+            <p *ngIf="historialBloqueado()" class="mt-2 flex items-start gap-2 text-sm text-amber-700 dark:text-amber-300">
+              <ng-icon name="heroExclamationTriangle" size="18" class="mt-0.5 shrink-0" />
+              Tu historial supera el límite de tu plan. Elimina recetas manualmente antes de guardar nuevas.
+            </p>
+            <p *ngIf="!modeloDisponible()" class="mt-2 flex items-start gap-2 text-sm text-amber-700 dark:text-amber-300">
+              <ng-icon name="heroExclamationTriangle" size="18" class="mt-0.5 shrink-0" />
+              {{ mensajeModelo() }}
+            </p>
+          </div>
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <a routerLink="/parametrizacion" class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center justify-center gap-2">
+              <ng-icon name="heroAdjustmentsHorizontal" size="18" />
+              Parametrización
+            </a>
+            <button
+              type="button"
+              class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
+              [disabled]="!modeloDisponible() || inferiendo() || (!mostrarForzar() && cuotaAgotada())"
+              (click)="formular(false)"
+            >
+              <ng-icon name="heroBeaker" size="18" />
+              {{ inferiendo() ? 'Procesando...' : 'Formular receta' }}
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="inferiendo()" class="mt-6 rounded-xl border border-secondary/20 bg-secondary/5 p-6 dark:border-sky-500/20 dark:bg-sky-500/10">
+          <div class="flex items-center gap-3">
+            <span class="h-8 w-8 animate-spin rounded-full border-2 border-secondary border-t-transparent dark:border-sky-400"></span>
+            <div>
+              <p class="font-semibold text-gray-900 dark:text-dark-text-strong">El modelo está procesando tu solicitud</p>
+              <p class="text-sm text-neutral-muted">Esto puede tardar hasta 2 minutos.</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="mostrarForzar() && sesion()?.recuperada" class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <button type="button" class="rb-btn rb-btn-secondary" (click)="confirmarForzar()">
+            Ejecutar modelo de todas formas
+          </button>
+          <span class="text-xs text-neutral-muted">Forzar consumirá una inferencia de tu cuota mensual.</span>
+        </div>
+      </section>
+
+      <section *ngIf="sesion() as s" class="space-y-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+            Alternativas generadas ({{ s.alternativas.length }})
+          </h2>
+          <button
+            *ngIf="puedeComparar()"
+            type="button"
+            class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center gap-2"
+            (click)="alternarComparar()"
+          >
+            <ng-icon name="heroArrowsPointingOut" size="18" />
+            {{ vistaComparar() ? 'Vista individual' : 'Comparar recetas' }}
+          </button>
+        </div>
+
+        <div *ngIf="vistaComparar() && puedeComparar()" class="rb-card rb-card-pad overflow-x-auto">
+          <table class="w-full min-w-[640px] text-left text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-dark-border">
+                <th class="py-2 pr-4">Aspecto</th>
+                <th *ngFor="let alt of alternativas()" class="py-2 px-2">{{ alt.tituloModo }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-gray-100 dark:border-dark-border">
+                <td class="py-2 pr-4 font-medium">MAE</td>
+                <td *ngFor="let alt of alternativas()" class="py-2 px-2">{{ alt.mae ?? '—' }}</td>
+              </tr>
+              <tr class="border-b border-gray-100 dark:border-dark-border">
+                <td class="py-2 pr-4 font-medium">Costo S/kg</td>
+                <td *ngFor="let alt of alternativas()" class="py-2 px-2">
+                  <span *ngIf="alt.mostrarCosto">{{ alt.costoEstimadoKg ?? '—' }}</span>
+                  <span *ngIf="!alt.mostrarCosto" class="text-xs text-neutral-muted">Plan Emprendedor y Nutricionista</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 align-top font-medium">Ingredientes</td>
+                <td *ngFor="let alt of alternativas()" class="py-2 px-2 align-top">
+                  <ul class="space-y-1 text-xs">
+                    <li *ngFor="let ing of alt.ingredientes">{{ ing.nombre }} — {{ ing.porcentaje | number:'1.1-1' }}%</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <article
+          *ngFor="let alt of alternativas(); let idx = index"
+          class="rb-card rb-card-pad"
+          [class.ring-2]="recetaPrincipalId() === alt.id"
+          [class.ring-secondary]="recetaPrincipalId() === alt.id"
+        >
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="rounded-lg bg-secondary/10 px-2 py-1 text-xs font-semibold text-secondary dark:bg-sky-500/15 dark:text-sky-300">
+                  Alternativa {{ idx + 1 }}
+                </span>
+                <h3 class="text-lg font-semibold">{{ alt.tituloModo }}</h3>
+                <span class="inline-flex items-center gap-1 text-xs text-green-700 dark:text-green-400">
+                  <ng-icon name="heroShieldCheck" size="16" />
+                  Pasó filtro de seguridad
+                </span>
+              </div>
+              <p class="mt-1 text-sm text-neutral-muted">
+                MAE: <span class="font-medium">{{ alt.mae ?? '—' }}</span>
+                <span class="mx-2">·</span>
+                <span *ngIf="alt.mostrarCosto">Costo S/kg: <span class="font-medium">{{ alt.costoEstimadoKg ?? '—' }}</span></span>
+                <span *ngIf="!alt.mostrarCosto" class="text-xs">Costo disponible en Plan Emprendedor y Nutricionista</span>
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="rb-btn rb-btn-secondary text-xs" (click)="seleccionarPrincipal(alt.id)">
+                Receta principal
+              </button>
+              <button type="button" class="rb-btn rb-btn-secondary text-xs" (click)="iniciarEdicion(alt)">
+                <ng-icon name="heroPencilSquare" size="16" />
+                Editar
+              </button>
+              <button
+                type="button"
+                class="rb-btn rb-btn-secondary text-xs"
+                [disabled]="historialBloqueado()"
+                [title]="historialBloqueado() ? 'Elimina recetas manualmente para bajar del límite de tu plan' : ''"
+                (click)="abrirGuardar(alt.id)"
+              >
+                <ng-icon name="heroBookmark" size="16" />
+                Guardar
+              </button>
+              <button
+                type="button"
+                class="rb-btn rb-btn-secondary text-xs"
+                [disabled]="!puedeExportar()"
+                [title]="!puedeExportar() ? 'Exportación disponible en Plan Emprendedor y Nutricionista' : ''"
+                (click)="exportar(alt.id, 'xlsx')"
+              >
+                <ng-icon name="heroArrowDownTray" size="16" />
+                Excel
+              </button>
+              <button
+                *ngIf="puedeExportarPdf()"
+                type="button"
+                class="rb-btn rb-btn-secondary text-xs"
+                (click)="exportar(alt.id, 'pdf')"
+              >
+                PDF
+              </button>
+            </div>
+          </div>
+
+          <app-graficos-receta-formulacion class="mt-6 block" [alternativa]="alt" />
+
+          <div class="mt-6">
+            <app-semaforo-normativo [alternativa]="alt" [rol]="rol()" />
+          </div>
+
+          <div *ngIf="editandoId() === alt.id" class="mt-6 rounded-xl border border-gray-200 p-4 dark:border-dark-border">
+            <h4 class="mb-3 font-semibold">Editar porcentajes</h4>
+            <div class="space-y-2">
+              <div *ngFor="let ing of editIngredientes; let i = index" class="flex items-center gap-3">
+                <span class="min-w-0 flex-1 truncate text-sm">{{ ing.nombre }}</span>
+                <input
+                  type="number"
+                  class="rb-input w-24"
+                  [(ngModel)]="editIngredientes[i].porcentaje"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                />
+                <span class="text-xs">%</span>
+              </div>
+            </div>
+            <p class="mt-2 text-sm" [class.text-red-600]="Math.abs(sumaPorcentajes() - 100) > 0.05">
+              Suma: {{ sumaPorcentajes() | number:'1.1-2' }}%
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button type="button" class="rb-btn rb-btn-primary" (click)="guardarEdicion()">Guardar cambios</button>
+              <button type="button" class="rb-btn rb-btn-secondary" (click)="restablecerOriginal(alt)">Restablecer a original</button>
+              <button type="button" class="rb-btn rb-btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+            </div>
+          </div>
+        </article>
+      </section>
+    </ng-container>
+  </div>
+</div>
+
+<div *ngIf="modal() as m" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" (click)="cerrarModal()">
+  <div class="rb-card rb-card-pad max-w-md text-center" (click)="$event.stopPropagation()">
+    <ng-icon
+      [name]="m.tipo === 'ok' ? 'heroCheckCircle' : m.tipo === 'warn' ? 'heroExclamationTriangle' : 'heroXCircle'"
+      size="40"
+      [class.text-green-600]="m.tipo === 'ok'"
+      [class.text-amber-500]="m.tipo === 'warn'"
+      [class.text-red-600]="m.tipo === 'error'"
+      class="mx-auto"
+    />
+    <h3 class="mt-3 text-lg font-semibold">{{ m.titulo }}</h3>
+    <p class="mt-2 text-sm text-neutral-muted">{{ m.mensaje }}</p>
+    <div class="mt-6 flex flex-col gap-2">
+      <button *ngIf="m.tipo === 'warn'" type="button" class="rb-btn rb-btn-primary w-full" (click)="confirmarForzar()">
+        Ejecutar de todas formas
+      </button>
+      <button type="button" class="rb-btn rb-btn-secondary w-full" (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="guardarModalId()" class="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 p-4" (click)="guardarModalId.set(null); cancelarReemplazo()">
+  <div class="rb-card rb-card-pad w-full max-w-lg max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+    <h3 class="flex items-center gap-2 text-lg font-semibold">
+      <ng-icon name="heroBookmark" size="22" />
+      Guardar receta
+    </h3>
+
+    <ng-container *ngIf="!evaluacionGuardado()?.requiereReemplazo">
+      <input type="text" class="rb-input mt-4 w-full" maxlength="100" [(ngModel)]="nombreGuardarTexto" placeholder="Nombre personalizado" />
+      <div class="mt-4 flex gap-2">
+        <button type="button" class="rb-btn rb-btn-primary flex-1" (click)="confirmarGuardar()">Guardar</button>
+        <button type="button" class="rb-btn rb-btn-secondary flex-1" (click)="guardarModalId.set(null)">Cancelar</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="evaluacionGuardado()?.requiereReemplazo">
+      <p class="mt-4 text-sm text-neutral-muted">{{ evaluacionGuardado()?.mensaje }}</p>
+
+      <div *ngIf="evaluacionGuardado()?.modoReemplazo === 'automatico' && recetaAReemplazar() as antigua" class="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/30 dark:bg-amber-500/10">
+        <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">Receta que será reemplazada</p>
+        <p class="mt-1 text-sm">{{ antigua.nombre }}</p>
+        <p class="text-xs text-neutral-muted">{{ antigua.fecha | date:'medium' }} · {{ antigua.tituloModo }}</p>
+      </div>
+
+      <div *ngIf="evaluacionGuardado()?.modoReemplazo === 'manual'" class="mt-4 space-y-2">
+        <p class="text-sm font-semibold">Selecciona la receta a reemplazar</p>
+        <label
+          *ngFor="let opcion of opcionesReemplazo()"
+          class="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 p-3 transition hover:border-secondary dark:border-dark-border dark:hover:border-sky-500/40"
+          [class.ring-2]="reemplazoSeleccionadoId() === opcion.id"
+          [class.ring-secondary]="reemplazoSeleccionadoId() === opcion.id"
+        >
+          <input
+            type="radio"
+            name="reemplazoHistorial"
+            [value]="opcion.id"
+            [checked]="reemplazoSeleccionadoId() === opcion.id"
+            (change)="reemplazoSeleccionadoId.set(opcion.id)"
+            class="mt-1"
+          />
+          <span class="min-w-0 flex-1">
+            <span class="block font-medium">{{ opcion.nombre }}</span>
+            <span class="text-xs text-neutral-muted">{{ opcion.fecha | date:'medium' }} · {{ opcion.tituloModo }}</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+        <button type="button" class="rb-btn rb-btn-primary flex-1" (click)="confirmarReemplazo()">Aceptar</button>
+        <button type="button" class="rb-btn rb-btn-secondary flex-1" (click)="cancelarReemplazo(); guardarModalId.set(null)">Cancelar</button>
+      </div>
+    </ng-container>
+  </div>
+</div>

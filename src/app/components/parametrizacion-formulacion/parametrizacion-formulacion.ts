@@ -14,6 +14,10 @@ import {
   ParametrizacionContextoDto,
   ParametrizacionFormulacionService,
 } from '../../services/parametrizacion-formulacion.service';
+import {
+  FormulacionInferenciaService,
+  PreparacionInferenciaDto,
+} from '../../services/formulacion-inferencia.service';
 import { CompradorNavComponent } from '../comprador-nav/comprador-nav';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 
@@ -34,9 +38,11 @@ export class ParametrizacionFormulacionComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly parametrizacionService = inject(ParametrizacionFormulacionService);
+  private readonly inferenciaService = inject(FormulacionInferenciaService);
   private readonly busqueda$ = new Subject<void>();
 
   contexto = signal<ParametrizacionContextoDto | null>(null);
+  preparacionInferencia = signal<PreparacionInferenciaDto | null>(null);
   cargando = signal(true);
   guardando = signal(false);
   buscando = signal(false);
@@ -96,6 +102,10 @@ export class ParametrizacionFormulacionComponent implements OnInit {
       });
 
     this.cargar();
+    this.inferenciaService.preparacion().subscribe({
+      next: (p) => this.preparacionInferencia.set(p),
+      error: () => this.preparacionInferencia.set(null),
+    });
   }
 
   cargar(): void {
@@ -334,6 +344,19 @@ export class ParametrizacionFormulacionComponent implements OnInit {
 
   cerrarModal(): void {
     this.modal.set(null);
+  }
+
+  puedeFormular(): boolean {
+    return !!this.preparacionInferencia()?.modeloDisponible;
+  }
+
+  mensajeFormularBloqueado(): string {
+    return this.preparacionInferencia()?.mensajeModelo
+      ?? 'No hay modelo de generación de recetas de superalimentos disponible';
+  }
+
+  irFormular(): void {
+    void this.router.navigate(['/formular']);
   }
 
   etiquetasComposicion(data: ComposicionAlimento): { label: string; valor: string }[] {

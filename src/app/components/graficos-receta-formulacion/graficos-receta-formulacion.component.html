@@ -1,0 +1,31 @@
+<div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+  <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-dark-border dark:bg-slate-900/40">
+    <h4 class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+      <ng-icon name="heroChartPie" size="18" />
+      Composición de ingredientes
+    </h4>
+    <div class="relative h-56 sm:h-64">
+      <canvas #canvasComposicion></canvas>
+    </div>
+  </div>
+
+  <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-dark-border dark:bg-slate-900/40">
+    <h4 class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+      <ng-icon name="heroChartBar" size="18" />
+      Precisión nutricional
+    </h4>
+    <div class="relative h-56 sm:h-64">
+      <canvas #canvasPrecision></canvas>
+    </div>
+  </div>
+
+  <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-dark-border dark:bg-slate-900/40">
+    <h4 class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+      <ng-icon name="heroSignal" size="18" />
+      Semáforo normativo
+    </h4>
+    <div class="relative h-56 sm:h-64">
+      <canvas #canvasSemaforo></canvas>
+    </div>
+  </div>
+</div>

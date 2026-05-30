@@ -22,6 +22,7 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
   esAdmin = false;
   mostrarInicio = true;
   mostrarFormular = false;
+  mostrarMisRecetas = false;
   mostrarMiPerfil = true;
   mostrarPanelTrabajo = false;
   mostrarObjetivoNutricional = false;
@@ -50,7 +51,8 @@ export class CompradorNavComponent implements OnInit, OnDestroy {
     const actual = this.router.url.split('?')[0];
     this.esAdmin = this.auth.esAdministrador();
     this.mostrarInicio = !this.esAdmin && actual !== '/usuario-home';
-    this.mostrarFormular = this.esAdmin;
+    this.mostrarFormular = this.auth.esUsuarioFormulacion() && actual !== '/formular';
+    this.mostrarMisRecetas = this.auth.esUsuarioFormulacion() && actual !== '/mis-recetas';
     this.mostrarMiPerfil = actual !== '/mi-perfil';
     this.mostrarPanelTrabajo =
       !!this.rutaPanelTrabajo && actual !== this.rutaPanelTrabajo;

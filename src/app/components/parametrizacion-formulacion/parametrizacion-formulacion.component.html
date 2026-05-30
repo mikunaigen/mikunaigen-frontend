@@ -319,16 +319,31 @@
           <ng-icon name="heroBeaker" size="16" />
           Objetivo nutricional
         </a>
-        <button
-          type="button"
-          (click)="guardar()"
-          [disabled]="guardando()"
-          class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
-        >
-          <ng-icon name="heroCheckCircle" size="18" />
-          {{ guardando() ? 'Guardando...' : 'Guardar parametrización' }}
-        </button>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <button
+            type="button"
+            (click)="guardar()"
+            [disabled]="guardando()"
+            class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center justify-center gap-2 px-6"
+          >
+            <ng-icon name="heroCheckCircle" size="18" />
+            {{ guardando() ? 'Guardando...' : 'Guardar parametrización' }}
+          </button>
+          <button
+            type="button"
+            (click)="irFormular()"
+            [disabled]="!puedeFormular()"
+            [title]="!puedeFormular() ? mensajeFormularBloqueado() : ''"
+            class="rb-btn rb-btn-primary inline-flex min-h-11 items-center justify-center gap-2 px-8"
+          >
+            <ng-icon name="heroSparkles" size="18" />
+            Formular receta
+          </button>
+        </div>
       </div>
+      <p *ngIf="!puedeFormular()" class="mt-3 text-sm text-amber-700 dark:text-amber-300">
+        {{ mensajeFormularBloqueado() }}
+      </p>
     </ng-container>
   </div>
 </div>

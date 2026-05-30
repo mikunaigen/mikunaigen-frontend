@@ -11,19 +11,18 @@
     </span>
     Objetivo nutricional
   </a>
-  <button
-    *ngIf="mostrarFormular"
-    type="button"
-    [ngClass]="claseEnlace()"
-    class="cursor-default opacity-95"
-    aria-disabled="true"
-    title="Próximamente"
-  >
+  <a *ngIf="mostrarFormular" routerLink="/formular" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
       <ng-icon name="heroDocumentText" size="18" class="h-5 w-5 object-contain" />
     </span>
     Formular
-  </button>
+  </a>
+  <a *ngIf="mostrarMisRecetas" routerLink="/mis-recetas" [ngClass]="claseEnlace()">
+    <span class="rb-logo-chip !p-1">
+      <ng-icon name="heroQueueList" size="18" class="h-5 w-5 object-contain" />
+    </span>
+    Mis recetas
+  </a>
   <a *ngIf="mostrarInicio" routerLink="/usuario-home" [ngClass]="claseEnlace()">
     <span class="rb-logo-chip !p-1">
       <ng-icon name="heroHome" size="18" class="h-5 w-5 object-contain" />
