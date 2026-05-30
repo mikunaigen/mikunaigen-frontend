@@ -16,14 +16,12 @@ import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 import { environment } from '@env/environment';
-import { IaConfigService } from '../../services/ia-config.service';
 import { ThemeService } from '../../services/theme.service';
 import { destruirChart, opcionesBaseChart } from '../../shared/chart-tema.util';
 
 Chart.register(...registerables);
 
 const API_KPIS = environment.apiUrl + '/admin/dashboard/kpis';
-const API_PREDICCION = environment.apiUrl + '/admin/dashboard/prediccion-inventario';
 
 export interface KpiItem {
   nombre: string;
@@ -54,19 +52,6 @@ export interface KpisRespuesta {
   alertaTiempoRespuesta?: boolean;
 }
 
-export interface PrediccionInventarioItem {
-  insumo: string;
-  stockActual: number;
-  prediccion7d: number;
-}
-
-export interface PrediccionInventarioRespuesta {
-  disponible?: boolean;
-  items?: PrediccionInventarioItem[];
-  alertasCriticas?: string[];
-  heatmap?: Record<string, number>;
-}
-
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -78,13 +63,11 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('canvasActividad') canvasActividad?: ElementRef<HTMLCanvasElement>;
 
   private readonly http = inject(HttpClient);
-  private readonly iaConfig = inject(IaConfigService);
   private readonly theme = inject(ThemeService);
   private subTema?: Subscription;
   private chartBarras?: Chart;
   private chartActividad?: Chart;
 
-  pestanaActiva: 'kpis' | 'prediccion' = 'kpis';
   fromDate = '';
   toDate = '';
   fechaMinima = '';
@@ -93,12 +76,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   errorMsg = '';
   datos: KpisRespuesta | null = null;
 
-  cargandoPrediccion = false;
-  errorPrediccion = '';
-  prediccion: PrediccionInventarioRespuesta | null = null;
-
   ngOnInit(): void {
-    this.iaConfig.cargar();
     const hoy = new Date();
     const haceMes = new Date(hoy);
     haceMes.setMonth(haceMes.getMonth() - 1);
@@ -115,23 +93,6 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnDestroy(): void {
     this.subTema?.unsubscribe();
     this.destruirGraficos();
-  }
-
-  get mostrarPestanaPrediccion(): boolean {
-    return this.iaConfig.slot3Activo();
-  }
-
-  seleccionarPestana(id: 'kpis' | 'prediccion'): void {
-    if (id === 'prediccion' && !this.mostrarPestanaPrediccion) {
-      return;
-    }
-    this.pestanaActiva = id;
-    if (id === 'prediccion' && !this.prediccion && !this.cargandoPrediccion) {
-      this.cargarPrediccion();
-    }
-    if (id === 'kpis') {
-      setTimeout(() => this.renderizarGraficos(), 0);
-    }
   }
 
   aplicarRango(): void {
@@ -192,25 +153,6 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  cargarPrediccion(): void {
-    if (!this.mostrarPestanaPrediccion) {
-      this.prediccion = null;
-      return;
-    }
-    this.cargandoPrediccion = true;
-    this.errorPrediccion = '';
-    this.http.get<PrediccionInventarioRespuesta>(API_PREDICCION).subscribe({
-      next: (d) => {
-        this.prediccion = d;
-        this.cargandoPrediccion = false;
-      },
-      error: () => {
-        this.errorPrediccion = 'No se pudo cargar la predicción de inventario.';
-        this.cargandoPrediccion = false;
-      },
-    });
-  }
-
   iconoTendencia(t: string): string {
     return t === 'down' ? 'heroArrowTrendingDown' : 'heroArrowTrendingUp';
   }
@@ -227,7 +169,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private renderizarGraficos(): void {
-    if (this.pestanaActiva !== 'kpis' || !this.datos?.graficos) {
+    if (!this.datos?.graficos) {
       return;
     }
     this.destruirGraficos();
