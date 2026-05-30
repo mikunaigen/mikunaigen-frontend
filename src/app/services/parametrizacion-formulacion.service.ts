@@ -42,6 +42,7 @@ export type ParametrizacionDto = {
   ingredientesExcluidos: IngredienteRestriccion[];
   ingredientesPriorizados: IngredienteRestriccion[];
   mensajePresupuestoExcedido?: string;
+  parametrizacionCompletada?: boolean;
 };
 
 export type ParametrizacionContextoDto = {

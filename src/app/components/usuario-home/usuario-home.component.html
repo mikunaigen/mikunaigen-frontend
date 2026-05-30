@@ -19,7 +19,7 @@
 
     <section
       *ngIf="auth.esUsuarioFormulacion()"
-      class="mb-10 grid max-w-3xl grid-cols-1 gap-6 sm:mx-auto sm:grid-cols-2"
+      class="mb-10 grid max-w-5xl grid-cols-1 gap-6 sm:mx-auto sm:grid-cols-3"
     >
       <a
         routerLink="/parametrizacion"
@@ -47,6 +47,21 @@
           Objetivo nutricional
         </span>
       </a>
+      <button
+        type="button"
+        class="rb-card group flex aspect-square w-full flex-col items-center justify-center gap-5 p-8 text-center transition hover:border-emerald-500/35 hover:shadow-md dark:hover:border-emerald-400/45 dark:hover:shadow-none"
+        [class.opacity-80]="!listoParaFormular()"
+        (click)="intentarFormular()"
+      >
+        <span
+          class="flex h-24 w-24 items-center justify-center rounded-2xl bg-gray-100 ring-1 ring-gray-200/80 dark:bg-slate-800 dark:ring-dark-border sm:h-28 sm:w-28"
+        >
+          <ng-icon name="heroSparkles" size="52" class="text-emerald-600 dark:text-emerald-400" />
+        </span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-dark-text-strong sm:text-xl">
+          Formular
+        </span>
+      </button>
     </section>
 
     <p *ngIf="cargando()" class="text-center text-sm text-neutral-muted dark:text-dark-text-muted">
