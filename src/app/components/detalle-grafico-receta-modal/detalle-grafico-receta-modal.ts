@@ -172,7 +172,9 @@ export class DetalleGraficoRecetaModalComponent implements AfterViewInit, OnChan
     const codex = this.mapaCodex();
     return this.clavesSemaforo.map((clave) => {
       const meta = detalle[clave] as Record<string, unknown> | undefined;
-      const etiqueta = meta?.['etiqueta'] ? String(meta['etiqueta']) : etiquetaNutrienteFormulacion(clave);
+      const etiqueta = meta?.['etiqueta']
+        ? String(meta['etiqueta'])
+        : etiquetaNutrienteFormulacion(clave);
       const umbral = Number(meta?.['umbral'] ?? 0);
       const logrado = Number(perfil[clave]?.logrado ?? meta?.['valor'] ?? 0);
       const color = this.alternativa.semaforo?.[clave];
@@ -341,12 +343,16 @@ export class DetalleGraficoRecetaModalComponent implements AfterViewInit, OnChan
           {
             label: 'Objetivo',
             data: objetivos,
-            backgroundColor: coloresChartOscuro() ? 'rgba(100, 116, 139, 0.7)' : 'rgba(156, 163, 175, 0.8)',
+            backgroundColor: coloresChartOscuro()
+              ? 'rgba(100, 116, 139, 0.7)'
+              : 'rgba(156, 163, 175, 0.8)',
           },
           {
             label: 'Logrado',
             data: logrados,
-            backgroundColor: coloresChartOscuro() ? 'rgba(34, 197, 94, 0.75)' : 'rgba(40, 167, 69, 0.85)',
+            backgroundColor: coloresChartOscuro()
+              ? 'rgba(34, 197, 94, 0.75)'
+              : 'rgba(40, 167, 69, 0.85)',
           },
         ],
       },
@@ -364,6 +370,9 @@ export class DetalleGraficoRecetaModalComponent implements AfterViewInit, OnChan
   }
 
   private renderSemaforo(): void {
+      for (const c of this.chartsSemaforo) {
+      destruirChart(c);
+    }
     this.chartsSemaforo = [];
     const filas = this.filasSemaforoGrafico();
     const elementos = this.canvasesSemaforo?.toArray() ?? [];
@@ -444,7 +453,11 @@ export class DetalleGraficoRecetaModalComponent implements AfterViewInit, OnChan
               ...(opcionesBaseChart().scales?.['x'] ?? {}),
               min: 0,
               max: maxEscala,
-              title: { display: true, text: fila.unidad, color: coloresChartOscuro() ? '#94a3b8' : '#6b7280' },
+              title: {
+                display: true,
+                text: fila.unidad,
+                color: coloresChartOscuro() ? '#94a3b8' : '#6b7280',
+              },
             },
             y: { ...(opcionesBaseChart().scales?.['y'] ?? {}) },
           },
