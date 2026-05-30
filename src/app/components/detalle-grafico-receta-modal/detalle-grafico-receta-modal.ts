@@ -44,6 +44,7 @@ import {
 
 Chart.register(...registerables);
 
+
 const DEPURAR_GRAFICO_MODAL =
   typeof ngDevMode !== 'undefined' && ngDevMode
     ? true
