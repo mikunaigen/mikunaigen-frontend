@@ -1,0 +1,158 @@
+<div class="rb-page">
+  <div class="rb-container mx-auto max-w-6xl py-8 sm:py-12">
+    <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <a
+          routerLink="/gestion-administrador"
+          class="inline-flex items-center gap-1 text-sm text-secondary underline dark:text-blue-400"
+        >
+          <ng-icon name="heroArrowLeft" size="16" />
+          Panel de Administración
+        </a>
+        <h1 class="rb-heading mt-2 text-2xl sm:text-3xl">Auditoría de Seguridad</h1>
+        <p class="rb-kicker mt-1">Recetas descartadas por el filtro normativo de seguridad</p>
+      </div>
+      <app-logout-button />
+    </header>
+
+    <section class="rb-card rb-card-pad mb-6">
+      <h2 class="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+        <ng-icon name="heroMagnifyingGlass" size="20" class="text-secondary dark:text-blue-400" />
+        Filtros
+      </h2>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <label class="rb-label !normal-case">Fecha desde</label>
+          <input type="date" class="rb-input w-full" [(ngModel)]="filtroFechaDesde" name="fechaDesde" />
+        </div>
+        <div>
+          <label class="rb-label !normal-case">Fecha hasta</label>
+          <input type="date" class="rb-input w-full" [(ngModel)]="filtroFechaHasta" name="fechaHasta" />
+        </div>
+        <div>
+          <label class="rb-label !normal-case">Usuario</label>
+          <input
+            type="text"
+            class="rb-input w-full"
+            [(ngModel)]="filtroUsuario"
+            name="filtroUsuario"
+            placeholder="Nombre o correo"
+          />
+        </div>
+        <div>
+          <label class="rb-label !normal-case">Componente infractor</label>
+          <input
+            type="text"
+            class="rb-input w-full"
+            [(ngModel)]="filtroComponente"
+            name="filtroComponente"
+            placeholder="Nutriente o componente"
+          />
+        </div>
+      </div>
+      <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+        <button type="button" class="rb-btn rb-btn-primary inline-flex min-h-11 items-center gap-2" (click)="cargar()">
+          <ng-icon name="heroMagnifyingGlass" size="18" />
+          Aplicar filtros
+        </button>
+        <button type="button" class="rb-btn rb-btn-secondary min-h-11" (click)="limpiarFiltros()">Limpiar</button>
+      </div>
+    </section>
+
+    <p *ngIf="error()" class="mb-6 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-200">
+      <ng-icon name="heroXCircle" size="20" class="mt-0.5 shrink-0" />
+      {{ error() }}
+    </p>
+
+    <div *ngIf="cargando()" class="rb-card rb-card-pad flex min-h-40 items-center justify-center">
+      <span class="h-10 w-10 animate-spin rounded-full border-2 border-secondary border-t-transparent"></span>
+    </div>
+
+    <ng-container *ngIf="!cargando() && datos() as d">
+      <section class="rb-card rb-card-pad mb-6">
+        <h2 class="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+          <ng-icon name="heroChartBar" size="20" class="text-secondary dark:text-blue-400" />
+          Descartadas por mes
+        </h2>
+        <div *ngIf="d.descartadasPorMes.length === 0" class="text-sm text-neutral-muted">
+          No hay registros mensuales disponibles.
+        </div>
+        <div *ngIf="d.descartadasPorMes.length > 0" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div
+            *ngFor="let item of d.descartadasPorMes"
+            class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-center dark:border-dark-border dark:bg-slate-900/50"
+          >
+            <p class="text-xs font-medium uppercase tracking-wide text-neutral-muted">{{ item.mes }}</p>
+            <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-dark-text-strong">{{ item.total }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rb-card rb-card-pad overflow-hidden">
+        <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-dark-text-strong">
+            <ng-icon name="heroShieldCheck" size="20" class="text-secondary dark:text-blue-400" />
+            Recetas descartadas
+          </h2>
+          <span class="text-sm text-neutral-muted">Total: {{ d.total }}</span>
+        </div>
+
+        <div *ngIf="d.registros.length === 0" class="py-10 text-center text-sm text-neutral-muted">
+          No hay recetas descartadas con los filtros aplicados.
+        </div>
+
+        <div class="overflow-x-auto" *ngIf="d.registros.length > 0">
+          <table class="w-full min-w-[760px] text-left text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-dark-border">
+                <th class="py-3 pr-3">Fecha</th>
+                <th class="py-3 px-3">Usuario</th>
+                <th class="py-3 px-3">Parámetros</th>
+                <th class="py-3 px-3">Componente</th>
+                <th class="py-3 px-3">Valor</th>
+                <th class="py-3 pl-3">Alerta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let row of d.registros">
+                <tr class="border-b border-gray-100 dark:border-dark-border">
+                  <td class="py-3 pr-3 align-top whitespace-nowrap">{{ row.fecha | date:'medium' }}</td>
+                  <td class="py-3 px-3 align-top">
+                    <p class="font-medium text-gray-900 dark:text-dark-text-strong">{{ row.usuarioNombre }}</p>
+                    <p class="text-xs text-neutral-muted">{{ row.usuarioEmail }}</p>
+                  </td>
+                  <td class="py-3 px-3 align-top">
+                    <button
+                      type="button"
+                      class="text-left text-secondary underline dark:text-sky-300"
+                      (click)="alternarDetalle(row.id)"
+                    >
+                      {{ resumenParametros(row.parametrosIngresados) }}
+                    </button>
+                  </td>
+                  <td class="py-3 px-3 align-top">{{ row.componenteInfractor || '—' }}</td>
+                  <td class="py-3 px-3 align-top">{{ row.valorInfractor ?? '—' }}</td>
+                  <td class="py-3 pl-3 align-top">
+                    <span
+                      *ngIf="row.alertaUsuarioDia"
+                      class="inline-flex items-center gap-1 rounded-full border border-amber-400/50 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-100"
+                      title="Más de 5 descartes del mismo usuario en el día"
+                    >
+                      <ng-icon name="heroExclamationTriangle" size="14" />
+                      Mal uso
+                    </span>
+                  </td>
+                </tr>
+                <tr *ngIf="registroExpandido() === row.id" class="border-b border-gray-100 bg-gray-50 dark:border-dark-border dark:bg-slate-900/40">
+                  <td colspan="6" class="px-3 py-4">
+                    <pre class="max-h-48 overflow-auto whitespace-pre-wrap break-words text-xs text-neutral-strong dark:text-slate-300">{{ row.parametrosIngresados | json }}</pre>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+</div>

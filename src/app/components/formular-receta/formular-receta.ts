@@ -18,6 +18,7 @@ import { CompradorNavComponent } from '../comprador-nav/comprador-nav';
 import { LogoutButtonComponent } from '../logout-button/logout-button';
 import { GraficosRecetaFormulacionComponent } from '../graficos-receta-formulacion/graficos-receta-formulacion';
 import { SemaforoNormativoComponent } from '../semaforo-normativo/semaforo-normativo';
+import { TEXTO_DESCARGO_RESPONSABILIDAD } from '../../utils/form-validators';
 
 @Component({
   selector: 'app-formular-receta',
@@ -56,6 +57,18 @@ export class FormularRecetaComponent implements OnInit {
   evaluacionGuardado = signal<EvaluarGuardadoHistorialDto | null>(null);
   reemplazoSeleccionadoId = signal<string | null>(null);
   mostrarForzar = signal(false);
+  descargoAceptado = signal(false);
+  mostrarModalDescargo = signal(false);
+  aceptandoDescargo = signal(false);
+
+  calificandoId = signal<string | null>(null);
+  estrellasSeleccionadas = signal(0);
+  comentarioCalificacion = '';
+  enviandoCalificacion = signal(false);
+  mensajeCalificacionEnviada = signal<string | null>(null);
+
+  readonly textoDescargo = TEXTO_DESCARGO_RESPONSABILIDAD;
+  readonly estrellasOpciones = [1, 2, 3, 4, 5];
 
   readonly Math = Math;
 
@@ -80,6 +93,8 @@ export class FormularRecetaComponent implements OnInit {
     this.inferenciaService.preparacion().subscribe({
       next: (p) => {
         this.preparacion.set(p);
+        this.descargoAceptado.set(!!p.descargoAceptado);
+        this.mostrarModalDescargo.set(!p.descargoAceptado);
         this.cargando.set(false);
         const recetaId = this.route.snapshot.queryParamMap.get('recetaId');
         if (recetaId) {
@@ -114,7 +129,86 @@ export class FormularRecetaComponent implements OnInit {
     return !!this.preparacion()?.cuota?.cuotaAgotada;
   }
 
+  aceptarDescargo(): void {
+    this.aceptandoDescargo.set(true);
+    this.inferenciaService.aceptarDescargo().subscribe({
+      next: () => {
+        this.aceptandoDescargo.set(false);
+        this.descargoAceptado.set(true);
+        this.mostrarModalDescargo.set(false);
+      },
+      error: (err) => {
+        this.aceptandoDescargo.set(false);
+        this.modal.set({
+          tipo: 'error',
+          titulo: 'Error',
+          mensaje: err?.error?.message || 'No se pudo registrar la aceptación del descargo.',
+        });
+      },
+    });
+  }
+
+  abrirCalificacion(id: string): void {
+    this.calificandoId.set(id);
+    this.estrellasSeleccionadas.set(0);
+    this.comentarioCalificacion = '';
+    this.mensajeCalificacionEnviada.set(null);
+  }
+
+  cerrarCalificacion(): void {
+    this.calificandoId.set(null);
+    this.estrellasSeleccionadas.set(0);
+    this.comentarioCalificacion = '';
+  }
+
+  seleccionarEstrella(valor: number): void {
+    this.estrellasSeleccionadas.set(valor);
+  }
+
+  enviarCalificacion(id: string): void {
+    const estrellas = this.estrellasSeleccionadas();
+    if (estrellas < 1) {
+      this.modal.set({
+        tipo: 'error',
+        titulo: 'Calificación incompleta',
+        mensaje: 'Debes seleccionar al menos 1 estrella.',
+      });
+      return;
+    }
+    const comentario = this.comentarioCalificacion.trim();
+    if (comentario.length > 500) {
+      this.modal.set({
+        tipo: 'error',
+        titulo: 'Comentario muy largo',
+        mensaje: 'El comentario no puede superar 500 caracteres.',
+      });
+      return;
+    }
+
+    this.enviandoCalificacion.set(true);
+    this.inferenciaService.calificarReceta(id, { estrellas, comentario: comentario || undefined }).subscribe({
+      next: (res) => {
+        this.enviandoCalificacion.set(false);
+        this.mensajeCalificacionEnviada.set(res.message);
+        this.actualizarCalificacionAlternativa(id, estrellas, comentario);
+        this.calificandoId.set(null);
+      },
+      error: (err) => {
+        this.enviandoCalificacion.set(false);
+        this.modal.set({
+          tipo: 'error',
+          titulo: 'No se pudo calificar',
+          mensaje: err?.error?.message || 'Error al enviar la calificación.',
+        });
+      },
+    });
+  }
+
   formular(forzar = false): void {
+    if (!this.descargoAceptado()) {
+      this.mostrarModalDescargo.set(true);
+      return;
+    }
     const objetivo = this.objetivoService.leerSesion();
     if (!objetivo) {
       void this.router.navigate(['/objetivo-nutricional']);
@@ -412,6 +506,22 @@ export class FormularRecetaComponent implements OnInit {
     const ses = this.sesion();
     if (!ses) return;
     const alts = ses.alternativas.map((a) => (a.id === actualizada.id ? actualizada : a));
+    this.sesion.set({ ...ses, alternativas: alts });
+  }
+
+  private actualizarCalificacionAlternativa(id: string, estrellas: number, comentario: string): void {
+    const ses = this.sesion();
+    if (!ses) return;
+    const alts = ses.alternativas.map((a) =>
+      a.id === id
+        ? {
+            ...a,
+            calificada: true,
+            calificacionEstrellas: estrellas,
+            calificacionComentario: comentario || null,
+          }
+        : a,
+    );
     this.sesion.set({ ...ses, alternativas: alts });
   }
 }

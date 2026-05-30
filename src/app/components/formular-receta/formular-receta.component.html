@@ -1,5 +1,5 @@
 <div class="rb-page">
-  <div class="rb-container">
+  <div class="rb-container" [class.pointer-events-none]="mostrarModalDescargo()" [class.opacity-60]="mostrarModalDescargo()">
     <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <div class="flex items-center gap-2 text-secondary dark:text-sky-300">
@@ -200,6 +200,87 @@
             <app-semaforo-normativo [alternativa]="alt" [rol]="rol()" />
           </div>
 
+          <div class="mt-6 rounded-xl border border-gray-200 p-4 dark:border-dark-border">
+            <div *ngIf="alt.calificada" class="space-y-2">
+              <p class="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+                <ng-icon name="heroCheckCircle" size="18" class="text-green-600 dark:text-green-400" />
+                Gracias por su calificación. Tu opinión ayuda a mejorar el modelo.
+              </p>
+              <div class="flex items-center gap-1">
+                <ng-icon
+                  *ngFor="let n of estrellasOpciones"
+                  name="heroStar"
+                  size="20"
+                  [class.text-amber-400]="n <= (alt.calificacionEstrellas || 0)"
+                  [class.text-gray-300]="n > (alt.calificacionEstrellas || 0)"
+                  [class.dark:text-slate-600]="n > (alt.calificacionEstrellas || 0)"
+                />
+              </div>
+              <p *ngIf="alt.calificacionComentario" class="text-sm text-neutral-muted">{{ alt.calificacionComentario }}</p>
+            </div>
+
+            <ng-container *ngIf="!alt.calificada">
+              <button
+                *ngIf="calificandoId() !== alt.id"
+                type="button"
+                class="rb-btn rb-btn-secondary inline-flex min-h-11 items-center gap-2"
+                [disabled]="!descargoAceptado()"
+                (click)="abrirCalificacion(alt.id)"
+              >
+                <ng-icon name="heroStar" size="18" />
+                Calificar Receta
+              </button>
+
+              <div *ngIf="calificandoId() === alt.id" class="space-y-4">
+                <p class="text-sm font-semibold text-gray-900 dark:text-dark-text-strong">
+                  ¿Qué tan viable te parece esta receta?
+                </p>
+                <div class="flex items-center justify-start gap-1.5 sm:gap-2" role="group" aria-label="Calificación en estrellas">
+                  <button
+                    *ngFor="let n of estrellasOpciones"
+                    type="button"
+                    class="rounded-lg p-1 transition hover:scale-105"
+                    (click)="seleccionarEstrella(n)"
+                    [attr.aria-pressed]="estrellasSeleccionadas() >= n"
+                  >
+                    <ng-icon
+                      name="heroStar"
+                      size="28"
+                      [class.text-amber-400]="n <= estrellasSeleccionadas()"
+                      [class.text-gray-300]="n > estrellasSeleccionadas()"
+                      [class.dark:text-slate-600]="n > estrellasSeleccionadas()"
+                    />
+                  </button>
+                </div>
+                <div>
+                  <label class="rb-label !normal-case">Comentario opcional</label>
+                  <textarea
+                    class="rb-input w-full"
+                    rows="3"
+                    maxlength="500"
+                    [(ngModel)]="comentarioCalificacion"
+                    placeholder="Comparte tu opinión sobre la viabilidad de esta receta"
+                  ></textarea>
+                  <p class="mt-1 text-xs text-neutral-muted">{{ comentarioCalificacion.length }}/500</p>
+                </div>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    class="rb-btn rb-btn-primary inline-flex min-h-11 items-center gap-2"
+                    [disabled]="enviandoCalificacion()"
+                    (click)="enviarCalificacion(alt.id)"
+                  >
+                    <ng-icon name="heroStar" size="18" />
+                    {{ enviandoCalificacion() ? 'Enviando...' : 'Enviar Calificación' }}
+                  </button>
+                  <button type="button" class="rb-btn rb-btn-secondary min-h-11" (click)="cerrarCalificacion()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
           <div *ngIf="editandoId() === alt.id" class="mt-6 rounded-xl border border-gray-200 p-4 dark:border-dark-border">
             <h4 class="mb-3 font-semibold">Editar porcentajes</h4>
             <div class="space-y-2">
@@ -228,6 +309,30 @@
         </article>
       </section>
     </ng-container>
+  </div>
+</div>
+
+<div *ngIf="mostrarModalDescargo()" class="rb-modal-backdrop z-[120]">
+  <div class="rb-modal max-w-md border-gray-200 dark:border-dark-border">
+    <div class="rb-modal-icon flex items-center justify-center !p-2">
+      <span class="rb-logo-chip !rounded-full !p-2">
+        <ng-icon name="heroInformationCircle" size="40" class="h-10 w-10 object-contain text-secondary dark:text-blue-400" />
+      </span>
+    </div>
+    <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-dark-text-strong">
+      Descargo de responsabilidad
+    </h3>
+    <div class="mb-6 max-h-40 overflow-y-auto px-1 text-left text-sm leading-relaxed text-neutral-strong dark:text-slate-200">
+      {{ textoDescargo }}
+    </div>
+    <button
+      type="button"
+      class="rb-btn-success w-full"
+      [disabled]="aceptandoDescargo()"
+      (click)="aceptarDescargo()"
+    >
+      {{ aceptandoDescargo() ? 'Procesando...' : 'Entendido y Acepto' }}
+    </button>
   </div>
 </div>
 

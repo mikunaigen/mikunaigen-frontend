@@ -25,6 +25,7 @@ export type PreparacionInferenciaDto = {
   mensajeModelo: string | null;
   cuota: CuotaInferenciaDto;
   rol: string;
+  descargoAceptado?: boolean;
 };
 
 export type IngredienteRecetaDto = {
@@ -65,6 +66,9 @@ export type AlternativaRecetaDto = {
     }>;
   };
   perfilNutricional?: Record<string, { objetivo: number; logrado: number; desviacion: number }>;
+  calificada?: boolean;
+  calificacionEstrellas?: number;
+  calificacionComentario?: string | null;
 };
 
 export type SesionInferenciaDto = {
@@ -112,6 +116,26 @@ export class FormulacionInferenciaService {
 
   preparacion(): Observable<PreparacionInferenciaDto> {
     return this.http.get<PreparacionInferenciaDto>(`${base}/preparacion`);
+  }
+
+  aceptarDescargo(): Observable<{ message: string; descargoAceptado: boolean }> {
+    return this.http.post<{ message: string; descargoAceptado: boolean }>(`${base}/descargo/aceptar`, {});
+  }
+
+  calificarReceta(
+    id: string,
+    payload: { estrellas: number; comentario?: string },
+  ): Observable<{ message: string; calificada: boolean; estrellas: number }> {
+    return this.http.post<{ message: string; calificada: boolean; estrellas: number }>(
+      `${base}/receta/${id}/calificacion`,
+      payload,
+    );
+  }
+
+  estadoCalificacion(id: string): Observable<{ calificada: boolean; estrellas?: number; comentario?: string }> {
+    return this.http.get<{ calificada: boolean; estrellas?: number; comentario?: string }>(
+      `${base}/receta/${id}/calificacion`,
+    );
   }
 
   ejecutar(objetivo: ObjetivoNutricionalValores, forzar = false): Observable<SesionInferenciaDto> {

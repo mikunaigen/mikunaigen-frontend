@@ -19,7 +19,6 @@ import {
   evaluarCriteriosPassword,
   filtrarSoloDigitos,
   filtrarSoloLetrasYEspacios,
-  TEXTO_DESCARGO_RESPONSABILIDAD,
   type CriteriosPassword,
 } from '../../utils/form-validators';
 
@@ -58,7 +57,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
   paso = 1;
   mostrarPassword = false;
   aceptoTerminos = false;
-  aceptoDescargo = false;
   cargando = false;
   confirmarPassword = '';
   esperandoTelegram = false;
@@ -181,9 +179,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
     if (!this.aceptoTerminos) {
       return { valido: false, error: 'Debes aceptar los términos y condiciones de uso.' };
     }
-    if (!this.aceptoDescargo) {
-      return { valido: false, error: 'Debes aceptar el descargo de responsabilidad.' };
-    }
 
     return { valido: true };
   }
@@ -218,21 +213,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.modal.visible = false;
   }
 
-  abrirDescargo(event: Event) {
-    event.preventDefault();
-    this.abrirModal('descargo', 'Descargo de responsabilidad', TEXTO_DESCARGO_RESPONSABILIDAD);
-  }
-
-  aceptarDescargo() {
-    this.aceptoDescargo = true;
-    this.modal.visible = false;
-  }
-
-  rechazarDescargo() {
-    this.aceptoDescargo = false;
-    this.modal.visible = false;
-  }
-
   enviarRegistro() {
     const validacion = this.validarFormulario();
     if (!validacion.valido) {
@@ -250,7 +230,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
       phone: this.usuario.phone,
       password: this.usuario.password,
       aceptoTerminos: this.aceptoTerminos,
-      aceptoDescargo: this.aceptoDescargo,
     };
 
     const url = this.isAdminMode
