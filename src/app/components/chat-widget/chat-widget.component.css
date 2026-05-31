@@ -1,0 +1,93 @@
+.chat-fab-wrap {
+  position: fixed;
+  bottom: 1rem;
+  right: 4.5rem;
+  z-index: 52;
+}
+
+.chat-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+}
+
+.chat-panel {
+  position: fixed;
+  bottom: 4.5rem;
+  right: 1rem;
+  z-index: 53;
+  width: min(100vw - 2rem, 22rem);
+  max-height: min(70vh, 28rem);
+}
+
+@media (min-width: 640px) {
+  .chat-panel {
+    width: 24rem;
+    right: 1rem;
+  }
+}
+
+.chat-messages {
+  min-height: 8rem;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+::ng-deep .markdown-body p {
+  margin-bottom: 0.5rem;
+}
+
+::ng-deep .markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+::ng-deep .markdown-body strong {
+  font-weight: 600;
+}
+
+::ng-deep .markdown-body ul {
+  list-style-type: disc;
+  margin-left: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+::ng-deep .markdown-body ol {
+  list-style-type: decimal;
+  margin-left: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+::ng-deep .markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9em;
+}
+
+::ng-deep .markdown-body th,
+::ng-deep .markdown-body td {
+  border: 1px solid #e5e7eb;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+.dark ::ng-deep .markdown-body th,
+.dark ::ng-deep .markdown-body td {
+  border-color: #334155;
+}
+
+::ng-deep .markdown-body th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+.dark ::ng-deep .markdown-body th {
+  background-color: #1e293b;
+}

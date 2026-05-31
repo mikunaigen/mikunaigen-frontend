@@ -22,6 +22,12 @@ export class ObjetivoNutricionalService {
     return this.http.post<ValidarObjetivoResponse>(`${this.base}/validar`, valores);
   }
 
+  obtenerContextoChat(): Observable<{ disponible: boolean; contexto?: { objetivo?: ObjetivoNutricionalValores; idPerfil?: string } }> {
+    return this.http.get<{ disponible: boolean; contexto?: { objetivo?: ObjetivoNutricionalValores; idPerfil?: string } }>(
+      `${this.base}/contexto-chat`,
+    );
+  }
+
   guardarSesion(valores: ObjetivoNutricionalValores): void {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(valores));
   }

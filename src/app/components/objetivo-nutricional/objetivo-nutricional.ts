@@ -64,6 +64,18 @@ export class ObjetivoNutricionalComponent implements OnInit {
     if (guardado) {
       this.valores = { ...objetivoVacio(), ...guardado };
     }
+    this.objetivoService.obtenerContextoChat().subscribe({
+      next: (res) => {
+        if (res.disponible && res.contexto?.objetivo) {
+          this.valores = { ...objetivoVacio(), ...res.contexto.objetivo };
+          this.objetivoService.guardarSesion(this.valores);
+          if (res.contexto.idPerfil) {
+            this.perfilSeleccionado = res.contexto.idPerfil;
+          }
+        }
+      },
+      error: () => {},
+    });
   }
 
   errorCampo(campo: CampoObjetivoDef): string | null {

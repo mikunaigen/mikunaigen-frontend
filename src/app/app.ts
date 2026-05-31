@@ -6,6 +6,7 @@ import { BackendStatusService } from './services/backend-status.service';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
+import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 import { AuthService } from './services/auth.service';
 import { WebsocketService } from './services/websocket.service';
 import { MaintenanceService } from './services/maintenance.service';
@@ -15,7 +16,7 @@ import { contieneEntradaPeligrosa } from './utils/entrada-segura';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ThemeToggleComponent, NgIconComponent],
+  imports: [CommonModule, RouterOutlet, ThemeToggleComponent, NgIconComponent, ChatWidgetComponent],
   template: `
     <div class="rb-mesh-bg" aria-hidden="true">
       <div class="rb-mesh-bg__stage">
@@ -28,6 +29,7 @@ import { contieneEntradaPeligrosa } from './utils/entrada-segura';
     </div>
     <div class="rb-app-content">
       <router-outlet></router-outlet>
+      <app-chat-widget *ngIf="mostrarChat()" [modo]="modoChat()" />
       <app-theme-toggle *ngIf="!hideThemeFab" />
     <div
       *ngIf="backendStatus.isOffline()"
@@ -141,6 +143,27 @@ export class App implements OnInit, OnDestroy {
     'Tu cuenta ha sido suspendida por el administrador. Debes cerrar sesión para continuar.';
 
   hideThemeFab = false;
+
+  mostrarChat(): boolean {
+    if (!this.authService.isLoggedIn()) {
+      return false;
+    }
+    const url = this.router.url.split('?')[0];
+    const publicas = new Set([
+      '/login',
+      '/registro',
+      '/recuperar',
+      '/presentacion',
+      '/setup',
+      '/retenido',
+      '/mantenimiento',
+    ]);
+    return !publicas.has(url);
+  }
+
+  modoChat(): 'usuario' | 'admin' {
+    return this.authService.esAdministrador() ? 'admin' : 'usuario';
+  }
 
   private readonly onDocumentInput = (event: Event) => this.validarEntradaGlobal(event);
 
