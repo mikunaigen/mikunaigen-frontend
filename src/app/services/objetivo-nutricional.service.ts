@@ -6,11 +6,21 @@ import { ObjetivoNutricionalValores } from '../data/objetivo-nutricional-campos'
 
 const STORAGE_KEY = 'mikunaigen_objetivo_nutricional';
 
+export type NutrienteExcedido = {
+  nutriente: string;
+  etiqueta: string;
+  valor: number;
+  limite: number;
+  unidad: string;
+};
+
 export type ValidarObjetivoResponse = {
   valido: boolean;
   message: string;
   errores?: Record<string, string>;
   valores?: ObjetivoNutricionalValores;
+  excedidos?: NutrienteExcedido[];
+  advertencia?: boolean;
 };
 
 @Injectable({ providedIn: 'root' })

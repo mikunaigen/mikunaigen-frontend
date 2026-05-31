@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
 import { AuthService } from '../../services/auth.service';
-import { ObjetivoNutricionalService } from '../../services/objetivo-nutricional.service';
+import { ObjetivoNutricionalService, NutrienteExcedido } from '../../services/objetivo-nutricional.service';
 import {
   CAMPOS_OBJETIVO_NUTRICIONAL,
   CampoObjetivoDef,
@@ -44,6 +44,10 @@ export class ObjetivoNutricionalComponent implements OnInit {
   perfilSeleccionado = '';
   validando = signal(false);
   modal = signal<{ tipo: 'ok' | 'error'; titulo: string; mensaje: string } | null>(null);
+
+  mostrarModalExcedidos = signal(false);
+  nutrientesExcedidos = signal<NutrienteExcedido[]>([]);
+  continuarDespuesDeExcedidos = false;
 
   ngOnInit(): void {
     if (!this.modoEmbebido) {
@@ -148,16 +152,13 @@ export class ObjetivoNutricionalComponent implements OnInit {
           return;
         }
         this.errores.set({});
-        this.objetivoService.guardarSesion(this.valores);
-        if (continuarFlujo || this.modoEmbebido) {
-          this.objetivoGuardado.emit();
-        }
-        if (!continuarFlujo) {
-          this.modal.set({
-            tipo: 'ok',
-            titulo: 'Objetivo registrado',
-            mensaje: res.message || 'El objetivo nutricional es válido y está listo para la formulación.',
-          });
+
+        if (res.advertencia && res.excedidos && res.excedidos.length > 0) {
+          this.nutrientesExcedidos.set(res.excedidos);
+          this.continuarDespuesDeExcedidos = continuarFlujo;
+          this.mostrarModalExcedidos.set(true);
+        } else {
+          this.guardarYContinuarFlujo(continuarFlujo, res.message);
         }
       },
       error: (err) => {
@@ -173,6 +174,24 @@ export class ObjetivoNutricionalComponent implements OnInit {
         });
       },
     });
+  }
+
+  guardarYContinuarFlujo(continuarFlujo: boolean, mensajeExito: string): void {
+    this.objetivoService.guardarSesion(this.valores);
+    if (continuarFlujo || this.modoEmbebido) {
+      this.objetivoGuardado.emit();
+    } else {
+      this.modal.set({
+        tipo: 'ok',
+        titulo: 'Objetivo registrado',
+        mensaje: mensajeExito || 'El objetivo nutricional es válido y está listo para la formulación.',
+      });
+    }
+  }
+
+  procederConAdvertencia(): void {
+    this.mostrarModalExcedidos.set(false);
+    this.guardarYContinuarFlujo(this.continuarDespuesDeExcedidos, 'El objetivo nutricional fue registrado (contiene advertencias normativas).');
   }
 
   cerrarModal(): void {
