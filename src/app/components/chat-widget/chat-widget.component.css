@@ -78,16 +78,22 @@
   text-align: left;
 }
 
-.dark ::ng-deep .markdown-body th,
-.dark ::ng-deep .markdown-body td {
-  border-color: #334155;
-}
-
 ::ng-deep .markdown-body th {
   background-color: #f9fafb;
+  color: #1f2937;
   font-weight: 600;
 }
 
-.dark ::ng-deep .markdown-body th {
-  background-color: #94c9ff;
+::ng-deep .dark .markdown-body th,
+::ng-deep .dark .markdown-body td {
+  border-color: #334155;
+}
+
+::ng-deep .dark .markdown-body th {
+  background-color: #1e293b;
+  color: #f8fafc;           
+}
+
+::ng-deep .dark .markdown-body td {
+  color: #e2e8f0;           
 }
