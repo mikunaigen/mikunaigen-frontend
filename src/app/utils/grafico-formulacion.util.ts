@@ -50,9 +50,6 @@ export function nutrientesPrecisionCompletos(
 ): string[] {
   const claves: string[] = [];
   for (const campo of CAMPOS_OBJETIVO_NUTRICIONAL) {
-    if (campo.key === 'costo_kg_soles') {
-      continue;
-    }
     const pk = clavePerfilNutricional(campo.key);
     const fila = perfil?.[pk] ?? perfil?.[campo.key];
     const obj = fila?.objetivo ?? 0;
