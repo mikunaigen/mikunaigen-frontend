@@ -97,7 +97,7 @@
           Presupuesto máximo de producción
         </h3>
         <div *ngIf="capacidades()?.puedePresupuesto; else presupuestoBloqueado">
-          <label class="rb-label !normal-case">Costo máximo por kg (S/)</label>
+          <label class="rb-label !normal-case">Costo máximo por kg (S/) - Dejar en blanco para no definir límite</label>
           <input
             type="number"
             min="0"
@@ -127,12 +127,6 @@
               {{ r.etiqueta }}
             </button>
           </div>
-          <p
-            class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500/40 dark:bg-amber-950/30 dark:text-amber-100"
-          >
-            <ng-icon name="heroExclamationTriangle" size="16" class="mr-1 inline" />
-            {{ ctx.parametrizacion.mensajePresupuestoExcedido }}
-          </p>
         </div>
         <ng-template #presupuestoBloqueado>
           <div

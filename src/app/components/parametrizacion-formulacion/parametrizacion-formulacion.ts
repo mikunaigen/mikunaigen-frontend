@@ -187,10 +187,12 @@ export class ParametrizacionFormulacionComponent implements OnInit {
       this.errores.set(actuales);
       return;
     }
-    if (this.presupuestoMaximo === null || this.presupuestoMaximo === undefined) {
-      actuales['presupuestoMaximo'] = 'El costo máximo por kg es obligatorio.';
-    } else if (Number.isNaN(Number(this.presupuestoMaximo)) || Number(this.presupuestoMaximo) <= 0) {
-      actuales['presupuestoMaximo'] = 'Debe ser un valor numérico positivo.';
+    if (this.presupuestoMaximo === null || this.presupuestoMaximo === undefined || this.presupuestoMaximo === '' as any) {
+      this.errores.set(actuales);
+      return;
+    } 
+    if (Number.isNaN(Number(this.presupuestoMaximo)) || Number(this.presupuestoMaximo) < 0) {
+      actuales['presupuestoMaximo'] = 'Debe ser un valor numérico mayor o igual a cero.';
     }
     this.errores.set(actuales);
   }

@@ -11,8 +11,8 @@ export type PerfilEjemploObjetivo = {
 export const PERFILES_EJEMPLO_OBJETIVO: PerfilEjemploObjetivo[] = [
   {
     id: 'carne-vegetal-andina',
-    nombre: 'Carne Vegetal Andina',
-    descripcion: 'Analogo vegetal alto en proteína con leguminosas andinas.',
+    nombre: 'Carne Vegetal',
+    descripcion: 'Analogo alto en proteína con leguminosas.',
     icon: 'heroFire',
     valores: {
       energia_kcal: 220,
@@ -35,12 +35,11 @@ export const PERFILES_EJEMPLO_OBJETIVO: PerfilEjemploObjetivo[] = [
       acido_folico_ug: 45,
       sodio_mg: 380,
       potasio_mg: 450,
-      costo_kg_soles: 18,
     },
   },
   {
     id: 'batido-inmunologico',
-    nombre: 'Batido Energético Inmunológico',
+    nombre: 'Batido Energético',
     descripcion: 'Bebida con vitamina C y micronutrientes para defensas.',
     icon: 'heroBolt',
     valores: {
@@ -64,13 +63,12 @@ export const PERFILES_EJEMPLO_OBJETIVO: PerfilEjemploObjetivo[] = [
       acido_folico_ug: 30,
       sodio_mg: 45,
       potasio_mg: 320,
-      costo_kg_soles: 22,
     },
   },
   {
     id: 'galleta-anemia',
-    nombre: 'Galleta Escolar contra la Anemia',
-    descripcion: 'Snack escolar enriquecido en hierro y ácido fólico.',
+    nombre: 'Galleta contra la Anemia',
+    descripcion: 'Snack enriquecido en hierro y ácido fólico.',
     icon: 'heroCake',
     valores: {
       energia_kcal: 420,
@@ -93,7 +91,6 @@ export const PERFILES_EJEMPLO_OBJETIVO: PerfilEjemploObjetivo[] = [
       acido_folico_ug: 120,
       sodio_mg: 280,
       potasio_mg: 200,
-      costo_kg_soles: 12,
     },
   },
 ];

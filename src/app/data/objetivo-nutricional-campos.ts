@@ -19,7 +19,6 @@ export type ObjetivoNutricionalValores = {
   acido_folico_ug: number | null;
   sodio_mg: number | null;
   potasio_mg: number | null;
-  costo_kg_soles: number | null;
 };
 
 export type CampoObjetivoDef = {
@@ -171,13 +170,6 @@ export const CAMPOS_OBJETIVO_NUTRICIONAL: CampoObjetivoDef[] = [
     tooltip: 'Electrolito que equilibra sodio y apoya función muscular.',
     step: '0.01',
   },
-  {
-    key: 'costo_kg_soles',
-    label: 'Costo máximo por kg',
-    unidad: 'S/',
-    tooltip: 'Tope de costo por kilogramo de producto formulado en soles.',
-    step: '0.01',
-  },
 ];
 
 export function objetivoVacio(): ObjetivoNutricionalValores {
@@ -202,6 +194,5 @@ export function objetivoVacio(): ObjetivoNutricionalValores {
     acido_folico_ug: null,
     sodio_mg: null,
     potasio_mg: null,
-    costo_kg_soles: null,
   };
 }
