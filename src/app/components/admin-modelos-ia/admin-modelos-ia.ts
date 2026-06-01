@@ -220,26 +220,43 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
     if (!puntos.length) {
       return '';
     }
-    const valores = puntos
-      .map((p) => p[campo])
-      .filter((v): v is number => v != null && !Number.isNaN(v));
-    if (!valores.length) {
+
+    const todosLosValores: number[] = [];
+    puntos.forEach((p) => {
+      if (p.trainError != null && !Number.isNaN(Number(p.trainError))) {
+        todosLosValores.push(Number(p.trainError));
+      }
+      if (p.valError != null && !Number.isNaN(Number(p.valError))) {
+        todosLosValores.push(Number(p.valError));
+      }
+    });
+
+    if (!todosLosValores.length) {
       return '';
     }
-    const max = Math.max(...valores, 0.0001);
-    const min = Math.min(...valores, 0);
-    const rango = max - min || max;
+
+    const globalMax = Math.max(...todosLosValores);
+    const globalMin = Math.min(...todosLosValores);
+    const diff = globalMax - globalMin;
+
+    const padding = diff > 0 ? diff * 0.1 : globalMax * 0.1 || 0.0001;
+    const max = globalMax + padding;
+    const min = Math.max(0, globalMin - padding); 
+    const rango = max - min || 0.0001;
+
     const ancho = 320;
     const alto = 140;
     const baseY = 150;
+
     return puntos
       .map((p, i) => {
         const v = p[campo];
-        if (v == null || Number.isNaN(v)) {
+        if (v == null || Number.isNaN(Number(v))) {
           return null;
         }
+        const valorNum = Number(v);
         const x = puntos.length === 1 ? ancho / 2 : (i / (puntos.length - 1)) * ancho;
-        const y = baseY - ((v - min) / rango) * alto;
+        const y = baseY - ((valorNum - min) / rango) * alto;
         return `${x},${y}`;
       })
       .filter((s): s is string => s != null)
