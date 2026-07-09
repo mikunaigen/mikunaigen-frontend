@@ -285,7 +285,7 @@ export class AdminModelosIaComponent implements OnInit, OnDestroy {
     };
     this.puntosCurvaSvg = curva;
     if (estadoNuevo === 'COMPLETADO' && this.estadoEntrenamientoPrevio !== 'COMPLETADO') {
-      this.abrirModal('exito', 'Entrenamiento', 'El modelo se desplegó correctamente en Backblaze B2.');
+      this.abrirModal('exito', 'Entrenamiento', 'El modelo se desplegó correctamente en Azure Blob Storage.');
     }
     this.estadoEntrenamientoPrevio = estadoNuevo;
   }

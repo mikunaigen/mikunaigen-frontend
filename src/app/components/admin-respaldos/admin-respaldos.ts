@@ -278,7 +278,7 @@ export class AdminRespaldosComponent implements OnInit {
         this.abrirModal(
           'ok',
           'Respaldo exitoso',
-          'El archivo cifrado de PostgreSQL se verificó correctamente en Backblaze B2.',
+          'El archivo cifrado de PostgreSQL se verificó correctamente en Azure Blob Storage.',
         );
       } else {
         this.abrirModal(
